@@ -322,12 +322,12 @@
   <section id="tab-rounds" class="tabpane hidden">
     <div class="card admin-only" id="round-controls">
       <h2><span class="glyph">𓊹</span> Controle de rodadas</h2>
-      <p class="section-note">Cada "começar rodada" gera os confrontos do rodízio. Os pontos nunca são apagados ao criar rodadas.</p>
+      <p class="section-note">Cada "começar rodada" gera os confrontos do rodízio. <b>Encerrar rodada</b> apenas trava os resultados da rodada atual — os pontos nunca são apagados.</p>
       <div id="round-ctrl-msg"></div>
       <button class="btn" id="btn-start-round">⚔️ Começar próxima rodada</button>
       <div class="btn-row">
+        <button class="btn ghost" id="btn-close-round">🔒 Encerrar rodada</button>
         <button class="btn ghost" id="btn-undo-round">Desfazer última</button>
-        <button class="btn ghost" id="btn-reset-rounds">Reiniciar rodadas</button>
       </div>
       <div style="height:10px"></div>
       <button class="btn danger" id="btn-finish-champ">🏆 Encerrar campeonato</button>
@@ -572,7 +572,7 @@ function applyRoleUI(){
   $("btn-switch").onclick=leaveChamp;
   const startBtn=$("btn-start-round");
   if(startBtn){
-    startBtn.disabled=locked; $("btn-undo-round").disabled=locked; $("btn-reset-rounds").disabled=locked;
+    startBtn.disabled=locked; $("btn-undo-round").disabled=locked; $("btn-close-round").disabled=locked;
     const fin=$("btn-finish-champ");
     fin.textContent = locked ? "↺ Reabrir campeonato" : "🏆 Encerrar campeonato";
     fin.classList.toggle("danger", !locked); fin.classList.toggle("ghost", locked);
@@ -721,19 +721,21 @@ function renderRounds(){
   if(ROUNDS.length===0){ body.innerHTML=`<div class="empty"><span class="big">⚔️</span>Nenhuma rodada iniciada.<br>${isAdmin()?'Toque em <b>Começar próxima rodada</b>.':'Aguarde o administrador começar.'}</div>`; return; }
   body.innerHTML=ROUNDS.map(r=>{
     const matches=(r.matches||[]); const done=matches.filter(m=>m.winner).length;
+    const closed=!!r.closed; const editable=adm&&!closed;
     return `<div class="round-block"><div class="round-head">
-        <span class="rtitle">⚔️ Rodada ${r.number}</span><span class="rmeta">${done}/${matches.length} decididas</span></div>
+        <span class="rtitle">⚔️ Rodada ${r.number} ${closed?'<span title="Rodada encerrada">🔒</span>':''}</span>
+        <span class="rmeta">${done}/${matches.length} decididas${adm&&closed?` · <button class="mini" data-act="reopenround" data-r="${r.id}" style="padding:3px 8px">Reabrir</button>`:''}</span></div>
       ${matches.map((m,idx)=>{
         const aw=m.winner===m.a, bw=m.winner===m.b;
         return `<div class="match">
             <div class="side left ${aw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.a))}</div></div>
             <div class="vs">VS</div>
             <div class="side right ${bw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.b))}</div></div></div>
-          ${adm?`<div class="win-btns">
+          ${editable?`<div class="win-btns">
               <button class="wbtn ${aw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.a}">Venceu ${esc(playerName(m.a))}</button>
               <button class="wbtn ${bw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.b}">Venceu ${esc(playerName(m.b))}</button>
               ${m.winner?`<button class="wbtn clear" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="">✕</button>`:``}
-            </div>`:`<div class="result-tag">${m.winner?`Vencedor: <b>${esc(playerName(m.winner))}</b>`:'Aguardando resultado'}</div>`}`;
+            </div>`:`<div class="result-tag">${m.winner?`Vencedor: <b>${esc(playerName(m.winner))}</b>`:(closed?'Sem resultado':'Aguardando resultado')}</div>`}`;
       }).join("")}</div>`;
   }).join("");
 }
@@ -942,10 +944,14 @@ document.addEventListener("click", async ev=>{
     const nn=prompt("Novo nome:", playerName(b.dataset.id));
     if(nn&&nn.trim()){ try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"players",b.dataset.id),{name:nn.trim()}); toast("Nome atualizado"); }catch(e){ toast(fbError(e)); } }
   }
+  if(act==="reopenround"){
+    if(!canEdit()) return;
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",b.dataset.r),{closed:false}); toast("Rodada reaberta"); }catch(e){ toast(fbError(e)); }
+  }
   if(act==="win"){
     if(!canEdit()) return;
     const rId=b.dataset.r, idx=+b.dataset.i, w=b.dataset.w||null;
-    const round=ROUNDS.find(r=>r.id===rId); if(!round) return;
+    const round=ROUNDS.find(r=>r.id===rId); if(!round||round.closed) return;
     const matches=(round.matches||[]).map(m=>({...m})); if(!matches[idx]) return;
     matches[idx].winner=(matches[idx].winner===w)?null:w;
     try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",rId),{matches}); }catch(e){ toast(fbError(e)); }
@@ -995,7 +1001,7 @@ $("btn-start-round").onclick=async()=>{
   if(!scheduleIds||ROUNDS.length===0){ scheduleIds=PLAYERS.map(p=>p.id);
     try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{scheduleIds}); }catch(e){} }
   const schedule=roundRobinSchedule(scheduleIds); const next=ROUNDS.length;
-  if(next>=schedule.length){ showMsg("round-ctrl-msg","🏆 Todos já se enfrentaram (rodízio completo). Use <b>Encerrar campeonato</b> para coroar o campeão, ou <b>Reiniciar rodadas</b> para um novo turno.","info"); return; }
+  if(next>=schedule.length){ showMsg("round-ctrl-msg","🏆 Todos já se enfrentaram (rodízio completo). Use <b>Encerrar campeonato</b> para coroar o campeão. Para um novo turno, crie outro campeonato.","info"); return; }
   const matches=schedule[next].map(([a,b])=>({a,b,winner:null}));
   const b=$("btn-start-round"); b.disabled=true;
   try{ await addDoc(collection(db,"championships",CURRENT_CHAMP,"rounds"),{number:next+1,matches,createdAt:serverTimestamp()});
@@ -1011,12 +1017,17 @@ $("btn-undo-round").onclick=async()=>{
     toast("Última rodada desfeita");
   }catch(e){ toast(fbError(e)); }
 };
-$("btn-reset-rounds").onclick=async()=>{
-  if(!canEdit()) return; if(ROUNDS.length===0){ toast("Não há rodadas para reiniciar."); return; }
-  if(!confirm("Reiniciar TODAS as rodadas deste campeonato? Os confrontos e resultados serão apagados (os jogadores continuam). Serve para recomeçar o rodízio.")) return;
-  try{ for(const r of ROUNDS) await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",r.id));
-    await updateDoc(doc(db,"championships",CURRENT_CHAMP),{scheduleIds:[]}); toast("Rodadas reiniciadas");
-  }catch(e){ toast(fbError(e)); }
+$("btn-close-round").onclick=async()=>{
+  if(!canEdit()) return; if(ROUNDS.length===0){ toast("Não há rodadas."); return; }
+  const open=[...ROUNDS].reverse().find(r=>!r.closed);
+  if(!open){ toast("Todas as rodadas já estão encerradas."); return; }
+  const undecided=(open.matches||[]).filter(m=>!m.winner).length;
+  const msg = undecided>0
+    ? `Encerrar a Rodada ${open.number}? Há ${undecided} partida(s) sem resultado (que não pontuam). Os resultados ficam travados e os pontos são mantidos.`
+    : `Encerrar a Rodada ${open.number}? Os resultados ficam travados e os pontos são mantidos.`;
+  if(!confirm(msg)) return;
+  try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",open.id),{closed:true}); toast(`Rodada ${open.number} encerrada 🔒`); }
+  catch(e){ toast(fbError(e)); }
 };
 $("btn-finish-champ").onclick=async()=>{
   if(!isAdmin()) return;
