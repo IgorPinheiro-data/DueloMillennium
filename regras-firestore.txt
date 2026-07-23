@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function cfg() {
+      return get(/databases/$(database)/documents/meta/config).data;
+    }
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/meta/config)
+        && request.auth.uid in cfg().adminUids;
+    }
+
+    // Configuração do campeonato (nome + lista de admins)
+    match /meta/config {
+      allow read: if true;                         // qualquer um pode ver
+      allow create: if request.auth != null
+        && !exists(/databases/$(database)/documents/meta/config); // 1º admin
+      allow update, delete: if isAdmin();
+    }
+
+    // Participantes do campeonato
+    match /players/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Rodadas e partidas
+    match /rounds/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Contas de acesso (para listar/gerenciar)
+    match /users/{uid} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+        && (request.auth.uid == uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+  }
+}

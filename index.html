@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0d0a06">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Duelo Millennium">
+<title>Duelo Millennium — Campeonato Yu-Gi-Oh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0a06;
+    --bg2:#161009;
+    --panel:#1d1710;
+    --panel2:#241c12;
+    --gold:#e8c15a;
+    --gold-deep:#c69b34;
+    --gold-soft:#f4dc93;
+    --bronze:#8a6a2f;
+    --line:#3a2d18;
+    --line2:#4d3b1e;
+    --text:#f3e8cf;
+    --muted:#a99873;
+    --green:#4caf6d;
+    --red:#c1543f;
+    --shadow:0 10px 30px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Rajdhani',system-ui,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #2a1f10 0%, rgba(42,31,16,0) 60%),
+      radial-gradient(900px 500px at 100% 110%, #201810 0%, rgba(0,0,0,0) 55%),
+      linear-gradient(180deg,#0c0a06 0%, #100c07 100%);
+    background-attachment:fixed;
+    min-height:100dvh;
+    padding-bottom:env(safe-area-inset-bottom);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* subtle hieroglyph texture */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z-index:0;
+    background-image:
+      repeating-linear-gradient(90deg, transparent 0 46px, rgba(232,193,90,.6) 46px 47px),
+      repeating-linear-gradient(0deg, transparent 0 46px, rgba(232,193,90,.4) 46px 47px);
+    mask-image:radial-gradient(circle at 50% 20%, black, transparent 75%);
+  }
+  h1,h2,h3{font-family:'Cinzel',serif;letter-spacing:.5px;margin:0}
+  .display{font-family:'Cinzel Decorative',serif}
+  a{color:var(--gold)}
+  button{font-family:inherit}
+
+  .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 14px 90px}
+
+  /* ---------- Header ---------- */
+  header.app-head{
+    position:sticky;top:0;z-index:20;
+    margin:0 -14px 14px;padding:calc(10px + env(safe-area-inset-top)) 16px 12px;
+    background:linear-gradient(180deg, rgba(12,10,6,.96), rgba(12,10,6,.82));
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:12px;
+  }
+  .eye{width:40px;height:40px;flex:0 0 auto;filter:drop-shadow(0 0 6px rgba(232,193,90,.35))}
+  .head-titles{flex:1;min-width:0}
+  .head-titles .kicker{font-size:11px;letter-spacing:3px;color:var(--gold-deep);text-transform:uppercase}
+  .head-titles h1{font-size:19px;color:var(--gold-soft);line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .head-titles .champ-name{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .badge-role{font-size:10px;padding:3px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--gold);letter-spacing:1px;text-transform:uppercase;background:rgba(232,193,90,.06)}
+  .badge-role.adm{color:#2a1c06;background:linear-gradient(180deg,var(--gold-soft),var(--gold-deep));border-color:var(--gold-deep);font-weight:700}
+
+  .icon-btn{
+    background:rgba(232,193,90,.06);border:1px solid var(--line2);color:var(--gold);
+    border-radius:10px;padding:8px 10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap
+  }
+  .icon-btn:active{transform:scale(.96)}
+
+  /* ---------- Tabs ---------- */
+  nav.tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:1 0 auto;text-align:center;padding:10px 14px;border-radius:12px;cursor:pointer;
+    border:1px solid var(--line);color:var(--muted);background:var(--panel);
+    font-weight:600;font-size:14px;letter-spacing:.5px;white-space:nowrap
+  }
+  .tab.active{
+    color:#241804;border-color:var(--gold-deep);
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold));
+    box-shadow:0 4px 14px rgba(232,193,90,.25)
+  }
+
+  /* ---------- Panels / cards ---------- */
+  .card{
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:16px;margin-bottom:14px;position:relative;overflow:hidden
+  }
+  .card::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--gold-deep),transparent);opacity:.6}
+  .card h2{font-size:16px;color:var(--gold-soft);display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .card h2 .glyph{color:var(--gold-deep)}
+  .section-note{color:var(--muted);font-size:13px;margin:-4px 0 12px}
+
+  /* ---------- Standings ---------- */
+  table.rank{width:100%;border-collapse:collapse}
+  table.rank th,table.rank td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line)}
+  table.rank th{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-deep);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+  table.rank td.pos{width:38px;text-align:center;font-family:'Cinzel',serif;color:var(--muted)}
+  table.rank tr.top1 td.pos{color:var(--gold);text-shadow:0 0 10px rgba(232,193,90,.6)}
+  table.rank td.name{font-weight:600;font-size:15px}
+  table.rank td.num{text-align:center;width:52px;font-variant-numeric:tabular-nums}
+  table.rank td.pts{text-align:center;width:64px;font-weight:700;color:var(--gold-soft);font-size:17px;font-variant-numeric:tabular-nums}
+  .medal{display:inline-block;width:22px;text-align:center}
+  tr.top1{background:linear-gradient(90deg,rgba(232,193,90,.10),transparent)}
+
+  /* ---------- Rounds / matches ---------- */
+  .round-block{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;background:rgba(0,0,0,.15)}
+  .round-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+    background:linear-gradient(90deg,rgba(232,193,90,.12),rgba(232,193,90,0));border-bottom:1px solid var(--line)}
+  .round-head .rtitle{font-family:'Cinzel',serif;color:var(--gold-soft);font-weight:700;letter-spacing:1px}
+  .round-head .rmeta{font-size:12px;color:var(--muted)}
+  .match{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px dashed var(--line)}
+  .match:last-child{border-bottom:none}
+  .side{flex:1;min-width:0}
+  .side .pname{font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .side.right{text-align:right}
+  .side.right .pname{justify-content:flex-end}
+  .side.winner .pname{color:var(--gold-soft)}
+  .side.winner .pname::after{content:"★";color:var(--gold);font-size:12px}
+  .side.loser{opacity:.5}
+  .vs{flex:0 0 auto;font-family:'Cinzel Decorative',serif;color:var(--gold-deep);font-size:13px;padding:0 4px}
+  .win-btns{display:flex;gap:8px;padding:0 14px 12px;flex-wrap:wrap}
+  .win-btns.hidden{display:none}
+  .wbtn{flex:1;min-width:110px;padding:9px;border-radius:10px;border:1px solid var(--line2);
+    background:rgba(232,193,90,.06);color:var(--gold);font-weight:600;font-size:13px;cursor:pointer}
+  .wbtn.active{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:#241804;border-color:var(--gold-deep)}
+  .wbtn.clear{color:var(--muted);flex:0 0 auto;min-width:auto}
+  .result-tag{font-size:11px;color:var(--muted);padding:0 14px 12px;margin-top:-4px}
+  .result-tag b{color:var(--gold-soft)}
+
+  /* ---------- Forms / inputs ---------- */
+  label.fld{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px;letter-spacing:.5px;text-transform:uppercase}
+  input[type=text],input[type=email],input[type=password]{
+    width:100%;padding:12px 13px;border-radius:11px;border:1px solid var(--line2);
+    background:#0e0b06;color:var(--text);font-size:16px;font-family:inherit;outline:none
+  }
+  input:focus{border-color:var(--gold-deep);box-shadow:0 0 0 3px rgba(232,193,90,.12)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    padding:13px;border-radius:12px;border:1px solid var(--gold-deep);cursor:pointer;
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:#241804;
+    font-weight:700;font-size:15px;letter-spacing:.5px;font-family:'Cinzel',serif
+  }
+  .btn:active{transform:scale(.98)}
+  .btn.ghost{background:transparent;color:var(--gold);border-color:var(--line2);font-family:'Rajdhani',sans-serif}
+  .btn.danger{background:transparent;color:var(--red);border-color:#5a2a20;font-family:'Rajdhani',sans-serif}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn-row{display:flex;gap:10px;margin-top:12px}
+  .btn-row .btn{width:auto;flex:1}
+
+  .list-row{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line)}
+  .list-row:last-child{border-bottom:none}
+  .list-row .grow{flex:1;min-width:0}
+  .list-row .grow .l1{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .list-row .grow .l2{font-size:12px;color:var(--muted)}
+  .mini{background:rgba(232,193,90,.06);border:1px solid var(--line2);color:var(--gold);
+    border-radius:9px;padding:7px 10px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .mini.danger{color:var(--red);border-color:#5a2a20}
+  .mini:active{transform:scale(.95)}
+
+  .empty{text-align:center;color:var(--muted);padding:26px 10px;font-size:14px;line-height:1.5}
+  .empty .big{font-size:34px;display:block;margin-bottom:8px;opacity:.5}
+
+  .msg{padding:11px 13px;border-radius:11px;font-size:13px;margin:10px 0;line-height:1.4}
+  .msg.err{background:rgba(193,84,63,.12);border:1px solid #5a2a20;color:#f0b8ac}
+  .msg.ok{background:rgba(76,175,109,.12);border:1px solid #2c5a38;color:#bfe6cc}
+  .msg.info{background:rgba(232,193,90,.08);border:1px solid var(--line2);color:var(--gold-soft)}
+
+  /* ---------- Login overlay ---------- */
+  .center-screen{min-height:70dvh;display:flex;flex-direction:column;justify-content:center}
+  .login-card{max-width:420px;margin:0 auto;width:100%}
+  .brand{text-align:center;margin-bottom:22px}
+  .brand .eye{width:74px;height:74px;margin:0 auto 10px;display:block}
+  .brand .kicker{font-size:11px;letter-spacing:5px;color:var(--gold-deep);text-transform:uppercase}
+  .brand h1{font-size:26px;color:var(--gold-soft);margin-top:4px}
+  .brand .display{font-size:13px;color:var(--muted);letter-spacing:2px;margin-top:6px}
+
+  .hidden{display:none !important}
+  .foot{text-align:center;color:var(--muted);font-size:11px;padding:18px 0;opacity:.7;letter-spacing:.5px}
+  .spin{width:34px;height:34px;border:3px solid var(--line2);border-top-color:var(--gold);border-radius:50%;
+    margin:40px auto;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:60;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--gold-deep);
+    color:var(--gold-soft);padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);
+    font-weight:600;font-size:14px;opacity:0;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ============ EYE OF HORUS SVG (reused) ============ -->
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="wdjat" viewBox="0 0 100 70">
+    <g fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 32 C 26 14, 60 14, 84 30"/>
+      <path d="M84 30 C 66 46, 30 48, 10 34"/>
+      <circle cx="50" cy="31" r="10" fill="currentColor" stroke="none"/>
+      <path d="M40 44 L 40 60"/>
+      <path d="M40 60 C 40 66, 50 66, 54 60"/>
+      <path d="M66 40 C 74 44, 82 52, 80 64"/>
+    </g>
+  </symbol>
+</svg>
+
+<!-- ============ LOADING ============ -->
+<div id="boot" class="wrap"><div class="spin"></div>
+  <p style="text-align:center;color:var(--muted);font-size:13px">Invocando o campeonato…</p>
+</div>
+
+<!-- ============ CONFIG MISSING ============ -->
+<div id="need-config" class="wrap hidden">
+  <div class="center-screen"><div class="card login-card">
+    <div class="msg err"><b>Firebase não configurado.</b><br>
+      Abra este arquivo e cole os dados do seu projeto Firebase no bloco <code>firebaseConfig</code> no topo do &lt;script&gt;. O passo a passo está no guia que acompanha o app.</div>
+  </div></div>
+</div>
+
+<!-- ============ LOGIN / SETUP SCREEN ============ -->
+<div id="auth-screen" class="wrap hidden">
+  <div class="center-screen"><div class="login-card">
+    <div class="brand">
+      <svg class="eye" style="color:var(--gold)"><use href="#wdjat"/></svg>
+      <div class="kicker">Pontos Corridos</div>
+      <h1 class="display">Duelo Millennium</h1>
+      <div class="display">· Yu-Gi-Oh Championship ·</div>
+    </div>
+
+    <!-- normal login -->
+    <div id="login-box" class="card">
+      <h2><span class="glyph">𓂀</span> Entrar</h2>
+      <p class="section-note">Faça login para administrar. Para só acompanhar, toque em "Ver classificação".</p>
+      <div id="login-msg"></div>
+      <label class="fld">E-mail</label>
+      <input id="login-email" type="email" autocomplete="username" placeholder="voce@email.com">
+      <label class="fld">Senha</label>
+      <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••">
+      <div style="height:12px"></div>
+      <button class="btn" id="btn-login">Entrar no duelo</button>
+      <div style="height:10px"></div>
+      <button class="btn ghost" id="btn-guest">Ver classificação sem entrar</button>
+    </div>
+
+    <!-- first-admin setup -->
+    <div id="setup-box" class="card hidden">
+      <h2><span class="glyph">𓋹</span> Primeiro acesso</h2>
+      <p class="section-note">Nenhum administrador foi definido ainda. Crie a conta de administrador do campeonato. Esta será a conta que edita tudo.</p>
+      <div id="setup-msg"></div>
+      <label class="fld">Nome do campeonato</label>
+      <input id="setup-champ" type="text" placeholder="Ex: Copa Millennium 2026">
+      <label class="fld">Seu e-mail (admin)</label>
+      <input id="setup-email" type="email" autocomplete="username" placeholder="voce@email.com">
+      <label class="fld">Senha (mín. 6 caracteres)</label>
+      <input id="setup-pass" type="password" autocomplete="new-password" placeholder="••••••••">
+      <div style="height:12px"></div>
+      <button class="btn" id="btn-setup">Criar administrador</button>
+      <div style="height:10px"></div>
+      <button class="btn ghost" id="btn-setup-guest">Só quero acompanhar</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app" class="wrap hidden">
+  <header class="app-head">
+    <svg class="eye" style="color:var(--gold)"><use href="#wdjat"/></svg>
+    <div class="head-titles">
+      <div class="kicker">Pontos Corridos</div>
+      <h1 class="display" id="app-champ-name">Duelo Millennium</h1>
+      <div class="champ-name" id="app-user-line">visitante</div>
+    </div>
+    <div id="head-actions"></div>
+  </header>
+
+  <nav class="tabs">
+    <div class="tab active" data-tab="rank">Classificação</div>
+    <div class="tab" data-tab="rounds">Rodadas</div>
+    <div class="tab" data-tab="players">Jogadores</div>
+    <div class="tab admin-only" data-tab="access">Acessos</div>
+  </nav>
+
+  <!-- CLASSIFICAÇÃO -->
+  <section id="tab-rank" class="tabpane">
+    <div class="card">
+      <h2><span class="glyph">𓆃</span> Classificação</h2>
+      <p class="section-note">Cada vitória vale <b>1 ponto</b>. Empate ou partida sem resultado não pontuam.</p>
+      <div id="rank-body"></div>
+    </div>
+  </section>
+
+  <!-- RODADAS -->
+  <section id="tab-rounds" class="tabpane hidden">
+    <div class="card admin-only" id="round-controls">
+      <h2><span class="glyph">𓊹</span> Controle de rodadas</h2>
+      <p class="section-note">Ao começar uma rodada, o app sorteia automaticamente os confrontos do rodízio (todos contra todos).</p>
+      <div id="round-ctrl-msg"></div>
+      <button class="btn" id="btn-start-round">⚔️ Começar próxima rodada</button>
+      <div class="btn-row">
+        <button class="btn ghost" id="btn-undo-round">Desfazer última</button>
+        <button class="btn danger" id="btn-reset-rounds">Reiniciar rodadas</button>
+      </div>
+    </div>
+    <div id="rounds-body"></div>
+  </section>
+
+  <!-- JOGADORES -->
+  <section id="tab-players" class="tabpane hidden">
+    <div class="card admin-only">
+      <h2><span class="glyph">𓁶</span> Novo participante</h2>
+      <div id="player-msg"></div>
+      <label class="fld">Nome do duelista</label>
+      <input id="new-player" type="text" placeholder="Ex: Yami Yugi">
+      <div style="height:12px"></div>
+      <button class="btn" id="btn-add-player">Cadastrar jogador</button>
+    </div>
+    <div class="card">
+      <h2><span class="glyph">𓀀</span> Participantes</h2>
+      <div id="players-body"></div>
+    </div>
+  </section>
+
+  <!-- ACESSOS -->
+  <section id="tab-access" class="tabpane hidden">
+    <div class="card">
+      <h2><span class="glyph">𓂀</span> Criar acesso</h2>
+      <p class="section-note">Crie login para quem vai administrar/acompanhar. Novas contas entram como <b>Jogador</b> (só visualiza). Você pode promover a Admin depois.</p>
+      <div id="access-msg"></div>
+      <label class="fld">E-mail</label>
+      <input id="acc-email" type="email" placeholder="jogador@email.com">
+      <label class="fld">Senha provisória (mín. 6)</label>
+      <input id="acc-pass" type="password" placeholder="••••••••">
+      <div style="height:12px"></div>
+      <button class="btn" id="btn-add-access">Criar acesso</button>
+    </div>
+    <div class="card">
+      <h2><span class="glyph">𓉻</span> Contas</h2>
+      <p class="section-note">Toque em uma conta para alternar entre Admin e Jogador.</p>
+      <div id="access-body"></div>
+    </div>
+  </section>
+
+  <div class="foot">𓋹 Duelo Millennium · Campeonato de pontos corridos · Yu-Gi-Oh 𓋹</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- ================= FIREBASE + APP LOGIC ================= -->
+<script type="module">
+/* ============================================================
+   1) CONFIGURAÇÃO DO FIREBASE  ← COLE AQUI OS SEUS DADOS
+   ============================================================
+   No console do Firebase: Configurações do projeto (⚙️) >
+   "Seus apps" > app da Web > Configuração do SDK > "Config".
+   Copie o objeto e substitua o de baixo.                        */
+const firebaseConfig = {
+  apiKey: "AIzaSyC61RSlsJMvocn0n4b7LlIACSl-4c-zIZw",
+  authDomain: "duelo-millennium.firebaseapp.com",
+  projectId: "duelo-millennium",
+  storageBucket: "duelo-millennium.firebasestorage.app",
+  messagingSenderId: "933494024476",
+  appId: "1:933494024476:web:b9cb6eb5e8d6908c6bb2d9"
+};
+/* ============================================================ */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+         createUserWithEmailAndPassword, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
+         collection, onSnapshot, addDoc, serverTimestamp,
+         query, orderBy, arrayUnion, arrayRemove }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const el = sel => document.querySelector(sel);
+const els = sel => Array.from(document.querySelectorAll(sel));
+const esc = s => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2200); }
+function showMsg(boxId, text, kind){ const b=$(boxId); if(!b) return; b.innerHTML = text ? `<div class="msg ${kind||'info'}">${text}</div>` : ""; }
+function fbError(e){
+  const m = (e && e.code) ? e.code : (e&&e.message)||String(e);
+  const map = {
+    "auth/invalid-email":"E-mail inválido.",
+    "auth/missing-password":"Digite a senha.",
+    "auth/invalid-credential":"E-mail ou senha incorretos.",
+    "auth/wrong-password":"Senha incorreta.",
+    "auth/user-not-found":"Conta não encontrada.",
+    "auth/email-already-in-use":"Este e-mail já tem uma conta.",
+    "auth/weak-password":"Senha muito curta (mín. 6 caracteres).",
+    "auth/network-request-failed":"Sem conexão. Verifique a internet.",
+    "auth/too-many-requests":"Muitas tentativas. Aguarde um pouco.",
+    "auth/operation-not-allowed":"Ative Login por E-mail/Senha no Firebase (Authentication).",
+    "permission-denied":"Sem permissão. Só o administrador pode fazer isso."
+  };
+  return map[m] || m;
+}
+
+/* ---------- check config ---------- */
+if (String(firebaseConfig.apiKey).includes("COLE_AQUI")) {
+  $("boot").classList.add("hidden");
+  $("need-config").classList.remove("hidden");
+  throw new Error("Firebase não configurado");
+}
+
+/* ---------- init ---------- */
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+// secondary app: cria contas sem deslogar o admin
+let secApp=null;
+function secondaryAuth(){
+  if(!secApp) secApp = initializeApp(firebaseConfig, "secondary");
+  return getAuth(secApp);
+}
+
+/* ---------- refs ---------- */
+const configRef  = doc(db, "meta", "config");
+const playersCol = collection(db, "players");
+const roundsCol  = collection(db, "rounds");
+const usersCol   = collection(db, "users");
+
+/* ---------- state ---------- */
+let CURRENT   = null;   // firebase user
+let CONFIG    = null;   // meta/config data or null
+let CONFIG_LOADED = false;
+let PLAYERS   = [];     // [{id,name,createdAt}]
+let ROUNDS    = [];     // [{id,number,matches:[{a,b,winner}]}]
+let USERS     = [];     // [{id(uid),email,role?}]
+let ACTIVE_TAB = "rank";
+
+const isAdmin = () => !!(CURRENT && CONFIG && Array.isArray(CONFIG.adminUids) && CONFIG.adminUids.includes(CURRENT.uid));
+
+/* ============================================================
+   Realtime listeners
+   ============================================================ */
+onSnapshot(configRef, snap => {
+  CONFIG = snap.exists() ? snap.data() : null;
+  CONFIG_LOADED = true;
+  route(); renderAll();
+}, err => { console.error(err); CONFIG_LOADED=true; route(); });
+
+onSnapshot(query(playersCol, orderBy("createdAt","asc")), snap => {
+  PLAYERS = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+  renderAll();
+}, err=>console.error(err));
+
+onSnapshot(query(roundsCol, orderBy("number","asc")), snap => {
+  ROUNDS = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+  renderAll();
+}, err=>console.error(err));
+
+onSnapshot(usersCol, snap => {
+  USERS = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+  renderAccess();
+}, err=>console.error(err));
+
+/* ============================================================
+   Auth state
+   ============================================================ */
+onAuthStateChanged(auth, async user => {
+  CURRENT = user;
+  if (user) {
+    // registra/atualiza doc do usuário (para lista de acessos)
+    try { await setDoc(doc(db,"users",user.uid), { email:user.email, lastSeen:serverTimestamp() }, { merge:true }); }
+    catch(e){ /* pode falhar se offline; ok */ }
+  }
+  route(); renderAll();
+});
+
+/* ============================================================
+   Routing entre telas
+   ============================================================ */
+function route(){
+  if(!CONFIG_LOADED){ return; } // ainda carregando
+  $("boot").classList.add("hidden");
+  const authed = !!CURRENT;
+  const guest  = sessionStorage.getItem("guest")==="1";
+
+  if(authed || guest){
+    $("auth-screen").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    applyRoleUI();
+  } else {
+    $("app").classList.add("hidden");
+    $("auth-screen").classList.remove("hidden");
+    // primeiro acesso? mostra setup se não existe admin configurado
+    const noAdmin = !CONFIG || !Array.isArray(CONFIG.adminUids) || CONFIG.adminUids.length===0;
+    $("setup-box").classList.toggle("hidden", !noAdmin);
+    $("login-box").classList.toggle("hidden", noAdmin);
+  }
+}
+
+function applyRoleUI(){
+  const adm = isAdmin();
+  document.body.classList.toggle("is-admin", adm);
+  els(".admin-only").forEach(n => n.classList.toggle("hidden", !adm));
+  // header
+  $("app-champ-name").textContent = (CONFIG && CONFIG.name) ? CONFIG.name : "Duelo Millennium";
+  const line = $("app-user-line");
+  const acts = $("head-actions");
+  if(CURRENT){
+    line.innerHTML = `${esc(CURRENT.email)} · <span class="badge-role ${adm?'adm':''}">${adm?'Admin':'Jogador'}</span>`;
+    acts.innerHTML = `<button class="icon-btn" id="btn-logout">Sair</button>`;
+    $("btn-logout").onclick = () => signOut(auth);
+  } else {
+    line.innerHTML = `<span class="badge-role">Visitante</span>`;
+    acts.innerHTML = `<button class="icon-btn" id="btn-tologin">Entrar</button>`;
+    $("btn-tologin").onclick = () => { sessionStorage.removeItem("guest"); route(); };
+  }
+  // se aba admin ativa mas não é admin, volta pro rank
+  if(!adm && (ACTIVE_TAB==="access")) switchTab("rank");
+}
+
+/* ============================================================
+   Tabs
+   ============================================================ */
+els(".tab").forEach(t => t.onclick = () => switchTab(t.dataset.tab));
+function switchTab(name){
+  ACTIVE_TAB = name;
+  els(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab===name));
+  els(".tabpane").forEach(p => p.classList.add("hidden"));
+  $("tab-"+name).classList.remove("hidden");
+}
+
+/* ============================================================
+   LOGIN / SETUP handlers
+   ============================================================ */
+$("btn-guest").onclick = $("btn-setup-guest").onclick = () => { sessionStorage.setItem("guest","1"); route(); };
+
+$("btn-login").onclick = async () => {
+  const email = $("login-email").value.trim(), pass = $("login-pass").value;
+  showMsg("login-msg","");
+  if(!email||!pass){ showMsg("login-msg","Preencha e-mail e senha.","err"); return; }
+  const b=$("btn-login"); b.disabled=true; b.textContent="Entrando…";
+  try{
+    sessionStorage.removeItem("guest");
+    await signInWithEmailAndPassword(auth, email, pass);
+  }catch(e){ showMsg("login-msg", fbError(e), "err"); }
+  finally{ b.disabled=false; b.textContent="Entrar no duelo"; }
+};
+
+$("btn-setup").onclick = async () => {
+  const champ=$("setup-champ").value.trim()||"Duelo Millennium";
+  const email=$("setup-email").value.trim(), pass=$("setup-pass").value;
+  showMsg("setup-msg","");
+  if(!email||!pass){ showMsg("setup-msg","Preencha e-mail e senha.","err"); return; }
+  if(pass.length<6){ showMsg("setup-msg","A senha precisa de pelo menos 6 caracteres.","err"); return; }
+  const b=$("btn-setup"); b.disabled=true; b.textContent="Criando…";
+  try{
+    sessionStorage.removeItem("guest");
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    // cria config com este uid como admin
+    await setDoc(configRef, {
+      name: champ,
+      adminUids: [cred.user.uid],
+      createdAt: serverTimestamp()
+    });
+    toast("Administrador criado! 𓂀");
+  }catch(e){
+    // se o e-mail já existe, tenta logar e reivindicar admin (caso config ainda não exista)
+    if(e && e.code==="auth/email-already-in-use"){
+      try{
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        const cur = await getDoc(configRef);
+        if(!cur.exists()){
+          await setDoc(configRef,{name:champ,adminUids:[cred.user.uid],createdAt:serverTimestamp()});
+          toast("Administrador criado! 𓂀");
+        }
+      }catch(e2){ showMsg("setup-msg", fbError(e2), "err"); }
+    } else {
+      showMsg("setup-msg", fbError(e), "err");
+    }
+  }finally{ b.disabled=false; b.textContent="Criar administrador"; }
+};
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderAll(){ renderRank(); renderRounds(); renderPlayers(); renderAccess(); if(CURRENT!==undefined) applyRoleUIsafe(); }
+function applyRoleUIsafe(){ if(!$("app").classList.contains("hidden")) applyRoleUI(); }
+
+/* ---- Standings ---- */
+function computeStandings(){
+  const s = {};
+  PLAYERS.forEach(p => s[p.id] = { id:p.id, name:p.name, wins:0, played:0 });
+  ROUNDS.forEach(r => (r.matches||[]).forEach(m => {
+    if(m.winner && s[m.winner]) s[m.winner].wins++;
+    if(m.winner){
+      if(s[m.a]) s[m.a].played++;
+      if(s[m.b]) s[m.b].played++;
+    }
+  }));
+  return Object.values(s).sort((a,b)=> b.wins - a.wins || b.played - a.played || a.name.localeCompare(b.name));
+}
+function renderRank(){
+  const body = $("rank-body"); if(!body) return;
+  const rows = computeStandings();
+  if(rows.length===0){
+    body.innerHTML = `<div class="empty"><span class="big">𓉔</span>Nenhum jogador cadastrado ainda.<br>${isAdmin()?'Adicione participantes na aba <b>Jogadores</b>.':'Aguarde o administrador cadastrar os duelistas.'}</div>`;
+    return;
+  }
+  const medals=["🥇","🥈","🥉"];
+  body.innerHTML = `<table class="rank">
+    <thead><tr><th class="pos">#</th><th>Duelista</th><th class="num">V</th><th class="num">J</th><th class="pts">Pts</th></tr></thead>
+    <tbody>${rows.map((r,i)=>`
+      <tr class="${i===0&&r.wins>0?'top1':''}">
+        <td class="pos">${medals[i]?`<span class="medal">${medals[i]}</span>`:(i+1)}</td>
+        <td class="name">${esc(r.name)}</td>
+        <td class="num">${r.wins}</td>
+        <td class="num">${r.played}</td>
+        <td class="pts">${r.wins}</td>
+      </tr>`).join("")}
+    </tbody></table>`;
+}
+
+/* ---- Players ---- */
+function renderPlayers(){
+  const body=$("players-body"); if(!body) return;
+  const adm=isAdmin();
+  if(PLAYERS.length===0){
+    body.innerHTML = `<div class="empty"><span class="big">𓀀</span>Nenhum participante cadastrado.</div>`;
+    return;
+  }
+  body.innerHTML = PLAYERS.map(p=>`
+    <div class="list-row" data-id="${p.id}">
+      <div class="grow"><div class="l1">${esc(p.name)}</div></div>
+      ${adm?`<button class="mini" data-act="rename" data-id="${p.id}">Renomear</button>
+             <button class="mini danger" data-act="delplayer" data-id="${p.id}">Remover</button>`:``}
+    </div>`).join("");
+}
+
+/* ---- Rounds ---- */
+function playerName(id){ const p=PLAYERS.find(x=>x.id===id); return p?p.name:"(removido)"; }
+function renderRounds(){
+  const body=$("rounds-body"); if(!body) return;
+  const adm=isAdmin();
+  if(ROUNDS.length===0){
+    body.innerHTML = `<div class="empty"><span class="big">⚔️</span>Nenhuma rodada iniciada.<br>${adm?'Toque em <b>Começar próxima rodada</b> para gerar os confrontos.':'Aguarde o administrador começar a primeira rodada.'}</div>`;
+    return;
+  }
+  body.innerHTML = ROUNDS.map(r=>{
+    const matches=(r.matches||[]);
+    const done = matches.filter(m=>m.winner).length;
+    return `<div class="round-block">
+      <div class="round-head">
+        <span class="rtitle">⚔️ Rodada ${r.number}</span>
+        <span class="rmeta">${done}/${matches.length} decididas</span>
+      </div>
+      ${matches.map((m,idx)=>{
+        const aw = m.winner===m.a, bw = m.winner===m.b;
+        return `<div class="match">
+            <div class="side left ${aw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.a))}</div></div>
+            <div class="vs">VS</div>
+            <div class="side right ${bw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.b))}</div></div>
+          </div>
+          ${adm?`<div class="win-btns">
+              <button class="wbtn ${aw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.a}">Venceu ${esc(playerName(m.a))}</button>
+              <button class="wbtn ${bw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.b}">Venceu ${esc(playerName(m.b))}</button>
+              ${m.winner?`<button class="wbtn clear" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="">✕</button>`:``}
+            </div>`
+           :`<div class="result-tag">${m.winner?`Vencedor: <b>${esc(playerName(m.winner))}</b>`:'Aguardando resultado'}</div>`}
+        `;
+      }).join("")}
+    </div>`;
+  }).join("");
+}
+
+/* ---- Access ---- */
+function renderAccess(){
+  const body=$("access-body"); if(!body) return;
+  if(!isAdmin()){ body.innerHTML=`<div class="empty">Somente administradores.</div>`; return; }
+  if(USERS.length===0){ body.innerHTML=`<div class="empty">Nenhuma conta ainda.</div>`; return; }
+  const admins = (CONFIG&&CONFIG.adminUids)||[];
+  body.innerHTML = USERS.map(u=>{
+    const adm=admins.includes(u.id);
+    const me = CURRENT && CURRENT.uid===u.id;
+    return `<div class="list-row">
+      <div class="grow"><div class="l1">${esc(u.email||u.id)}</div>
+        <div class="l2">${adm?'Administrador':'Jogador'}${me?' · você':''}</div></div>
+      <button class="mini ${adm?'danger':''}" data-act="togadmin" data-id="${u.id}" ${me?'disabled style="opacity:.4"':''}>
+        ${adm?'Rebaixar':'Tornar Admin'}</button>
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   ADMIN ACTIONS
+   ============================================================ */
+// --- players ---
+$("btn-add-player").onclick = async () => {
+  const name=$("new-player").value.trim();
+  showMsg("player-msg","");
+  if(!name){ showMsg("player-msg","Digite um nome.","err"); return; }
+  if(!isAdmin()){ showMsg("player-msg","Só o admin pode cadastrar.","err"); return; }
+  try{
+    await addDoc(playersCol,{ name, createdAt: serverTimestamp() });
+    $("new-player").value=""; toast("Duelista cadastrado 𓀀");
+  }catch(e){ showMsg("player-msg", fbError(e), "err"); }
+};
+
+// delegação de cliques (players + rounds + access)
+document.addEventListener("click", async (ev)=>{
+  const b = ev.target.closest("[data-act]");
+  if(!b) return;
+  const act=b.dataset.act;
+
+  if(act==="delplayer"){
+    if(!confirm("Remover este jogador? As partidas já jogadas manterão o registro, mas ele sai da classificação.")) return;
+    try{ await deleteDoc(doc(db,"players",b.dataset.id)); toast("Jogador removido"); }
+    catch(e){ toast(fbError(e)); }
+  }
+
+  if(act==="rename"){
+    const cur = playerName(b.dataset.id);
+    const nn = prompt("Novo nome:", cur);
+    if(nn && nn.trim()){
+      try{ await updateDoc(doc(db,"players",b.dataset.id),{name:nn.trim()}); toast("Nome atualizado"); }
+      catch(e){ toast(fbError(e)); }
+    }
+  }
+
+  if(act==="win"){
+    const rId=b.dataset.r, idx=+b.dataset.i, w=b.dataset.w||null;
+    const round=ROUNDS.find(r=>r.id===rId); if(!round) return;
+    const matches=(round.matches||[]).map(m=>({...m}));
+    if(!matches[idx]) return;
+    matches[idx].winner = (matches[idx].winner===w)?null:w; // toggle
+    try{ await updateDoc(doc(db,"rounds",rId),{matches}); }
+    catch(e){ toast(fbError(e)); }
+  }
+
+  if(act==="togadmin"){
+    const uid=b.dataset.id;
+    const admins=(CONFIG&&CONFIG.adminUids)||[];
+    try{
+      if(admins.includes(uid)) await updateDoc(configRef,{adminUids:arrayRemove(uid)});
+      else await updateDoc(configRef,{adminUids:arrayUnion(uid)});
+      toast("Permissão atualizada");
+    }catch(e){ toast(fbError(e)); }
+  }
+});
+
+// --- rounds control ---
+function roundRobinSchedule(ids){
+  let arr = ids.slice();
+  if(arr.length < 2) return [];
+  if(arr.length % 2 === 1) arr.push(null); // BYE
+  const n=arr.length, half=n/2, rounds=[];
+  let list=arr.slice();
+  for(let r=0;r<n-1;r++){
+    const pairs=[];
+    for(let i=0;i<half;i++){
+      const a=list[i], b=list[n-1-i];
+      if(a!==null && b!==null) pairs.push([a,b]);
+    }
+    rounds.push(pairs);
+    const fixed=list[0], rest=list.slice(1);
+    rest.unshift(rest.pop());
+    list=[fixed,...rest];
+  }
+  return rounds;
+}
+
+$("btn-start-round").onclick = async () => {
+  showMsg("round-ctrl-msg","");
+  if(!isAdmin()){ showMsg("round-ctrl-msg","Só o admin pode iniciar rodadas.","err"); return; }
+  if(PLAYERS.length<2){ showMsg("round-ctrl-msg","Cadastre pelo menos 2 jogadores.","err"); return; }
+
+  // snapshot dos jogadores do rodízio (fixado na 1ª rodada)
+  let scheduleIds = (CONFIG && CONFIG.scheduleIds) || null;
+  if(!scheduleIds || ROUNDS.length===0){
+    scheduleIds = PLAYERS.map(p=>p.id);
+    try{ await updateDoc(configRef,{ scheduleIds }); }catch(e){ /* admin only */ }
+  }
+  const schedule = roundRobinSchedule(scheduleIds);
+  const next = ROUNDS.length; // 0-indexed
+  if(next >= schedule.length){
+    showMsg("round-ctrl-msg","🏆 Todos já se enfrentaram (rodízio completo). Para um novo turno, use <b>Reiniciar rodadas</b>.","info");
+    return;
+  }
+  const pairs = schedule[next];
+  const matches = pairs.map(([a,b])=>({ a, b, winner:null }));
+  const b=$("btn-start-round"); b.disabled=true;
+  try{
+    await addDoc(roundsCol,{ number: next+1, matches, createdAt: serverTimestamp() });
+    toast(`Rodada ${next+1} criada! ⚔️`);
+    switchTab("rounds");
+  }catch(e){ showMsg("round-ctrl-msg", fbError(e), "err"); }
+  finally{ b.disabled=false; }
+};
+
+$("btn-undo-round").onclick = async () => {
+  if(!isAdmin()) return;
+  if(ROUNDS.length===0){ toast("Não há rodadas."); return; }
+  const last = ROUNDS[ROUNDS.length-1];
+  if(!confirm(`Desfazer a Rodada ${last.number}? Os resultados dela serão apagados.`)) return;
+  try{
+    await deleteDoc(doc(db,"rounds",last.id));
+    if(ROUNDS.length-1===0){ try{ await updateDoc(configRef,{scheduleIds:[]}); }catch(e){} }
+    toast("Última rodada desfeita");
+  }catch(e){ toast(fbError(e)); }
+};
+
+$("btn-reset-rounds").onclick = async () => {
+  if(!isAdmin()) return;
+  if(ROUNDS.length===0){ toast("Não há rodadas para reiniciar."); return; }
+  if(!confirm("Reiniciar TODAS as rodadas? Todos os confrontos e resultados serão apagados (os jogadores continuam). Isso permite recomeçar o rodízio com os participantes atuais.")) return;
+  try{
+    for(const r of ROUNDS){ await deleteDoc(doc(db,"rounds",r.id)); }
+    await updateDoc(configRef,{scheduleIds:[]});
+    toast("Rodadas reiniciadas");
+  }catch(e){ toast(fbError(e)); }
+};
+
+// --- access: criar conta (sem deslogar admin) ---
+$("btn-add-access").onclick = async () => {
+  showMsg("access-msg","");
+  if(!isAdmin()){ showMsg("access-msg","Só o admin pode criar acessos.","err"); return; }
+  const email=$("acc-email").value.trim(), pass=$("acc-pass").value;
+  if(!email||!pass){ showMsg("access-msg","Preencha e-mail e senha.","err"); return; }
+  if(pass.length<6){ showMsg("access-msg","Senha mínima de 6 caracteres.","err"); return; }
+  const b=$("btn-add-access"); b.disabled=true; b.textContent="Criando…";
+  try{
+    const sAuth = secondaryAuth();
+    const cred = await createUserWithEmailAndPassword(sAuth, email, pass);
+    // cria doc de usuário (como admin, permitido pelas regras)
+    await setDoc(doc(db,"users",cred.user.uid),{ email, createdAt: serverTimestamp() }, { merge:true });
+    await signOut(sAuth);
+    $("acc-email").value=""; $("acc-pass").value="";
+    showMsg("access-msg","Acesso criado! Repasse o e-mail e a senha ao jogador.","ok");
+    toast("Acesso criado 𓂀");
+  }catch(e){ showMsg("access-msg", fbError(e), "err"); }
+  finally{ b.disabled=false; b.textContent="Criar acesso"; }
+};
+
+/* ============================================================
+   Enter para enviar em inputs
+   ============================================================ */
+$("login-pass").addEventListener("keydown", e=>{ if(e.key==="Enter") $("btn-login").click(); });
+$("setup-pass").addEventListener("keydown", e=>{ if(e.key==="Enter") $("btn-setup").click(); });
+$("new-player").addEventListener("keydown", e=>{ if(e.key==="Enter") $("btn-add-player").click(); });
+$("acc-pass").addEventListener("keydown", e=>{ if(e.key==="Enter") $("btn-add-access").click(); });
+</script>
+</body>
+</html>
