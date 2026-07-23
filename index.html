@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0d0a06">
+<meta name="theme-color" content="#0c0a06">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,102 +17,68 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0c0a06;
-    --bg2:#161009;
-    --panel:#1d1710;
-    --panel2:#241c12;
-    --gold:#e8c15a;
-    --gold-deep:#c69b34;
-    --gold-soft:#f4dc93;
-    --bronze:#8a6a2f;
-    --line:#3a2d18;
-    --line2:#4d3b1e;
-    --text:#f3e8cf;
-    --muted:#a99873;
-    --green:#4caf6d;
-    --red:#c1543f;
-    --shadow:0 10px 30px rgba(0,0,0,.55);
+    --bg:#0c0a06;--bg2:#161009;--panel:#1d1710;--panel2:#241c12;
+    --gold:#e8c15a;--gold-deep:#c69b34;--gold-soft:#f4dc93;--bronze:#8a6a2f;
+    --line:#3a2d18;--line2:#4d3b1e;--text:#f3e8cf;--muted:#a99873;
+    --green:#4caf6d;--red:#c1543f;--shadow:0 10px 30px rgba(0,0,0,.55);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
-    font-family:'Rajdhani',system-ui,sans-serif;
-    color:var(--text);
+    font-family:'Rajdhani',system-ui,sans-serif;color:var(--text);
     background:
       radial-gradient(1200px 600px at 50% -10%, #2a1f10 0%, rgba(42,31,16,0) 60%),
       radial-gradient(900px 500px at 100% 110%, #201810 0%, rgba(0,0,0,0) 55%),
       linear-gradient(180deg,#0c0a06 0%, #100c07 100%);
-    background-attachment:fixed;
-    min-height:100dvh;
-    padding-bottom:env(safe-area-inset-bottom);
-    -webkit-font-smoothing:antialiased;
+    background-attachment:fixed;min-height:100dvh;
+    padding-bottom:env(safe-area-inset-bottom);-webkit-font-smoothing:antialiased;
   }
-  /* subtle hieroglyph texture */
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z-index:0;
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z-index:0;
     background-image:
       repeating-linear-gradient(90deg, transparent 0 46px, rgba(232,193,90,.6) 46px 47px),
       repeating-linear-gradient(0deg, transparent 0 46px, rgba(232,193,90,.4) 46px 47px);
-    mask-image:radial-gradient(circle at 50% 20%, black, transparent 75%);
-  }
+    -webkit-mask-image:radial-gradient(circle at 50% 20%, black, transparent 75%);
+            mask-image:radial-gradient(circle at 50% 20%, black, transparent 75%);}
   h1,h2,h3{font-family:'Cinzel',serif;letter-spacing:.5px;margin:0}
   .display{font-family:'Cinzel Decorative',serif}
   a{color:var(--gold)}
   button{font-family:inherit}
-
   .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 14px 90px}
 
-  /* ---------- Header ---------- */
-  header.app-head{
-    position:sticky;top:0;z-index:20;
-    margin:0 -14px 14px;padding:calc(10px + env(safe-area-inset-top)) 16px 12px;
+  header.app-head{position:sticky;top:0;z-index:20;margin:0 -14px 14px;
+    padding:calc(10px + env(safe-area-inset-top)) 16px 12px;
     background:linear-gradient(180deg, rgba(12,10,6,.96), rgba(12,10,6,.82));
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);
-    display:flex;align-items:center;gap:12px;
-  }
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:12px;}
   .eye{width:40px;height:40px;flex:0 0 auto;filter:drop-shadow(0 0 6px rgba(232,193,90,.35))}
   .head-titles{flex:1;min-width:0}
   .head-titles .kicker{font-size:11px;letter-spacing:3px;color:var(--gold-deep);text-transform:uppercase}
-  .head-titles h1{font-size:19px;color:var(--gold-soft);line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .head-titles h1{font-size:18px;color:var(--gold-soft);line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .head-titles .champ-name{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
+  .head-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
   .badge-role{font-size:10px;padding:3px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--gold);letter-spacing:1px;text-transform:uppercase;background:rgba(232,193,90,.06)}
   .badge-role.adm{color:#2a1c06;background:linear-gradient(180deg,var(--gold-soft),var(--gold-deep));border-color:var(--gold-deep);font-weight:700}
-
-  .icon-btn{
-    background:rgba(232,193,90,.06);border:1px solid var(--line2);color:var(--gold);
-    border-radius:10px;padding:8px 10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap
-  }
+  .icon-btn{background:rgba(232,193,90,.06);border:1px solid var(--line2);color:var(--gold);
+    border-radius:10px;padding:8px 10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
   .icon-btn:active{transform:scale(.96)}
 
-  /* ---------- Tabs ---------- */
   nav.tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
   nav.tabs::-webkit-scrollbar{display:none}
-  .tab{
-    flex:1 0 auto;text-align:center;padding:10px 14px;border-radius:12px;cursor:pointer;
+  .tab{flex:0 0 auto;text-align:center;padding:10px 16px;border-radius:12px;cursor:pointer;
     border:1px solid var(--line);color:var(--muted);background:var(--panel);
-    font-weight:600;font-size:14px;letter-spacing:.5px;white-space:nowrap
-  }
-  .tab.active{
-    color:#241804;border-color:var(--gold-deep);
-    background:linear-gradient(180deg,var(--gold-soft),var(--gold));
-    box-shadow:0 4px 14px rgba(232,193,90,.25)
-  }
+    font-weight:600;font-size:14px;letter-spacing:.5px;white-space:nowrap}
+  .tab.active{color:#241804;border-color:var(--gold-deep);
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold));box-shadow:0 4px 14px rgba(232,193,90,.25)}
 
-  /* ---------- Panels / cards ---------- */
-  .card{
-    background:linear-gradient(180deg,var(--panel2),var(--panel));
+  .card{background:linear-gradient(180deg,var(--panel2),var(--panel));
     border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
-    padding:16px;margin-bottom:14px;position:relative;overflow:hidden
-  }
+    padding:16px;margin-bottom:14px;position:relative;overflow:hidden}
   .card::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;
     background:linear-gradient(90deg,transparent,var(--gold-deep),transparent);opacity:.6}
   .card h2{font-size:16px;color:var(--gold-soft);display:flex;align-items:center;gap:8px;margin-bottom:12px}
   .card h2 .glyph{color:var(--gold-deep)}
   .section-note{color:var(--muted);font-size:13px;margin:-4px 0 12px}
 
-  /* ---------- Standings ---------- */
   table.rank{width:100%;border-collapse:collapse}
   table.rank th,table.rank td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line)}
   table.rank th{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-deep);text-transform:uppercase;letter-spacing:1px;font-weight:600}
@@ -124,7 +90,6 @@
   .medal{display:inline-block;width:22px;text-align:center}
   tr.top1{background:linear-gradient(90deg,rgba(232,193,90,.10),transparent)}
 
-  /* ---------- Rounds / matches ---------- */
   .round-block{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;background:rgba(0,0,0,.15)}
   .round-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
     background:linear-gradient(90deg,rgba(232,193,90,.12),rgba(232,193,90,0));border-bottom:1px solid var(--line)}
@@ -141,7 +106,6 @@
   .side.loser{opacity:.5}
   .vs{flex:0 0 auto;font-family:'Cinzel Decorative',serif;color:var(--gold-deep);font-size:13px;padding:0 4px}
   .win-btns{display:flex;gap:8px;padding:0 14px 12px;flex-wrap:wrap}
-  .win-btns.hidden{display:none}
   .wbtn{flex:1;min-width:110px;padding:9px;border-radius:10px;border:1px solid var(--line2);
     background:rgba(232,193,90,.06);color:var(--gold);font-weight:600;font-size:13px;cursor:pointer}
   .wbtn.active{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:#241804;border-color:var(--gold-deep)}
@@ -149,19 +113,15 @@
   .result-tag{font-size:11px;color:var(--muted);padding:0 14px 12px;margin-top:-4px}
   .result-tag b{color:var(--gold-soft)}
 
-  /* ---------- Forms / inputs ---------- */
   label.fld{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px;letter-spacing:.5px;text-transform:uppercase}
-  input[type=text],input[type=email],input[type=password]{
+  input[type=text],input[type=email],input[type=password],input.search{
     width:100%;padding:12px 13px;border-radius:11px;border:1px solid var(--line2);
-    background:#0e0b06;color:var(--text);font-size:16px;font-family:inherit;outline:none
-  }
+    background:#0e0b06;color:var(--text);font-size:16px;font-family:inherit;outline:none}
   input:focus{border-color:var(--gold-deep);box-shadow:0 0 0 3px rgba(232,193,90,.12)}
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
     padding:13px;border-radius:12px;border:1px solid var(--gold-deep);cursor:pointer;
     background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:#241804;
-    font-weight:700;font-size:15px;letter-spacing:.5px;font-family:'Cinzel',serif
-  }
+    font-weight:700;font-size:15px;letter-spacing:.5px;font-family:'Cinzel',serif}
   .btn:active{transform:scale(.98)}
   .btn.ghost{background:transparent;color:var(--gold);border-color:var(--line2);font-family:'Rajdhani',sans-serif}
   .btn.danger{background:transparent;color:var(--red);border-color:#5a2a20;font-family:'Rajdhani',sans-serif}
@@ -181,27 +141,65 @@
 
   .empty{text-align:center;color:var(--muted);padding:26px 10px;font-size:14px;line-height:1.5}
   .empty .big{font-size:34px;display:block;margin-bottom:8px;opacity:.5}
-
   .msg{padding:11px 13px;border-radius:11px;font-size:13px;margin:10px 0;line-height:1.4}
   .msg.err{background:rgba(193,84,63,.12);border:1px solid #5a2a20;color:#f0b8ac}
   .msg.ok{background:rgba(76,175,109,.12);border:1px solid #2c5a38;color:#bfe6cc}
   .msg.info{background:rgba(232,193,90,.08);border:1px solid var(--line2);color:var(--gold-soft)}
 
-  /* ---------- Login overlay ---------- */
   .center-screen{min-height:70dvh;display:flex;flex-direction:column;justify-content:center}
-  .login-card{max-width:420px;margin:0 auto;width:100%}
+  .login-card{max-width:440px;margin:0 auto;width:100%}
   .brand{text-align:center;margin-bottom:22px}
   .brand .eye{width:74px;height:74px;margin:0 auto 10px;display:block}
   .brand .kicker{font-size:11px;letter-spacing:5px;color:var(--gold-deep);text-transform:uppercase}
   .brand h1{font-size:26px;color:var(--gold-soft);margin-top:4px}
   .brand .display{font-size:13px;color:var(--muted);letter-spacing:2px;margin-top:6px}
 
+  .champ-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .champ-card:active{transform:scale(.99)}
+  .champ-card .cc-eye{width:34px;height:34px;color:var(--gold);flex:0 0 auto;opacity:.85}
+  .champ-card .cc-body{flex:1;min-width:0}
+  .champ-card .cc-name{font-family:'Cinzel',serif;font-weight:700;color:var(--gold-soft);font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .champ-card .cc-meta{font-size:12px;color:var(--muted);margin-top:2px}
+  .champ-card .cc-arrow{color:var(--gold-deep);font-size:20px;flex:0 0 auto}
+  .status-pill{display:inline-block;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+  .status-pill.ativo{color:var(--green);border-color:#2c5a38;background:rgba(76,175,109,.08)}
+  .status-pill.encerrado{color:var(--gold);border-color:var(--gold-deep);background:rgba(232,193,90,.08)}
+
+  .champion{position:relative;text-align:center;padding:20px 16px;margin-bottom:14px;border-radius:16px;
+    border:1px solid var(--gold-deep);background:radial-gradient(circle at 50% 0%, rgba(232,193,90,.18), rgba(232,193,90,.03) 70%), var(--panel);
+    box-shadow:0 0 26px rgba(232,193,90,.15)}
+  .champion .crown{font-size:34px}
+  .champion .lbl{font-family:'Cinzel',serif;letter-spacing:3px;color:var(--gold-deep);font-size:12px;text-transform:uppercase;margin-top:4px}
+  .champion .who{font-family:'Cinzel Decorative',serif;color:var(--gold-soft);font-size:24px;margin-top:4px}
+
+  .bl-search{margin-bottom:12px}
+  .bl-count{font-size:12px;color:var(--muted);text-align:center;margin:-4px 0 12px}
+  .bl-group{margin-bottom:18px}
+  .bl-gtitle{font-family:'Cinzel',serif;font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .bl-gtitle .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .dot.forbidden{background:#c1543f}.dot.limited{background:#e8c15a}.dot.semi{background:#5a9bd4}
+  .bl-gtitle .gc{color:var(--muted);font-size:12px;font-weight:400;font-family:'Rajdhani',sans-serif}
+  .bl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(min-width:520px){.bl-grid{grid-template-columns:repeat(4,1fr)}}
+  .bl-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;position:relative}
+  .bl-card:active{transform:scale(.97)}
+  .bl-thumb{width:100%;aspect-ratio:.686;object-fit:cover;display:block;background:#0e0b06}
+  .bl-name{font-size:11px;line-height:1.2;padding:6px;color:var(--text);height:44px;overflow:hidden}
+  .bl-tag{position:absolute;top:5px;left:5px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px}
+  .bl-tag.forbidden{background:#c1543f;color:#fff}.bl-tag.limited{background:#e8c15a;color:#1a1206}.bl-tag.semi{background:#5a9bd4;color:#fff}
+  .bl-modal{position:fixed;inset:0;z-index:80;background:rgba(6,4,2,.9);display:none;align-items:center;justify-content:center;padding:24px;flex-direction:column;gap:14px}
+  .bl-modal.show{display:flex}
+  .bl-modal img{max-width:92vw;max-height:74vh;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.7)}
+  .bl-modal .cap{color:var(--gold-soft);font-family:'Cinzel',serif;text-align:center;max-width:90vw}
+  .bl-modal .close{color:var(--muted);font-size:13px}
+
   .hidden{display:none !important}
   .foot{text-align:center;color:var(--muted);font-size:11px;padding:18px 0;opacity:.7;letter-spacing:.5px}
-  .spin{width:34px;height:34px;border:3px solid var(--line2);border-top-color:var(--gold);border-radius:50%;
-    margin:40px auto;animation:sp 1s linear infinite}
+  .spin{width:34px;height:34px;border:3px solid var(--line2);border-top-color:var(--gold);border-radius:50%;margin:40px auto;animation:sp 1s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:60;
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:90;
     background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--gold-deep);
     color:var(--gold-soft);padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);
     font-weight:600;font-size:14px;opacity:0;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
@@ -210,34 +208,26 @@
 </head>
 <body>
 
-<!-- ============ EYE OF HORUS SVG (reused) ============ -->
 <svg width="0" height="0" style="position:absolute">
   <symbol id="wdjat" viewBox="0 0 100 70">
     <g fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 32 C 26 14, 60 14, 84 30"/>
-      <path d="M84 30 C 66 46, 30 48, 10 34"/>
-      <circle cx="50" cy="31" r="10" fill="currentColor" stroke="none"/>
-      <path d="M40 44 L 40 60"/>
-      <path d="M40 60 C 40 66, 50 66, 54 60"/>
-      <path d="M66 40 C 74 44, 82 52, 80 64"/>
+      <path d="M8 32 C 26 14, 60 14, 84 30"/><path d="M84 30 C 66 46, 30 48, 10 34"/>
+      <circle cx="50" cy="31" r="10" fill="currentColor" stroke="none"/><path d="M40 44 L 40 60"/>
+      <path d="M40 60 C 40 66, 50 66, 54 60"/><path d="M66 40 C 74 44, 82 52, 80 64"/>
     </g>
   </symbol>
 </svg>
 
-<!-- ============ LOADING ============ -->
 <div id="boot" class="wrap"><div class="spin"></div>
-  <p style="text-align:center;color:var(--muted);font-size:13px">Invocando o campeonato…</p>
-</div>
+  <p style="text-align:center;color:var(--muted);font-size:13px">Invocando o campeonato…</p></div>
 
-<!-- ============ CONFIG MISSING ============ -->
 <div id="need-config" class="wrap hidden">
   <div class="center-screen"><div class="card login-card">
     <div class="msg err"><b>Firebase não configurado.</b><br>
-      Abra este arquivo e cole os dados do seu projeto Firebase no bloco <code>firebaseConfig</code> no topo do &lt;script&gt;. O passo a passo está no guia que acompanha o app.</div>
-  </div></div>
-</div>
+      Cole os dados do seu projeto Firebase no bloco <code>firebaseConfig</code> no topo do &lt;script&gt;. O passo a passo está no guia.</div>
+  </div></div></div>
 
-<!-- ============ LOGIN / SETUP SCREEN ============ -->
+<!-- LOGIN / SETUP -->
 <div id="auth-screen" class="wrap hidden">
   <div class="center-screen"><div class="login-card">
     <div class="brand">
@@ -246,11 +236,9 @@
       <h1 class="display">Duelo Millennium</h1>
       <div class="display">· Yu-Gi-Oh Championship ·</div>
     </div>
-
-    <!-- normal login -->
     <div id="login-box" class="card">
       <h2><span class="glyph">𓂀</span> Entrar</h2>
-      <p class="section-note">Faça login para administrar. Para só acompanhar, toque em "Ver classificação".</p>
+      <p class="section-note">Faça login para administrar. Para só acompanhar, toque em "Ver sem entrar".</p>
       <div id="login-msg"></div>
       <label class="fld">E-mail</label>
       <input id="login-email" type="email" autocomplete="username" placeholder="voce@email.com">
@@ -259,16 +247,12 @@
       <div style="height:12px"></div>
       <button class="btn" id="btn-login">Entrar no duelo</button>
       <div style="height:10px"></div>
-      <button class="btn ghost" id="btn-guest">Ver classificação sem entrar</button>
+      <button class="btn ghost" id="btn-guest">Ver sem entrar</button>
     </div>
-
-    <!-- first-admin setup -->
     <div id="setup-box" class="card hidden">
       <h2><span class="glyph">𓋹</span> Primeiro acesso</h2>
-      <p class="section-note">Nenhum administrador foi definido ainda. Crie a conta de administrador do campeonato. Esta será a conta que edita tudo.</p>
+      <p class="section-note">Nenhum administrador definido ainda. Crie a conta de administrador do sistema.</p>
       <div id="setup-msg"></div>
-      <label class="fld">Nome do campeonato</label>
-      <input id="setup-champ" type="text" placeholder="Ex: Copa Millennium 2026">
       <label class="fld">Seu e-mail (admin)</label>
       <input id="setup-email" type="email" autocomplete="username" placeholder="voce@email.com">
       <label class="fld">Senha (mín. 6 caracteres)</label>
@@ -278,55 +262,81 @@
       <div style="height:10px"></div>
       <button class="btn ghost" id="btn-setup-guest">Só quero acompanhar</button>
     </div>
-  </div></div>
+  </div></div></div>
+
+<!-- CHAMPIONSHIP SELECTOR -->
+<div id="select-screen" class="wrap hidden">
+  <header class="app-head">
+    <svg class="eye" style="color:var(--gold)"><use href="#wdjat"/></svg>
+    <div class="head-titles">
+      <div class="kicker">Escolha o campeonato</div>
+      <h1 class="display">Duelo Millennium</h1>
+      <div class="champ-name" id="sel-user-line">visitante</div>
+    </div>
+    <div class="head-actions" id="sel-actions"></div>
+  </header>
+  <div class="card admin-only" id="new-champ-card">
+    <h2><span class="glyph">𓊃</span> Novo campeonato</h2>
+    <div id="champ-msg"></div>
+    <label class="fld">Nome do campeonato</label>
+    <input id="new-champ" type="text" placeholder="Ex: Copa Millennium 2026">
+    <div style="height:12px"></div>
+    <button class="btn" id="btn-add-champ">Criar campeonato</button>
+  </div>
+  <div class="card">
+    <h2><span class="glyph">𓉔</span> Campeonatos</h2>
+    <div id="champ-list"></div>
+  </div>
+  <div class="foot">𓋹 Escolha um campeonato para entrar 𓋹</div>
 </div>
 
-<!-- ============ MAIN APP ============ -->
+<!-- MAIN APP -->
 <div id="app" class="wrap hidden">
   <header class="app-head">
     <svg class="eye" style="color:var(--gold)"><use href="#wdjat"/></svg>
     <div class="head-titles">
-      <div class="kicker">Pontos Corridos</div>
-      <h1 class="display" id="app-champ-name">Duelo Millennium</h1>
+      <div class="kicker" id="app-status-kicker">Pontos Corridos</div>
+      <h1 class="display" id="app-champ-name">Campeonato</h1>
       <div class="champ-name" id="app-user-line">visitante</div>
     </div>
-    <div id="head-actions"></div>
+    <div class="head-actions" id="head-actions"></div>
   </header>
 
   <nav class="tabs">
     <div class="tab active" data-tab="rank">Classificação</div>
     <div class="tab" data-tab="rounds">Rodadas</div>
     <div class="tab" data-tab="players">Jogadores</div>
+    <div class="tab" data-tab="banlist">Banlist</div>
     <div class="tab admin-only" data-tab="access">Acessos</div>
   </nav>
 
-  <!-- CLASSIFICAÇÃO -->
   <section id="tab-rank" class="tabpane">
+    <div id="champion-slot"></div>
     <div class="card">
       <h2><span class="glyph">𓆃</span> Classificação</h2>
-      <p class="section-note">Cada vitória vale <b>1 ponto</b>. Empate ou partida sem resultado não pontuam.</p>
+      <p class="section-note">Cada vitória vale <b>1 ponto</b>. Os pontos se mantêm a cada nova rodada.</p>
       <div id="rank-body"></div>
     </div>
   </section>
 
-  <!-- RODADAS -->
   <section id="tab-rounds" class="tabpane hidden">
     <div class="card admin-only" id="round-controls">
       <h2><span class="glyph">𓊹</span> Controle de rodadas</h2>
-      <p class="section-note">Ao começar uma rodada, o app sorteia automaticamente os confrontos do rodízio (todos contra todos).</p>
+      <p class="section-note">Cada "começar rodada" gera os confrontos do rodízio. Os pontos nunca são apagados ao criar rodadas.</p>
       <div id="round-ctrl-msg"></div>
       <button class="btn" id="btn-start-round">⚔️ Começar próxima rodada</button>
       <div class="btn-row">
         <button class="btn ghost" id="btn-undo-round">Desfazer última</button>
-        <button class="btn danger" id="btn-reset-rounds">Reiniciar rodadas</button>
+        <button class="btn ghost" id="btn-reset-rounds">Reiniciar rodadas</button>
       </div>
+      <div style="height:10px"></div>
+      <button class="btn danger" id="btn-finish-champ">🏆 Encerrar campeonato</button>
     </div>
     <div id="rounds-body"></div>
   </section>
 
-  <!-- JOGADORES -->
   <section id="tab-players" class="tabpane hidden">
-    <div class="card admin-only">
+    <div class="card admin-only" id="add-player-card">
       <h2><span class="glyph">𓁶</span> Novo participante</h2>
       <div id="player-msg"></div>
       <label class="fld">Nome do duelista</label>
@@ -340,11 +350,36 @@
     </div>
   </section>
 
-  <!-- ACESSOS -->
+  <section id="tab-banlist" class="tabpane hidden">
+    <div class="card">
+      <h2><span class="glyph">𓁹</span> <span id="bl-title">Banlist</span></h2>
+      <p class="section-note" id="bl-sub">Toque numa carta para ampliar.</p>
+
+      <div class="admin-only" id="bl-admin-bar">
+        <label class="fld">Lista usada neste campeonato</label>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select id="bl-choose" class="search" style="flex:1;min-width:150px"></select>
+          <button class="mini" id="bl-new">＋ Nova lista</button>
+        </div>
+        <div id="bl-custom-actions" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
+        <div id="bl-manage" class="hidden">
+          <label class="fld">Adicionar carta (busca em todas as cartas)</label>
+          <input class="search" id="bl-add-search" type="text" placeholder="🔎 Nome da carta para adicionar…">
+          <div id="bl-add-results" class="bl-grid" style="margin-top:10px"></div>
+        </div>
+        <div style="height:12px;border-bottom:1px solid var(--line);margin-bottom:10px"></div>
+      </div>
+
+      <input class="search bl-search" id="bl-search" type="text" placeholder="🔎 Filtrar por nome…">
+      <div id="bl-count" class="bl-count"></div>
+      <div id="banlist-body"></div>
+    </div>
+  </section>
+
   <section id="tab-access" class="tabpane hidden">
     <div class="card">
       <h2><span class="glyph">𓂀</span> Criar acesso</h2>
-      <p class="section-note">Crie login para quem vai administrar/acompanhar. Novas contas entram como <b>Jogador</b> (só visualiza). Você pode promover a Admin depois.</p>
+      <p class="section-note">Login para quem vai administrar/acompanhar. Novas contas entram como <b>Jogador</b> (só visualiza). Promova a Admin abaixo.</p>
       <div id="access-msg"></div>
       <label class="fld">E-mail</label>
       <input id="acc-email" type="email" placeholder="jogador@email.com">
@@ -355,7 +390,7 @@
     </div>
     <div class="card">
       <h2><span class="glyph">𓉻</span> Contas</h2>
-      <p class="section-note">Toque em uma conta para alternar entre Admin e Jogador.</p>
+      <p class="section-note">Toque numa conta para alternar entre Admin e Jogador. Admin vale para todos os campeonatos.</p>
       <div id="access-body"></div>
     </div>
   </section>
@@ -363,16 +398,27 @@
   <div class="foot">𓋹 Duelo Millennium · Campeonato de pontos corridos · Yu-Gi-Oh 𓋹</div>
 </div>
 
+<div id="bl-modal" class="bl-modal">
+  <img id="bl-modal-img" src="" alt="">
+  <div class="cap" id="bl-modal-cap"></div>
+  <div class="close">Toque para fechar</div>
+</div>
+<div id="bl-add-modal" class="bl-modal">
+  <img id="bl-add-img" src="" alt="">
+  <div class="cap" id="bl-add-cap"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:92vw">
+    <button class="wbtn" data-st="Forbidden" style="max-width:140px">🚫 Proibir</button>
+    <button class="wbtn" data-st="Limited" style="max-width:140px">① Limitar</button>
+    <button class="wbtn" data-st="Semi-Limited" style="max-width:140px">② Semi</button>
+  </div>
+  <div class="close" id="bl-add-cancel">Cancelar</div>
+</div>
 <div id="toast" class="toast"></div>
 
-<!-- ================= FIREBASE + APP LOGIC ================= -->
 <script type="module">
 /* ============================================================
-   1) CONFIGURAÇÃO DO FIREBASE  ← COLE AQUI OS SEUS DADOS
-   ============================================================
-   No console do Firebase: Configurações do projeto (⚙️) >
-   "Seus apps" > app da Web > Configuração do SDK > "Config".
-   Copie o objeto e substitua o de baixo.                        */
+   CONFIGURAÇÃO DO FIREBASE  ← COLE AQUI OS SEUS DADOS
+   ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyC61RSlsJMvocn0n4b7LlIACSl-4c-zIZw",
   authDomain: "duelo-millennium.firebaseapp.com",
@@ -392,476 +438,616 @@ import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
          query, orderBy, arrayUnion, arrayRemove }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ---------- helpers ---------- */
 const $ = id => document.getElementById(id);
-const el = sel => document.querySelector(sel);
 const els = sel => Array.from(document.querySelectorAll(sel));
 const esc = s => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2200); }
 function showMsg(boxId, text, kind){ const b=$(boxId); if(!b) return; b.innerHTML = text ? `<div class="msg ${kind||'info'}">${text}</div>` : ""; }
 function fbError(e){
   const m = (e && e.code) ? e.code : (e&&e.message)||String(e);
-  const map = {
-    "auth/invalid-email":"E-mail inválido.",
-    "auth/missing-password":"Digite a senha.",
-    "auth/invalid-credential":"E-mail ou senha incorretos.",
-    "auth/wrong-password":"Senha incorreta.",
-    "auth/user-not-found":"Conta não encontrada.",
-    "auth/email-already-in-use":"Este e-mail já tem uma conta.",
-    "auth/weak-password":"Senha muito curta (mín. 6 caracteres).",
-    "auth/network-request-failed":"Sem conexão. Verifique a internet.",
-    "auth/too-many-requests":"Muitas tentativas. Aguarde um pouco.",
-    "auth/operation-not-allowed":"Ative Login por E-mail/Senha no Firebase (Authentication).",
-    "permission-denied":"Sem permissão. Só o administrador pode fazer isso."
-  };
+  const map={"auth/invalid-email":"E-mail inválido.","auth/missing-password":"Digite a senha.",
+    "auth/invalid-credential":"E-mail ou senha incorretos.","auth/wrong-password":"Senha incorreta.",
+    "auth/user-not-found":"Conta não encontrada.","auth/email-already-in-use":"Este e-mail já tem uma conta.",
+    "auth/weak-password":"Senha muito curta (mín. 6 caracteres).","auth/network-request-failed":"Sem conexão. Verifique a internet.",
+    "auth/too-many-requests":"Muitas tentativas. Aguarde um pouco.","auth/operation-not-allowed":"Ative Login por E-mail/Senha no Firebase.",
+    "permission-denied":"Sem permissão. Só o administrador pode fazer isso."};
   return map[m] || m;
 }
 
-/* ---------- check config ---------- */
 if (String(firebaseConfig.apiKey).includes("COLE_AQUI")) {
-  $("boot").classList.add("hidden");
-  $("need-config").classList.remove("hidden");
+  $("boot").classList.add("hidden"); $("need-config").classList.remove("hidden");
   throw new Error("Firebase não configurado");
 }
 
-/* ---------- init ---------- */
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-// secondary app: cria contas sem deslogar o admin
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
 let secApp=null;
-function secondaryAuth(){
-  if(!secApp) secApp = initializeApp(firebaseConfig, "secondary");
-  return getAuth(secApp);
-}
+function secondaryAuth(){ if(!secApp) secApp=initializeApp(firebaseConfig,"secondary"); return getAuth(secApp); }
 
-/* ---------- refs ---------- */
-const configRef  = doc(db, "meta", "config");
-const playersCol = collection(db, "players");
-const roundsCol  = collection(db, "rounds");
-const usersCol   = collection(db, "users");
+const configRef=doc(db,"meta","config");
+const champsCol=collection(db,"championships");
+const usersCol=collection(db,"users");
 
 /* ---------- state ---------- */
-let CURRENT   = null;   // firebase user
-let CONFIG    = null;   // meta/config data or null
-let CONFIG_LOADED = false;
-let PLAYERS   = [];     // [{id,name,createdAt}]
-let ROUNDS    = [];     // [{id,number,matches:[{a,b,winner}]}]
-let USERS     = [];     // [{id(uid),email,role?}]
-let ACTIVE_TAB = "rank";
+let CURRENT=null, CONFIG=null, CONFIG_LOADED=false;
+let CHAMPS=[], USERS=[];
+let CURRENT_CHAMP=sessionStorage.getItem("champ")||null;
+let subscribedChamp=null, unsubPlayers=null, unsubRounds=null;
+let PLAYERS=[], ROUNDS=[];
+let ACTIVE_TAB="rank";
+let OFFICIAL=null, OFFICIAL_LOADING=false, OFFICIAL_ERR=false;
+let BANLISTS=[];            // listas personalizadas (globais)
+let BL_MANAGE=false;        // admin editando a lista custom atual
+let BL_ADD=[], BL_ADD_LOADING=false, BL_ADD_TERM="", BL_PENDING=null, addTimer=null;
 
-const isAdmin = () => !!(CURRENT && CONFIG && Array.isArray(CONFIG.adminUids) && CONFIG.adminUids.includes(CURRENT.uid));
+const isAdmin=()=>!!(CURRENT&&CONFIG&&Array.isArray(CONFIG.adminUids)&&CONFIG.adminUids.includes(CURRENT.uid));
+const champData=()=>CHAMPS.find(c=>c.id===CURRENT_CHAMP)||null;
+const isLocked=()=>{ const c=champData(); return !!(c&&c.status==="encerrado"); };
+const canEdit=()=>isAdmin()&&!isLocked();
 
-/* ============================================================
-   Realtime listeners
-   ============================================================ */
-onSnapshot(configRef, snap => {
-  CONFIG = snap.exists() ? snap.data() : null;
-  CONFIG_LOADED = true;
-  route(); renderAll();
-}, err => { console.error(err); CONFIG_LOADED=true; route(); });
+/* ---------- listeners: config, champs, users ---------- */
+onSnapshot(configRef, snap=>{ CONFIG=snap.exists()?snap.data():null; CONFIG_LOADED=true; route(); renderAll(); },
+  err=>{ console.error(err); CONFIG_LOADED=true; route(); });
 
-onSnapshot(query(playersCol, orderBy("createdAt","asc")), snap => {
-  PLAYERS = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-  renderAll();
+onSnapshot(query(champsCol, orderBy("createdAt","asc")), snap=>{
+  CHAMPS=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(CURRENT_CHAMP && subscribedChamp!==CURRENT_CHAMP && CHAMPS.find(c=>c.id===CURRENT_CHAMP)) subscribeChamp(CURRENT_CHAMP);
+  route(); renderSelector(); renderAll();
 }, err=>console.error(err));
 
-onSnapshot(query(roundsCol, orderBy("number","asc")), snap => {
-  ROUNDS = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-  renderAll();
+onSnapshot(usersCol, snap=>{ USERS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAccess(); }, err=>console.error(err));
+
+onSnapshot(query(collection(db,"banlists"),orderBy("createdAt","asc")), snap=>{
+  BANLISTS=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(ACTIVE_TAB==="banlist" && !$("app").classList.contains("hidden")) renderBanlist();
 }, err=>console.error(err));
 
-onSnapshot(usersCol, snap => {
-  USERS = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-  renderAccess();
-}, err=>console.error(err));
-
-/* ============================================================
-   Auth state
-   ============================================================ */
-onAuthStateChanged(auth, async user => {
-  CURRENT = user;
-  if (user) {
-    // registra/atualiza doc do usuário (para lista de acessos)
-    try { await setDoc(doc(db,"users",user.uid), { email:user.email, lastSeen:serverTimestamp() }, { merge:true }); }
-    catch(e){ /* pode falhar se offline; ok */ }
-  }
-  route(); renderAll();
+onAuthStateChanged(auth, async user=>{
+  CURRENT=user;
+  if(user){ try{ await setDoc(doc(db,"users",user.uid),{email:user.email,lastSeen:serverTimestamp()},{merge:true}); }catch(e){} }
+  route(); renderSelector(); renderAll();
 });
 
-/* ============================================================
-   Routing entre telas
-   ============================================================ */
+/* ---------- per-championship subscription ---------- */
+function subscribeChamp(id){
+  if(unsubPlayers){ unsubPlayers(); unsubPlayers=null; }
+  if(unsubRounds){ unsubRounds(); unsubRounds=null; }
+  subscribedChamp=id; PLAYERS=[]; ROUNDS=[];
+  unsubPlayers=onSnapshot(query(collection(db,"championships",id,"players"),orderBy("createdAt","asc")),
+    snap=>{ PLAYERS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, err=>console.error(err));
+  unsubRounds=onSnapshot(query(collection(db,"championships",id,"rounds"),orderBy("number","asc")),
+    snap=>{ ROUNDS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, err=>console.error(err));
+}
+function selectChamp(id){ CURRENT_CHAMP=id; sessionStorage.setItem("champ",id); subscribeChamp(id); ACTIVE_TAB="rank"; switchTab("rank"); route(); renderAll(); }
+function leaveChamp(){
+  if(unsubPlayers){unsubPlayers();unsubPlayers=null;} if(unsubRounds){unsubRounds();unsubRounds=null;}
+  subscribedChamp=null; CURRENT_CHAMP=null; PLAYERS=[]; ROUNDS=[]; sessionStorage.removeItem("champ"); route(); renderSelector();
+}
+
+/* ---------- routing ---------- */
 function route(){
-  if(!CONFIG_LOADED){ return; } // ainda carregando
+  if(!CONFIG_LOADED) return;
   $("boot").classList.add("hidden");
-  const authed = !!CURRENT;
-  const guest  = sessionStorage.getItem("guest")==="1";
-
-  if(authed || guest){
-    $("auth-screen").classList.add("hidden");
-    $("app").classList.remove("hidden");
-    applyRoleUI();
-  } else {
-    $("app").classList.add("hidden");
+  const authed=!!CURRENT, guest=sessionStorage.getItem("guest")==="1";
+  if(!(authed||guest)){
+    $("select-screen").classList.add("hidden"); $("app").classList.add("hidden");
     $("auth-screen").classList.remove("hidden");
-    // primeiro acesso? mostra setup se não existe admin configurado
-    const noAdmin = !CONFIG || !Array.isArray(CONFIG.adminUids) || CONFIG.adminUids.length===0;
-    $("setup-box").classList.toggle("hidden", !noAdmin);
-    $("login-box").classList.toggle("hidden", noAdmin);
+    const noAdmin=!CONFIG||!Array.isArray(CONFIG.adminUids)||CONFIG.adminUids.length===0;
+    $("setup-box").classList.toggle("hidden",!noAdmin);
+    $("login-box").classList.toggle("hidden",noAdmin);
+    return;
   }
-}
-
-function applyRoleUI(){
-  const adm = isAdmin();
-  document.body.classList.toggle("is-admin", adm);
-  els(".admin-only").forEach(n => n.classList.toggle("hidden", !adm));
-  // header
-  $("app-champ-name").textContent = (CONFIG && CONFIG.name) ? CONFIG.name : "Duelo Millennium";
-  const line = $("app-user-line");
-  const acts = $("head-actions");
-  if(CURRENT){
-    line.innerHTML = `${esc(CURRENT.email)} · <span class="badge-role ${adm?'adm':''}">${adm?'Admin':'Jogador'}</span>`;
-    acts.innerHTML = `<button class="icon-btn" id="btn-logout">Sair</button>`;
-    $("btn-logout").onclick = () => signOut(auth);
+  $("auth-screen").classList.add("hidden");
+  const inChamp = CURRENT_CHAMP && CHAMPS.find(c=>c.id===CURRENT_CHAMP);
+  if(!inChamp){
+    if(CURRENT_CHAMP && CHAMPS.length && !CHAMPS.find(c=>c.id===CURRENT_CHAMP)){ CURRENT_CHAMP=null; sessionStorage.removeItem("champ"); }
+    $("app").classList.add("hidden"); $("select-screen").classList.remove("hidden");
+    renderSelectorHead();
   } else {
-    line.innerHTML = `<span class="badge-role">Visitante</span>`;
-    acts.innerHTML = `<button class="icon-btn" id="btn-tologin">Entrar</button>`;
-    $("btn-tologin").onclick = () => { sessionStorage.removeItem("guest"); route(); };
+    if(subscribedChamp!==CURRENT_CHAMP) subscribeChamp(CURRENT_CHAMP);
+    $("select-screen").classList.add("hidden"); $("app").classList.remove("hidden");
+    applyRoleUI();
   }
-  // se aba admin ativa mas não é admin, volta pro rank
-  if(!adm && (ACTIVE_TAB==="access")) switchTab("rank");
 }
 
-/* ============================================================
-   Tabs
-   ============================================================ */
-els(".tab").forEach(t => t.onclick = () => switchTab(t.dataset.tab));
+/* ---------- role / header ---------- */
+function applyRoleUI(){
+  const adm=isAdmin(), locked=isLocked();
+  document.body.classList.toggle("is-admin", adm);
+  els(".admin-only").forEach(n=>n.classList.toggle("hidden", !adm));
+  const c=champData();
+  $("app-champ-name").textContent = c ? c.name : "Campeonato";
+  $("app-status-kicker").innerHTML = locked ? '🏆 Encerrado' : 'Pontos Corridos';
+  const line=$("app-user-line"), acts=$("head-actions");
+  if(CURRENT){
+    line.innerHTML=`${esc(CURRENT.email)} · <span class="badge-role ${adm?'adm':''}">${adm?'Admin':'Jogador'}</span>`;
+    acts.innerHTML=`<button class="icon-btn" id="btn-switch">Trocar</button><button class="icon-btn" id="btn-logout">Sair</button>`;
+    $("btn-logout").onclick=()=>signOut(auth);
+  } else {
+    line.innerHTML=`<span class="badge-role">Visitante</span>`;
+    acts.innerHTML=`<button class="icon-btn" id="btn-switch">Trocar</button><button class="icon-btn" id="btn-tologin">Entrar</button>`;
+    $("btn-tologin").onclick=()=>{ sessionStorage.removeItem("guest"); leaveChamp(); };
+  }
+  $("btn-switch").onclick=leaveChamp;
+  const startBtn=$("btn-start-round");
+  if(startBtn){
+    startBtn.disabled=locked; $("btn-undo-round").disabled=locked; $("btn-reset-rounds").disabled=locked;
+    const fin=$("btn-finish-champ");
+    fin.textContent = locked ? "↺ Reabrir campeonato" : "🏆 Encerrar campeonato";
+    fin.classList.toggle("danger", !locked); fin.classList.toggle("ghost", locked);
+    const ap=$("add-player-card"); if(ap) ap.style.opacity=locked?.5:1;
+  }
+  if(!adm && ACTIVE_TAB==="access") switchTab("rank");
+}
+
+/* ---------- tabs ---------- */
+els(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
 function switchTab(name){
-  ACTIVE_TAB = name;
-  els(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab===name));
-  els(".tabpane").forEach(p => p.classList.add("hidden"));
-  $("tab-"+name).classList.remove("hidden");
+  ACTIVE_TAB=name;
+  els(".tab").forEach(t=>t.classList.toggle("active", t.dataset.tab===name));
+  els(".tabpane").forEach(p=>p.classList.add("hidden"));
+  const pane=$("tab-"+name); if(pane) pane.classList.remove("hidden");
+  if(name==="banlist") loadBanlist();
 }
 
-/* ============================================================
-   LOGIN / SETUP handlers
-   ============================================================ */
-$("btn-guest").onclick = $("btn-setup-guest").onclick = () => { sessionStorage.setItem("guest","1"); route(); };
-
-$("btn-login").onclick = async () => {
-  const email = $("login-email").value.trim(), pass = $("login-pass").value;
-  showMsg("login-msg","");
+/* ---------- auth handlers ---------- */
+$("btn-guest").onclick=$("btn-setup-guest").onclick=()=>{ sessionStorage.setItem("guest","1"); route(); renderSelector(); };
+$("btn-login").onclick=async()=>{
+  const email=$("login-email").value.trim(), pass=$("login-pass").value; showMsg("login-msg","");
   if(!email||!pass){ showMsg("login-msg","Preencha e-mail e senha.","err"); return; }
   const b=$("btn-login"); b.disabled=true; b.textContent="Entrando…";
-  try{
-    sessionStorage.removeItem("guest");
-    await signInWithEmailAndPassword(auth, email, pass);
-  }catch(e){ showMsg("login-msg", fbError(e), "err"); }
-  finally{ b.disabled=false; b.textContent="Entrar no duelo"; }
+  try{ sessionStorage.removeItem("guest"); await signInWithEmailAndPassword(auth,email,pass); }
+  catch(e){ showMsg("login-msg",fbError(e),"err"); } finally{ b.disabled=false; b.textContent="Entrar no duelo"; }
 };
-
-$("btn-setup").onclick = async () => {
-  const champ=$("setup-champ").value.trim()||"Duelo Millennium";
-  const email=$("setup-email").value.trim(), pass=$("setup-pass").value;
-  showMsg("setup-msg","");
+$("btn-setup").onclick=async()=>{
+  const email=$("setup-email").value.trim(), pass=$("setup-pass").value; showMsg("setup-msg","");
   if(!email||!pass){ showMsg("setup-msg","Preencha e-mail e senha.","err"); return; }
   if(pass.length<6){ showMsg("setup-msg","A senha precisa de pelo menos 6 caracteres.","err"); return; }
   const b=$("btn-setup"); b.disabled=true; b.textContent="Criando…";
   try{
     sessionStorage.removeItem("guest");
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    // cria config com este uid como admin
-    await setDoc(configRef, {
-      name: champ,
-      adminUids: [cred.user.uid],
-      createdAt: serverTimestamp()
-    });
+    const cred=await createUserWithEmailAndPassword(auth,email,pass);
+    await setDoc(configRef,{adminUids:[cred.user.uid],createdAt:serverTimestamp()});
     toast("Administrador criado! 𓂀");
   }catch(e){
-    // se o e-mail já existe, tenta logar e reivindicar admin (caso config ainda não exista)
-    if(e && e.code==="auth/email-already-in-use"){
-      try{
-        const cred = await signInWithEmailAndPassword(auth, email, pass);
-        const cur = await getDoc(configRef);
-        if(!cur.exists()){
-          await setDoc(configRef,{name:champ,adminUids:[cred.user.uid],createdAt:serverTimestamp()});
-          toast("Administrador criado! 𓂀");
-        }
-      }catch(e2){ showMsg("setup-msg", fbError(e2), "err"); }
-    } else {
-      showMsg("setup-msg", fbError(e), "err");
-    }
+    if(e&&e.code==="auth/email-already-in-use"){
+      try{ const cred=await signInWithEmailAndPassword(auth,email,pass);
+        const cur=await getDoc(configRef);
+        if(!cur.exists()){ await setDoc(configRef,{adminUids:[cred.user.uid],createdAt:serverTimestamp()}); toast("Administrador criado! 𓂀"); }
+      }catch(e2){ showMsg("setup-msg",fbError(e2),"err"); }
+    } else showMsg("setup-msg",fbError(e),"err");
   }finally{ b.disabled=false; b.textContent="Criar administrador"; }
 };
 
-/* ============================================================
-   RENDER
-   ============================================================ */
-function renderAll(){ renderRank(); renderRounds(); renderPlayers(); renderAccess(); if(CURRENT!==undefined) applyRoleUIsafe(); }
-function applyRoleUIsafe(){ if(!$("app").classList.contains("hidden")) applyRoleUI(); }
+/* ---------- render orchestration ---------- */
+function renderAll(){ renderChampionBanner(); renderRank(); renderRounds(); renderPlayers(); renderAccess();
+  if(!$("app").classList.contains("hidden")){ applyRoleUI(); if(ACTIVE_TAB==="banlist") renderBanlist(); } }
 
-/* ---- Standings ---- */
+/* ---------- selector ---------- */
+function renderSelectorHead(){
+  const authed=!!CURRENT, adm=isAdmin();
+  const line=$("sel-user-line"), acts=$("sel-actions");
+  els("#select-screen .admin-only").forEach(n=>n.classList.toggle("hidden",!adm));
+  if(authed){
+    line.innerHTML=`${esc(CURRENT.email)} · <span class="badge-role ${adm?'adm':''}">${adm?'Admin':'Jogador'}</span>`;
+    acts.innerHTML=`<button class="icon-btn" id="sel-logout">Sair</button>`;
+    $("sel-logout").onclick=()=>signOut(auth);
+  } else {
+    line.innerHTML=`<span class="badge-role">Visitante</span>`;
+    acts.innerHTML=`<button class="icon-btn" id="sel-login">Entrar</button>`;
+    $("sel-login").onclick=()=>{ sessionStorage.removeItem("guest"); route(); };
+  }
+}
+function renderSelector(){
+  if($("select-screen").classList.contains("hidden")) return;
+  renderSelectorHead();
+  const body=$("champ-list"); const adm=isAdmin();
+  if(CHAMPS.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓉔</span>Nenhum campeonato ainda.<br>${adm?'Crie o primeiro acima.':'Aguarde o administrador criar um campeonato.'}</div>`; return; }
+  body.innerHTML=CHAMPS.map(c=>{
+    const st=c.status==="encerrado"?"encerrado":"ativo";
+    const stLabel=st==="encerrado"?"Encerrado":"Em andamento";
+    return `<div class="champ-card" data-act="openchamp" data-id="${c.id}">
+      <svg class="cc-eye"><use href="#wdjat"/></svg>
+      <div class="cc-body">
+        <div class="cc-name">${esc(c.name)}</div>
+        <div class="cc-meta"><span class="status-pill ${st}">${stLabel}</span></div>
+      </div>
+      ${adm?`<button class="mini danger" data-act="delchamp" data-id="${c.id}">Excluir</button>`:``}
+      <span class="cc-arrow">›</span>
+    </div>`;
+  }).join("");
+}
+$("btn-add-champ").onclick=async()=>{
+  const name=$("new-champ").value.trim(); showMsg("champ-msg","");
+  if(!name){ showMsg("champ-msg","Digite um nome.","err"); return; }
+  if(!isAdmin()){ showMsg("champ-msg","Só o admin pode criar.","err"); return; }
+  const b=$("btn-add-champ"); b.disabled=true;
+  try{ const ref=await addDoc(champsCol,{name,status:"ativo",scheduleIds:[],banlist:"tcg",createdAt:serverTimestamp(),createdBy:CURRENT.uid});
+    $("new-champ").value=""; toast("Campeonato criado! 𓊃"); selectChamp(ref.id);
+  }catch(e){ showMsg("champ-msg",fbError(e),"err"); } finally{ b.disabled=false; }
+};
+
+/* ---------- champion banner ---------- */
+function renderChampionBanner(){
+  const slot=$("champion-slot"); if(!slot) return;
+  const c=champData();
+  if(c && c.status==="encerrado"){
+    const rows=computeStandings();
+    const champ=rows.length?rows[0].name:"—";
+    slot.innerHTML=`<div class="champion"><div class="crown">👑</div>
+      <div class="lbl">Campeão</div><div class="who">${esc(champ)}</div></div>`;
+  } else slot.innerHTML="";
+}
+
+/* ---------- standings ---------- */
 function computeStandings(){
-  const s = {};
-  PLAYERS.forEach(p => s[p.id] = { id:p.id, name:p.name, wins:0, played:0 });
-  ROUNDS.forEach(r => (r.matches||[]).forEach(m => {
-    if(m.winner && s[m.winner]) s[m.winner].wins++;
-    if(m.winner){
-      if(s[m.a]) s[m.a].played++;
-      if(s[m.b]) s[m.b].played++;
-    }
+  const s={}; PLAYERS.forEach(p=>s[p.id]={id:p.id,name:p.name,wins:0,played:0});
+  ROUNDS.forEach(r=>(r.matches||[]).forEach(m=>{
+    if(m.winner&&s[m.winner]) s[m.winner].wins++;
+    if(m.winner){ if(s[m.a])s[m.a].played++; if(s[m.b])s[m.b].played++; }
   }));
-  return Object.values(s).sort((a,b)=> b.wins - a.wins || b.played - a.played || a.name.localeCompare(b.name));
+  return Object.values(s).sort((a,b)=>b.wins-a.wins||b.played-a.played||a.name.localeCompare(b.name));
 }
 function renderRank(){
-  const body = $("rank-body"); if(!body) return;
-  const rows = computeStandings();
-  if(rows.length===0){
-    body.innerHTML = `<div class="empty"><span class="big">𓉔</span>Nenhum jogador cadastrado ainda.<br>${isAdmin()?'Adicione participantes na aba <b>Jogadores</b>.':'Aguarde o administrador cadastrar os duelistas.'}</div>`;
-    return;
-  }
+  const body=$("rank-body"); if(!body) return;
+  const rows=computeStandings();
+  if(rows.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓉔</span>Nenhum jogador cadastrado ainda.<br>${isAdmin()?'Adicione participantes na aba <b>Jogadores</b>.':'Aguarde o administrador.'}</div>`; return; }
   const medals=["🥇","🥈","🥉"];
-  body.innerHTML = `<table class="rank">
-    <thead><tr><th class="pos">#</th><th>Duelista</th><th class="num">V</th><th class="num">J</th><th class="pts">Pts</th></tr></thead>
-    <tbody>${rows.map((r,i)=>`
-      <tr class="${i===0&&r.wins>0?'top1':''}">
-        <td class="pos">${medals[i]?`<span class="medal">${medals[i]}</span>`:(i+1)}</td>
-        <td class="name">${esc(r.name)}</td>
-        <td class="num">${r.wins}</td>
-        <td class="num">${r.played}</td>
-        <td class="pts">${r.wins}</td>
-      </tr>`).join("")}
+  body.innerHTML=`<table class="rank"><thead><tr><th class="pos">#</th><th>Duelista</th><th class="num">V</th><th class="num">J</th><th class="pts">Pts</th></tr></thead>
+    <tbody>${rows.map((r,i)=>`<tr class="${i===0&&r.wins>0?'top1':''}">
+      <td class="pos">${medals[i]?`<span class="medal">${medals[i]}</span>`:(i+1)}</td>
+      <td class="name">${esc(r.name)}</td><td class="num">${r.wins}</td><td class="num">${r.played}</td><td class="pts">${r.wins}</td></tr>`).join("")}
     </tbody></table>`;
 }
 
-/* ---- Players ---- */
+/* ---------- players ---------- */
 function renderPlayers(){
   const body=$("players-body"); if(!body) return;
-  const adm=isAdmin();
-  if(PLAYERS.length===0){
-    body.innerHTML = `<div class="empty"><span class="big">𓀀</span>Nenhum participante cadastrado.</div>`;
-    return;
-  }
-  body.innerHTML = PLAYERS.map(p=>`
-    <div class="list-row" data-id="${p.id}">
-      <div class="grow"><div class="l1">${esc(p.name)}</div></div>
-      ${adm?`<button class="mini" data-act="rename" data-id="${p.id}">Renomear</button>
-             <button class="mini danger" data-act="delplayer" data-id="${p.id}">Remover</button>`:``}
-    </div>`).join("");
+  const adm=canEdit();
+  if(PLAYERS.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓀀</span>Nenhum participante cadastrado.</div>`; return; }
+  body.innerHTML=PLAYERS.map(p=>`<div class="list-row" data-id="${p.id}">
+    <div class="grow"><div class="l1">${esc(p.name)}</div></div>
+    ${adm?`<button class="mini" data-act="rename" data-id="${p.id}">Renomear</button>
+           <button class="mini danger" data-act="delplayer" data-id="${p.id}">Remover</button>`:``}
+  </div>`).join("");
 }
 
-/* ---- Rounds ---- */
+/* ---------- rounds ---------- */
 function playerName(id){ const p=PLAYERS.find(x=>x.id===id); return p?p.name:"(removido)"; }
 function renderRounds(){
   const body=$("rounds-body"); if(!body) return;
-  const adm=isAdmin();
-  if(ROUNDS.length===0){
-    body.innerHTML = `<div class="empty"><span class="big">⚔️</span>Nenhuma rodada iniciada.<br>${adm?'Toque em <b>Começar próxima rodada</b> para gerar os confrontos.':'Aguarde o administrador começar a primeira rodada.'}</div>`;
-    return;
-  }
-  body.innerHTML = ROUNDS.map(r=>{
-    const matches=(r.matches||[]);
-    const done = matches.filter(m=>m.winner).length;
-    return `<div class="round-block">
-      <div class="round-head">
-        <span class="rtitle">⚔️ Rodada ${r.number}</span>
-        <span class="rmeta">${done}/${matches.length} decididas</span>
-      </div>
+  const adm=canEdit();
+  if(ROUNDS.length===0){ body.innerHTML=`<div class="empty"><span class="big">⚔️</span>Nenhuma rodada iniciada.<br>${isAdmin()?'Toque em <b>Começar próxima rodada</b>.':'Aguarde o administrador começar.'}</div>`; return; }
+  body.innerHTML=ROUNDS.map(r=>{
+    const matches=(r.matches||[]); const done=matches.filter(m=>m.winner).length;
+    return `<div class="round-block"><div class="round-head">
+        <span class="rtitle">⚔️ Rodada ${r.number}</span><span class="rmeta">${done}/${matches.length} decididas</span></div>
       ${matches.map((m,idx)=>{
-        const aw = m.winner===m.a, bw = m.winner===m.b;
+        const aw=m.winner===m.a, bw=m.winner===m.b;
         return `<div class="match">
             <div class="side left ${aw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.a))}</div></div>
             <div class="vs">VS</div>
-            <div class="side right ${bw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.b))}</div></div>
-          </div>
+            <div class="side right ${bw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.b))}</div></div></div>
           ${adm?`<div class="win-btns">
               <button class="wbtn ${aw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.a}">Venceu ${esc(playerName(m.a))}</button>
               <button class="wbtn ${bw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.b}">Venceu ${esc(playerName(m.b))}</button>
               ${m.winner?`<button class="wbtn clear" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="">✕</button>`:``}
-            </div>`
-           :`<div class="result-tag">${m.winner?`Vencedor: <b>${esc(playerName(m.winner))}</b>`:'Aguardando resultado'}</div>`}
-        `;
-      }).join("")}
-    </div>`;
+            </div>`:`<div class="result-tag">${m.winner?`Vencedor: <b>${esc(playerName(m.winner))}</b>`:'Aguardando resultado'}</div>`}`;
+      }).join("")}</div>`;
   }).join("");
 }
 
-/* ---- Access ---- */
+/* ---------- access ---------- */
 function renderAccess(){
   const body=$("access-body"); if(!body) return;
   if(!isAdmin()){ body.innerHTML=`<div class="empty">Somente administradores.</div>`; return; }
   if(USERS.length===0){ body.innerHTML=`<div class="empty">Nenhuma conta ainda.</div>`; return; }
-  const admins = (CONFIG&&CONFIG.adminUids)||[];
-  body.innerHTML = USERS.map(u=>{
-    const adm=admins.includes(u.id);
-    const me = CURRENT && CURRENT.uid===u.id;
-    return `<div class="list-row">
-      <div class="grow"><div class="l1">${esc(u.email||u.id)}</div>
-        <div class="l2">${adm?'Administrador':'Jogador'}${me?' · você':''}</div></div>
-      <button class="mini ${adm?'danger':''}" data-act="togadmin" data-id="${u.id}" ${me?'disabled style="opacity:.4"':''}>
-        ${adm?'Rebaixar':'Tornar Admin'}</button>
-    </div>`;
+  const admins=(CONFIG&&CONFIG.adminUids)||[];
+  body.innerHTML=USERS.map(u=>{
+    const adm=admins.includes(u.id), me=CURRENT&&CURRENT.uid===u.id;
+    return `<div class="list-row"><div class="grow"><div class="l1">${esc(u.email||u.id)}</div>
+      <div class="l2">${adm?'Administrador':'Jogador'}${me?' · você':''}</div></div>
+      <button class="mini ${adm?'danger':''}" data-act="togadmin" data-id="${u.id}" ${me?'disabled style="opacity:.4"':''}>${adm?'Rebaixar':'Tornar Admin'}</button></div>`;
   }).join("");
 }
 
-/* ============================================================
-   ADMIN ACTIONS
-   ============================================================ */
-// --- players ---
-$("btn-add-player").onclick = async () => {
-  const name=$("new-player").value.trim();
-  showMsg("player-msg","");
+/* ---------- banlist (oficial TCG + listas personalizadas) ---------- */
+const BL_GROUPS=[
+  {key:"Forbidden",cls:"forbidden",label:"Proibidas (Forbidden)"},
+  {key:"Limited",cls:"limited",label:"Limitadas (Limited)"},
+  {key:"Semi-Limited",cls:"semi",label:"Semi-limitadas (Semi-Limited)"}
+];
+const blTag=k=>k==="Semi-Limited"?"SEMI":(k==="Forbidden"?"BAN":"LIM");
+const blCls=k=>k==="Semi-Limited"?"semi":(k==="Forbidden"?"forbidden":"limited");
+
+function champBanlistMode(){
+  const c=champData(); const m=(c&&c.banlist)||"tcg";
+  if(m!=="tcg" && !BANLISTS.find(b=>b.id===m)) return "tcg"; // lista removida → cai na oficial
+  return m;
+}
+function currentCustom(){ const m=champBanlistMode(); return m==="tcg"?null:(BANLISTS.find(b=>b.id===m)||null); }
+
+async function loadOfficial(){
+  if(OFFICIAL||OFFICIAL_LOADING) return;
+  OFFICIAL_LOADING=true; OFFICIAL_ERR=false; renderBanlist();
+  try{
+    const res=await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php?banlist=tcg");
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const j=await res.json();
+    OFFICIAL=(j.data||[]).map(c=>({name:c.name, status:(c.banlist_info&&c.banlist_info.ban_tcg)||"",
+      small:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url_small)||"",
+      full:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url)||""})).filter(c=>c.status);
+  }catch(e){ console.error(e); OFFICIAL_ERR=true; }
+  finally{ OFFICIAL_LOADING=false; renderBanlist(); }
+}
+function loadBanlist(){ renderBanlist(); }
+
+$("bl-search").addEventListener("input", ()=>renderBanlist());
+
+function renderBlAdminBar(mode,custom){
+  const sel=$("bl-choose");
+  sel.innerHTML=[`<option value="tcg">TCG (oficial)</option>`]
+    .concat(BANLISTS.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`)).join("");
+  sel.value=mode;
+  sel.onchange=async()=>{ const v=sel.value; BL_MANAGE=false;
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:v}); if(v==="tcg") loadOfficial(); renderBanlist(); }catch(e){ toast(fbError(e)); } };
+  const act=$("bl-custom-actions");
+  if(mode!=="tcg" && custom){
+    act.innerHTML=`<button class="mini" id="bl-manage-toggle">${BL_MANAGE?"✓ Concluir edição":"✎ Gerenciar cartas"}</button>
+      <button class="mini" id="bl-rename">Renomear</button>
+      <button class="mini danger" id="bl-del">Excluir lista</button>`;
+    $("bl-manage-toggle").onclick=()=>{ BL_MANAGE=!BL_MANAGE; renderBanlist(); };
+    $("bl-rename").onclick=renameCustom; $("bl-del").onclick=deleteCustom;
+  } else { act.innerHTML=""; BL_MANAGE=false; }
+  $("bl-manage").classList.toggle("hidden", !(mode!=="tcg"&&custom&&BL_MANAGE));
+  renderAddResults();
+}
+function renderBanlist(){
+  const body=$("banlist-body"), count=$("bl-count"); if(!body) return;
+  const adm=isAdmin(), mode=champBanlistMode(), custom=currentCustom();
+  renderBlAdminBar(mode,custom);
+  $("bl-title").textContent = mode==="tcg" ? "Banlist TCG (oficial)" : ("Banlist: "+(custom?custom.name:"—"));
+  $("bl-sub").textContent = mode==="tcg" ? "Lista oficial (fonte: YGOPRODeck). Toque numa carta para ampliar."
+                                         : "Lista personalizada deste campeonato. Toque numa carta para ampliar.";
+  let cards=[];
+  if(mode==="tcg"){
+    if(!OFFICIAL && !OFFICIAL_LOADING && !OFFICIAL_ERR){ loadOfficial(); }
+    if(OFFICIAL_LOADING){ body.innerHTML=`<div class="spin"></div>`; count.textContent="Carregando lista oficial…"; return; }
+    if(OFFICIAL_ERR){ count.textContent=""; body.innerHTML=`<div class="empty"><span class="big">𓅓</span>Não consegui carregar a banlist oficial agora.<br>Verifique a internet e tente de novo.<div style="height:12px"></div><button class="btn ghost" id="bl-retry" style="max-width:220px;margin:0 auto">Tentar novamente</button></div>`;
+      const rb=$("bl-retry"); if(rb) rb.onclick=()=>{ OFFICIAL=null; OFFICIAL_ERR=false; loadOfficial(); }; return; }
+    cards=OFFICIAL||[];
+  } else { cards=(custom&&custom.cards)||[]; }
+  const term=($("bl-search").value||"").trim().toLowerCase();
+  const filtered=cards.filter(c=>!term||c.name.toLowerCase().includes(term));
+  count.textContent=`${filtered.length} cartas`+(term?` (de ${cards.length})`:"")+(mode==="tcg"?" · fonte: YGOPRODeck":"");
+  const canRemove=adm && mode!=="tcg" && BL_MANAGE;
+  let html="";
+  for(const g of BL_GROUPS){
+    const items=filtered.filter(c=>c.status===g.key).sort((a,b)=>a.name.localeCompare(b.name));
+    if(items.length===0) continue;
+    html+=`<div class="bl-group"><div class="bl-gtitle"><span class="dot ${g.cls}"></span>${g.label} <span class="gc">· ${items.length}</span></div>
+      <div class="bl-grid">${items.map(c=>`<div class="bl-card" data-act="card" data-full="${esc(c.full)}" data-name="${esc(c.name)}">
+        <span class="bl-tag ${g.cls}">${blTag(g.key)}</span>
+        <img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">
+        <div class="bl-name">${esc(c.name)}</div>
+        ${canRemove?`<button class="mini danger" data-act="blremove" data-id="${esc(c.id)}" style="position:absolute;bottom:4px;right:4px;padding:3px 7px">✕</button>`:""}</div>`).join("")}</div></div>`;
+  }
+  const emptyMsg = cards.length ? `Nenhuma carta encontrada${term?` para "${esc(term)}"`:""}.`
+    : (mode==="tcg" ? "Lista vazia." : `Lista personalizada vazia.${adm?" Toque em <b>Gerenciar cartas</b> para adicionar.":""}`);
+  body.innerHTML=html||`<div class="empty">${emptyMsg}</div>`;
+}
+
+/* --- adicionar cartas (busca na API) --- */
+function scheduleAddSearch(){ clearTimeout(addTimer); addTimer=setTimeout(runAddSearch,350); }
+async function runAddSearch(){
+  const term=BL_ADD_TERM;
+  if(term.length<3){ BL_ADD=[]; BL_ADD_LOADING=false; renderAddResults(); return; }
+  BL_ADD_LOADING=true; renderAddResults();
+  try{
+    const res=await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php?fname="+encodeURIComponent(term));
+    const j=await res.json();
+    BL_ADD=(j.data||[]).slice(0,24).map(c=>({id:String(c.id),name:c.name,
+      small:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url_small)||"",
+      full:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url)||""}));
+  }catch(e){ BL_ADD=[]; }
+  finally{ BL_ADD_LOADING=false; renderAddResults(); }
+}
+function renderAddResults(){
+  const box=$("bl-add-results"); if(!box) return;
+  if(!(champBanlistMode()!=="tcg" && BL_MANAGE)){ box.innerHTML=""; return; }
+  if(BL_ADD_LOADING){ box.innerHTML=`<div class="spin" style="grid-column:1/-1"></div>`; return; }
+  if(BL_ADD_TERM.length<3){ box.innerHTML=`<div class="empty" style="grid-column:1/-1;padding:10px">Digite ao menos 3 letras para buscar.</div>`; return; }
+  if(!BL_ADD.length){ box.innerHTML=`<div class="empty" style="grid-column:1/-1;padding:10px">Nenhuma carta encontrada.</div>`; return; }
+  box.innerHTML=BL_ADD.map(c=>`<div class="bl-card" data-act="addcard" data-id="${esc(c.id)}">
+    <img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}"><div class="bl-name">${esc(c.name)}</div></div>`).join("");
+}
+async function newCustomList(){
+  if(!isAdmin()||!CURRENT_CHAMP) return;
+  const name=prompt("Nome da nova banlist personalizada:","Formato da Casa");
+  if(!name||!name.trim()) return;
+  try{ const ref=await addDoc(collection(db,"banlists"),{name:name.trim(),cards:[],createdAt:serverTimestamp(),createdBy:CURRENT.uid});
+    await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:ref.id}); BL_MANAGE=true; renderBanlist(); toast("Lista criada — adicione cartas"); }
+  catch(e){ toast(fbError(e)); }
+}
+async function renameCustom(){ const custom=currentCustom(); if(!custom) return;
+  const nn=prompt("Novo nome da lista:",custom.name); if(!nn||!nn.trim()) return;
+  try{ await updateDoc(doc(db,"banlists",custom.id),{name:nn.trim()}); toast("Renomeada"); }catch(e){ toast(fbError(e)); } }
+async function deleteCustom(){ const custom=currentCustom(); if(!custom) return;
+  if(!confirm(`Excluir a lista "${custom.name}"? Este campeonato voltará para a TCG oficial.`)) return;
+  try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:"tcg"});
+    await deleteDoc(doc(db,"banlists",custom.id)); BL_MANAGE=false; loadOfficial(); renderBanlist(); toast("Lista excluída"); }catch(e){ toast(fbError(e)); } }
+
+function openCard(full,name){ if(!full) return; $("bl-modal-img").src=full; $("bl-modal-cap").textContent=name; $("bl-modal").classList.add("show"); }
+$("bl-modal").onclick=()=>{ $("bl-modal").classList.remove("show"); $("bl-modal-img").src=""; };
+
+function openAddModal(card){ BL_PENDING=card; $("bl-add-img").src=card.full||card.small; $("bl-add-cap").textContent=card.name; $("bl-add-modal").classList.add("show"); }
+$("bl-add-cancel").onclick=e=>{ e.stopPropagation(); $("bl-add-modal").classList.remove("show"); BL_PENDING=null; };
+els("#bl-add-modal [data-st]").forEach(btn=>btn.onclick=async e=>{
+  e.stopPropagation();
+  const custom=currentCustom(); if(!BL_PENDING||!custom){ $("bl-add-modal").classList.remove("show"); return; }
+  const st=btn.dataset.st;
+  const cards=(custom.cards||[]).filter(x=>x.id!==BL_PENDING.id);
+  cards.push({id:BL_PENDING.id,name:BL_PENDING.name,status:st,small:BL_PENDING.small,full:BL_PENDING.full});
+  try{ await updateDoc(doc(db,"banlists",custom.id),{cards}); renderBanlist(); toast("Carta adicionada"); }catch(err){ toast(fbError(err)); }
+  $("bl-add-modal").classList.remove("show"); BL_PENDING=null;
+});
+$("bl-new").onclick=newCustomList;
+$("bl-add-search").addEventListener("input",()=>{ BL_ADD_TERM=$("bl-add-search").value.trim(); scheduleAddSearch(); });
+
+/* ---------- admin: players ---------- */
+$("btn-add-player").onclick=async()=>{
+  const name=$("new-player").value.trim(); showMsg("player-msg","");
   if(!name){ showMsg("player-msg","Digite um nome.","err"); return; }
   if(!isAdmin()){ showMsg("player-msg","Só o admin pode cadastrar.","err"); return; }
-  try{
-    await addDoc(playersCol,{ name, createdAt: serverTimestamp() });
+  if(isLocked()){ showMsg("player-msg","Campeonato encerrado. Reabra para editar.","err"); return; }
+  try{ await addDoc(collection(db,"championships",CURRENT_CHAMP,"players"),{name,createdAt:serverTimestamp()});
     $("new-player").value=""; toast("Duelista cadastrado 𓀀");
-  }catch(e){ showMsg("player-msg", fbError(e), "err"); }
+  }catch(e){ showMsg("player-msg",fbError(e),"err"); }
 };
 
-// delegação de cliques (players + rounds + access)
-document.addEventListener("click", async (ev)=>{
-  const b = ev.target.closest("[data-act]");
-  if(!b) return;
+/* ---------- delegated clicks ---------- */
+document.addEventListener("click", async ev=>{
+  const b=ev.target.closest("[data-act]"); if(!b) return;
   const act=b.dataset.act;
 
+  if(act==="openchamp"){ selectChamp(b.dataset.id); return; }
+  if(act==="delchamp"){
+    ev.stopPropagation();
+    if(!isAdmin()) return;
+    const c=CHAMPS.find(x=>x.id===b.dataset.id); if(!c) return;
+    if(!confirm(`Excluir o campeonato "${c.name}"? Todos os jogadores, rodadas e resultados dele serão apagados. Esta ação não pode ser desfeita.`)) return;
+    try{
+      const cid=b.dataset.id;
+      const ps=await getDocsCompat(collection(db,"championships",cid,"players"),cid,"players");
+      const rs=await getDocsCompat(collection(db,"championships",cid,"rounds"),cid,"rounds");
+      for(const d of ps) await deleteDoc(doc(db,"championships",cid,"players",d.id));
+      for(const d of rs) await deleteDoc(doc(db,"championships",cid,"rounds",d.id));
+      await deleteDoc(doc(db,"championships",cid));
+      if(CURRENT_CHAMP===cid) leaveChamp();
+      toast("Campeonato excluído");
+    }catch(e){ toast(fbError(e)); }
+    return;
+  }
+  if(act==="card"){ openCard(b.dataset.full,b.dataset.name); return; }
+
+  if(!CURRENT_CHAMP) return;
   if(act==="delplayer"){
-    if(!confirm("Remover este jogador? As partidas já jogadas manterão o registro, mas ele sai da classificação.")) return;
-    try{ await deleteDoc(doc(db,"players",b.dataset.id)); toast("Jogador removido"); }
-    catch(e){ toast(fbError(e)); }
+    if(!canEdit()) return;
+    if(!confirm("Remover este jogador? As partidas já jogadas mantêm o registro, mas ele sai da classificação.")) return;
+    try{ await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"players",b.dataset.id)); toast("Jogador removido"); }catch(e){ toast(fbError(e)); }
   }
-
   if(act==="rename"){
-    const cur = playerName(b.dataset.id);
-    const nn = prompt("Novo nome:", cur);
-    if(nn && nn.trim()){
-      try{ await updateDoc(doc(db,"players",b.dataset.id),{name:nn.trim()}); toast("Nome atualizado"); }
-      catch(e){ toast(fbError(e)); }
-    }
+    if(!canEdit()) return;
+    const nn=prompt("Novo nome:", playerName(b.dataset.id));
+    if(nn&&nn.trim()){ try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"players",b.dataset.id),{name:nn.trim()}); toast("Nome atualizado"); }catch(e){ toast(fbError(e)); } }
   }
-
   if(act==="win"){
+    if(!canEdit()) return;
     const rId=b.dataset.r, idx=+b.dataset.i, w=b.dataset.w||null;
     const round=ROUNDS.find(r=>r.id===rId); if(!round) return;
-    const matches=(round.matches||[]).map(m=>({...m}));
-    if(!matches[idx]) return;
-    matches[idx].winner = (matches[idx].winner===w)?null:w; // toggle
-    try{ await updateDoc(doc(db,"rounds",rId),{matches}); }
-    catch(e){ toast(fbError(e)); }
+    const matches=(round.matches||[]).map(m=>({...m})); if(!matches[idx]) return;
+    matches[idx].winner=(matches[idx].winner===w)?null:w;
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",rId),{matches}); }catch(e){ toast(fbError(e)); }
   }
-
   if(act==="togadmin"){
-    const uid=b.dataset.id;
-    const admins=(CONFIG&&CONFIG.adminUids)||[];
-    try{
-      if(admins.includes(uid)) await updateDoc(configRef,{adminUids:arrayRemove(uid)});
-      else await updateDoc(configRef,{adminUids:arrayUnion(uid)});
-      toast("Permissão atualizada");
-    }catch(e){ toast(fbError(e)); }
+    if(!isAdmin()) return;
+    const uid=b.dataset.id, admins=(CONFIG&&CONFIG.adminUids)||[];
+    try{ if(admins.includes(uid)) await updateDoc(configRef,{adminUids:arrayRemove(uid)}); else await updateDoc(configRef,{adminUids:arrayUnion(uid)}); toast("Permissão atualizada"); }catch(e){ toast(fbError(e)); }
+  }
+  if(act==="addcard"){
+    if(!isAdmin()) return;
+    const c=BL_ADD.find(x=>x.id===b.dataset.id); if(c) openAddModal(c);
+  }
+  if(act==="blremove"){
+    ev.stopPropagation();
+    if(!isAdmin()) return;
+    const custom=currentCustom(); if(!custom) return;
+    const cards=(custom.cards||[]).filter(x=>x.id!==b.dataset.id);
+    try{ await updateDoc(doc(db,"banlists",custom.id),{cards}); renderBanlist(); toast("Carta removida"); }catch(e){ toast(fbError(e)); }
   }
 });
 
-// --- rounds control ---
-function roundRobinSchedule(ids){
-  let arr = ids.slice();
-  if(arr.length < 2) return [];
-  if(arr.length % 2 === 1) arr.push(null); // BYE
-  const n=arr.length, half=n/2, rounds=[];
-  let list=arr.slice();
-  for(let r=0;r<n-1;r++){
-    const pairs=[];
-    for(let i=0;i<half;i++){
-      const a=list[i], b=list[n-1-i];
-      if(a!==null && b!==null) pairs.push([a,b]);
-    }
-    rounds.push(pairs);
-    const fixed=list[0], rest=list.slice(1);
-    rest.unshift(rest.pop());
-    list=[fixed,...rest];
-  }
-  return rounds;
+// lê ids de uma subcoleção: usa cache dos listeners se for o campeonato atual, senão faz leitura pontual
+async function getDocsCompat(colRef,cid,kind){
+  if(cid===CURRENT_CHAMP){ return (kind==="players"?PLAYERS:ROUNDS).map(x=>({id:x.id})); }
+  const snap=await new Promise(res=>{ const un=onSnapshot(colRef,s=>{un();res(s);},()=>{un();res({docs:[]});}); });
+  return snap.docs.map(d=>({id:d.id}));
 }
 
-$("btn-start-round").onclick = async () => {
+/* ---------- rounds control ---------- */
+function roundRobinSchedule(ids){
+  let arr=ids.slice(); if(arr.length<2) return [];
+  if(arr.length%2===1) arr.push(null);
+  const n=arr.length, half=n/2, rounds=[]; let list=arr.slice();
+  for(let r=0;r<n-1;r++){ const pairs=[];
+    for(let i=0;i<half;i++){ const a=list[i], b=list[n-1-i]; if(a!==null&&b!==null) pairs.push([a,b]); }
+    rounds.push(pairs); const fixed=list[0], rest=list.slice(1); rest.unshift(rest.pop()); list=[fixed,...rest]; }
+  return rounds;
+}
+$("btn-start-round").onclick=async()=>{
   showMsg("round-ctrl-msg","");
   if(!isAdmin()){ showMsg("round-ctrl-msg","Só o admin pode iniciar rodadas.","err"); return; }
+  if(isLocked()){ showMsg("round-ctrl-msg","Campeonato encerrado. Reabra para continuar.","err"); return; }
   if(PLAYERS.length<2){ showMsg("round-ctrl-msg","Cadastre pelo menos 2 jogadores.","err"); return; }
-
-  // snapshot dos jogadores do rodízio (fixado na 1ª rodada)
-  let scheduleIds = (CONFIG && CONFIG.scheduleIds) || null;
-  if(!scheduleIds || ROUNDS.length===0){
-    scheduleIds = PLAYERS.map(p=>p.id);
-    try{ await updateDoc(configRef,{ scheduleIds }); }catch(e){ /* admin only */ }
-  }
-  const schedule = roundRobinSchedule(scheduleIds);
-  const next = ROUNDS.length; // 0-indexed
-  if(next >= schedule.length){
-    showMsg("round-ctrl-msg","🏆 Todos já se enfrentaram (rodízio completo). Para um novo turno, use <b>Reiniciar rodadas</b>.","info");
-    return;
-  }
-  const pairs = schedule[next];
-  const matches = pairs.map(([a,b])=>({ a, b, winner:null }));
+  const c=champData();
+  let scheduleIds=(c&&c.scheduleIds&&c.scheduleIds.length)?c.scheduleIds:null;
+  if(!scheduleIds||ROUNDS.length===0){ scheduleIds=PLAYERS.map(p=>p.id);
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{scheduleIds}); }catch(e){} }
+  const schedule=roundRobinSchedule(scheduleIds); const next=ROUNDS.length;
+  if(next>=schedule.length){ showMsg("round-ctrl-msg","🏆 Todos já se enfrentaram (rodízio completo). Use <b>Encerrar campeonato</b> para coroar o campeão, ou <b>Reiniciar rodadas</b> para um novo turno.","info"); return; }
+  const matches=schedule[next].map(([a,b])=>({a,b,winner:null}));
   const b=$("btn-start-round"); b.disabled=true;
-  try{
-    await addDoc(roundsCol,{ number: next+1, matches, createdAt: serverTimestamp() });
-    toast(`Rodada ${next+1} criada! ⚔️`);
-    switchTab("rounds");
-  }catch(e){ showMsg("round-ctrl-msg", fbError(e), "err"); }
-  finally{ b.disabled=false; }
+  try{ await addDoc(collection(db,"championships",CURRENT_CHAMP,"rounds"),{number:next+1,matches,createdAt:serverTimestamp()});
+    toast(`Rodada ${next+1} criada! ⚔️`); switchTab("rounds");
+  }catch(e){ showMsg("round-ctrl-msg",fbError(e),"err"); } finally{ b.disabled=isLocked(); }
 };
-
-$("btn-undo-round").onclick = async () => {
-  if(!isAdmin()) return;
-  if(ROUNDS.length===0){ toast("Não há rodadas."); return; }
-  const last = ROUNDS[ROUNDS.length-1];
-  if(!confirm(`Desfazer a Rodada ${last.number}? Os resultados dela serão apagados.`)) return;
-  try{
-    await deleteDoc(doc(db,"rounds",last.id));
-    if(ROUNDS.length-1===0){ try{ await updateDoc(configRef,{scheduleIds:[]}); }catch(e){} }
+$("btn-undo-round").onclick=async()=>{
+  if(!canEdit()) return; if(ROUNDS.length===0){ toast("Não há rodadas."); return; }
+  const last=ROUNDS[ROUNDS.length-1];
+  if(!confirm(`Desfazer a Rodada ${last.number}? Os resultados dela serão apagados (os pontos das outras rodadas continuam).`)) return;
+  try{ await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",last.id));
+    if(ROUNDS.length-1===0){ try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{scheduleIds:[]}); }catch(e){} }
     toast("Última rodada desfeita");
   }catch(e){ toast(fbError(e)); }
 };
-
-$("btn-reset-rounds").onclick = async () => {
-  if(!isAdmin()) return;
-  if(ROUNDS.length===0){ toast("Não há rodadas para reiniciar."); return; }
-  if(!confirm("Reiniciar TODAS as rodadas? Todos os confrontos e resultados serão apagados (os jogadores continuam). Isso permite recomeçar o rodízio com os participantes atuais.")) return;
-  try{
-    for(const r of ROUNDS){ await deleteDoc(doc(db,"rounds",r.id)); }
-    await updateDoc(configRef,{scheduleIds:[]});
-    toast("Rodadas reiniciadas");
+$("btn-reset-rounds").onclick=async()=>{
+  if(!canEdit()) return; if(ROUNDS.length===0){ toast("Não há rodadas para reiniciar."); return; }
+  if(!confirm("Reiniciar TODAS as rodadas deste campeonato? Os confrontos e resultados serão apagados (os jogadores continuam). Serve para recomeçar o rodízio.")) return;
+  try{ for(const r of ROUNDS) await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",r.id));
+    await updateDoc(doc(db,"championships",CURRENT_CHAMP),{scheduleIds:[]}); toast("Rodadas reiniciadas");
   }catch(e){ toast(fbError(e)); }
 };
+$("btn-finish-champ").onclick=async()=>{
+  if(!isAdmin()) return;
+  if(isLocked()){ if(!confirm("Reabrir o campeonato? Você poderá editar rodadas e resultados novamente.")) return;
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"ativo"}); toast("Campeonato reaberto"); }catch(e){ toast(fbError(e)); } return; }
+  const rows=computeStandings();
+  const champ=rows.length&&rows[0].wins>0?rows[0].name:"(sem partidas decididas)";
+  if(!confirm(`Encerrar o campeonato e coroar o campeão?\n\nCampeão atual: ${champ}\n\nOs pontos são mantidos e a edição fica travada (dá para reabrir depois).`)) return;
+  try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"encerrado"}); toast("Campeonato encerrado! 🏆"); switchTab("rank"); }catch(e){ toast(fbError(e)); }
+};
 
-// --- access: criar conta (sem deslogar admin) ---
-$("btn-add-access").onclick = async () => {
+/* ---------- access: criar conta ---------- */
+$("btn-add-access").onclick=async()=>{
   showMsg("access-msg","");
   if(!isAdmin()){ showMsg("access-msg","Só o admin pode criar acessos.","err"); return; }
   const email=$("acc-email").value.trim(), pass=$("acc-pass").value;
   if(!email||!pass){ showMsg("access-msg","Preencha e-mail e senha.","err"); return; }
   if(pass.length<6){ showMsg("access-msg","Senha mínima de 6 caracteres.","err"); return; }
   const b=$("btn-add-access"); b.disabled=true; b.textContent="Criando…";
-  try{
-    const sAuth = secondaryAuth();
-    const cred = await createUserWithEmailAndPassword(sAuth, email, pass);
-    // cria doc de usuário (como admin, permitido pelas regras)
-    await setDoc(doc(db,"users",cred.user.uid),{ email, createdAt: serverTimestamp() }, { merge:true });
-    await signOut(sAuth);
-    $("acc-email").value=""; $("acc-pass").value="";
-    showMsg("access-msg","Acesso criado! Repasse o e-mail e a senha ao jogador.","ok");
-    toast("Acesso criado 𓂀");
-  }catch(e){ showMsg("access-msg", fbError(e), "err"); }
-  finally{ b.disabled=false; b.textContent="Criar acesso"; }
+  try{ const sAuth=secondaryAuth(); const cred=await createUserWithEmailAndPassword(sAuth,email,pass);
+    await setDoc(doc(db,"users",cred.user.uid),{email,createdAt:serverTimestamp()},{merge:true}); await signOut(sAuth);
+    $("acc-email").value=""; $("acc-pass").value=""; showMsg("access-msg","Acesso criado! Repasse e-mail e senha ao jogador.","ok"); toast("Acesso criado 𓂀");
+  }catch(e){ showMsg("access-msg",fbError(e),"err"); } finally{ b.disabled=false; b.textContent="Criar acesso"; }
 };
 
-/* ============================================================
-   Enter para enviar em inputs
-   ============================================================ */
-$("login-pass").addEventListener("keydown", e=>{ if(e.key==="Enter") $("btn-login").click(); });
-$("setup-pass").addEventListener("keydown", e=>{ if(e.key==="Enter") $("btn-setup").click(); });
-$("new-player").addEventListener("keydown", e=>{ if(e.key==="Enter") $("btn-add-player").click(); });
-$("acc-pass").addEventListener("keydown", e=>{ if(e.key==="Enter") $("btn-add-access").click(); });
+/* ---------- enter to submit ---------- */
+$("login-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-login").click(); });
+$("setup-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-setup").click(); });
+$("new-champ").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-add-champ").click(); });
+$("new-player").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-add-player").click(); });
+$("acc-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-add-access").click(); });
 </script>
 </body>
 </html>
