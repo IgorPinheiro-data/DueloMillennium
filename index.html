@@ -304,13 +304,14 @@
 
   <nav class="tabs">
     <div class="tab active" data-tab="rank">Classificação</div>
-    <div class="tab" data-tab="rounds">Rodadas</div>
+    <div class="tab" data-tab="rounds">Calendário</div>
     <div class="tab" data-tab="players">Jogadores</div>
     <div class="tab" data-tab="banlist">Banlist</div>
     <div class="tab admin-only" data-tab="access">Acessos</div>
   </nav>
 
   <section id="tab-rank" class="tabpane">
+    <div id="champ-info"></div>
     <div id="champion-slot"></div>
     <div class="card">
       <h2><span class="glyph">𓆃</span> Classificação</h2>
@@ -320,19 +321,46 @@
   </section>
 
   <section id="tab-rounds" class="tabpane hidden">
-    <div class="card admin-only" id="round-controls">
-      <h2><span class="glyph">𓊹</span> Controle de rodadas</h2>
-      <p class="section-note">Cada "começar rodada" gera os confrontos do rodízio. <b>Encerrar rodada</b> apenas trava os resultados da rodada atual — os pontos nunca são apagados.</p>
-      <div id="round-ctrl-msg"></div>
-      <button class="btn" id="btn-start-round">⚔️ Começar próxima rodada</button>
-      <div class="btn-row">
-        <button class="btn ghost" id="btn-close-round">🔒 Encerrar rodada</button>
-        <button class="btn ghost" id="btn-undo-round">Desfazer última</button>
+    <!-- LISTA DE DIAS -->
+    <div id="cal-daylist">
+      <div class="card admin-only" id="cal-admin">
+        <h2><span class="glyph">𓎼</span> Novo dia</h2>
+        <p class="section-note">Crie um dia escolhendo a data. Dentro dele você adiciona quantas rodadas quiser.</p>
+        <div id="day-msg"></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="new-day" type="date" class="search" style="flex:1">
+          <button class="btn" id="btn-add-day" style="width:auto;padding:12px 16px">Criar dia</button>
+        </div>
+        <label class="fld" style="margin-top:14px">Data final do campeonato (opcional)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="champ-end" type="date" class="search" style="flex:1">
+          <button class="btn ghost" id="btn-set-end" style="width:auto;padding:12px 16px">Salvar</button>
+        </div>
+        <div style="height:12px"></div>
+        <button class="btn danger" id="btn-finish-champ">🏆 Encerrar campeonato</button>
       </div>
-      <div style="height:10px"></div>
-      <button class="btn danger" id="btn-finish-champ">🏆 Encerrar campeonato</button>
+      <div class="card">
+        <h2><span class="glyph">𓊃</span> Dias do campeonato</h2>
+        <div id="days-body"></div>
+      </div>
     </div>
-    <div id="rounds-body"></div>
+    <!-- DETALHE DO DIA -->
+    <div id="cal-day" class="hidden">
+      <button class="btn ghost" id="btn-day-back" style="margin-bottom:12px">‹ Voltar aos dias</button>
+      <div class="card">
+        <h2><span class="glyph">𓋴</span> <span id="day-title">Dia</span></h2>
+        <div class="admin-only" id="day-controls">
+          <p class="section-note">Cada "começar rodada" gera os confrontos do rodízio (todos jogam). <b>Encerrar rodada</b> trava os resultados — os pontos nunca são apagados.</p>
+          <div id="round-ctrl-msg"></div>
+          <button class="btn" id="btn-start-round">⚔️ Começar rodada neste dia</button>
+          <div class="btn-row">
+            <button class="btn ghost" id="btn-close-round">🔒 Encerrar rodada</button>
+            <button class="btn ghost" id="btn-undo-round">Desfazer última do dia</button>
+          </div>
+        </div>
+        <div id="rounds-body" style="margin-top:12px"></div>
+      </div>
+    </div>
   </section>
 
   <section id="tab-players" class="tabpane hidden">
@@ -473,8 +501,8 @@ const usersCol=collection(db,"users");
 let CURRENT=null, CONFIG=null, CONFIG_LOADED=false;
 let CHAMPS=[], USERS=[];
 let CURRENT_CHAMP=sessionStorage.getItem("champ")||null;
-let subscribedChamp=null, unsubPlayers=null, unsubRounds=null;
-let PLAYERS=[], ROUNDS=[];
+let subscribedChamp=null, unsubPlayers=null, unsubRounds=null, unsubDays=null;
+let PLAYERS=[], ROUNDS=[], DAYS=[], CURRENT_DAY=null;
 let ACTIVE_TAB="rank";
 let OFFICIAL=null, OFFICIAL_LOADING=false, OFFICIAL_ERR=false;
 let BANLISTS=[];            // listas personalizadas (globais)
@@ -513,16 +541,19 @@ onAuthStateChanged(auth, async user=>{
 function subscribeChamp(id){
   if(unsubPlayers){ unsubPlayers(); unsubPlayers=null; }
   if(unsubRounds){ unsubRounds(); unsubRounds=null; }
-  subscribedChamp=id; PLAYERS=[]; ROUNDS=[];
+  if(unsubDays){ unsubDays(); unsubDays=null; }
+  subscribedChamp=id; PLAYERS=[]; ROUNDS=[]; DAYS=[]; CURRENT_DAY=null;
   unsubPlayers=onSnapshot(query(collection(db,"championships",id,"players"),orderBy("createdAt","asc")),
     snap=>{ PLAYERS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, err=>console.error(err));
   unsubRounds=onSnapshot(query(collection(db,"championships",id,"rounds"),orderBy("number","asc")),
     snap=>{ ROUNDS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, err=>console.error(err));
+  unsubDays=onSnapshot(query(collection(db,"championships",id,"days"),orderBy("date","asc")),
+    snap=>{ DAYS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, err=>console.error(err));
 }
 function selectChamp(id){ CURRENT_CHAMP=id; sessionStorage.setItem("champ",id); subscribeChamp(id); ACTIVE_TAB="rank"; switchTab("rank"); route(); renderAll(); }
 function leaveChamp(){
-  if(unsubPlayers){unsubPlayers();unsubPlayers=null;} if(unsubRounds){unsubRounds();unsubRounds=null;}
-  subscribedChamp=null; CURRENT_CHAMP=null; PLAYERS=[]; ROUNDS=[]; sessionStorage.removeItem("champ"); route(); renderSelector();
+  if(unsubPlayers){unsubPlayers();unsubPlayers=null;} if(unsubRounds){unsubRounds();unsubRounds=null;} if(unsubDays){unsubDays();unsubDays=null;}
+  subscribedChamp=null; CURRENT_CHAMP=null; PLAYERS=[]; ROUNDS=[]; DAYS=[]; CURRENT_DAY=null; sessionStorage.removeItem("champ"); route(); renderSelector();
 }
 
 /* ---------- routing ---------- */
@@ -570,14 +601,11 @@ function applyRoleUI(){
     $("btn-tologin").onclick=()=>{ sessionStorage.removeItem("guest"); leaveChamp(); };
   }
   $("btn-switch").onclick=leaveChamp;
-  const startBtn=$("btn-start-round");
-  if(startBtn){
-    startBtn.disabled=locked; $("btn-undo-round").disabled=locked; $("btn-close-round").disabled=locked;
-    const fin=$("btn-finish-champ");
-    fin.textContent = locked ? "↺ Reabrir campeonato" : "🏆 Encerrar campeonato";
-    fin.classList.toggle("danger", !locked); fin.classList.toggle("ghost", locked);
-    const ap=$("add-player-card"); if(ap) ap.style.opacity=locked?.5:1;
-  }
+  ["btn-start-round","btn-undo-round","btn-close-round","btn-add-day","btn-set-end"].forEach(id=>{ const e=$(id); if(e) e.disabled=locked; });
+  const fin=$("btn-finish-champ");
+  if(fin){ fin.textContent = locked ? "↺ Reabrir campeonato" : "🏆 Encerrar campeonato";
+    fin.classList.toggle("danger", !locked); fin.classList.toggle("ghost", locked); }
+  const ap=$("add-player-card"); if(ap) ap.style.opacity=locked?.5:1;
   if(!adm && ACTIVE_TAB==="access") switchTab("rank");
 }
 
@@ -621,7 +649,7 @@ $("btn-setup").onclick=async()=>{
 };
 
 /* ---------- render orchestration ---------- */
-function renderAll(){ renderChampionBanner(); renderRank(); renderRounds(); renderPlayers(); renderAccess();
+function renderAll(){ renderChampInfo(); renderChampionBanner(); renderRank(); renderCalendar(); renderPlayers(); renderAccess();
   if(!$("app").classList.contains("hidden")){ applyRoleUI(); if(ACTIVE_TAB==="banlist") renderBanlist(); } }
 
 /* ---------- selector ---------- */
@@ -663,7 +691,7 @@ $("btn-add-champ").onclick=async()=>{
   if(!name){ showMsg("champ-msg","Digite um nome.","err"); return; }
   if(!isAdmin()){ showMsg("champ-msg","Só o admin pode criar.","err"); return; }
   const b=$("btn-add-champ"); b.disabled=true;
-  try{ const ref=await addDoc(champsCol,{name,status:"ativo",scheduleIds:[],banlist:"tcg",createdAt:serverTimestamp(),createdBy:CURRENT.uid});
+  try{ const ref=await addDoc(champsCol,{name,status:"ativo",scheduleIds:[],cycleBaseRounds:0,endDate:null,banlist:"tcg",createdAt:serverTimestamp(),createdBy:CURRENT.uid});
     $("new-champ").value=""; toast("Campeonato criado! 𓊃"); selectChamp(ref.id);
   }catch(e){ showMsg("champ-msg",fbError(e),"err"); } finally{ b.disabled=false; }
 };
@@ -713,31 +741,75 @@ function renderPlayers(){
   </div>`).join("");
 }
 
-/* ---------- rounds ---------- */
+/* ---------- calendário (dias → rodadas) ---------- */
 function playerName(id){ const p=PLAYERS.find(x=>x.id===id); return p?p.name:"(removido)"; }
-function renderRounds(){
-  const body=$("rounds-body"); if(!body) return;
-  const adm=canEdit();
-  if(ROUNDS.length===0){ body.innerHTML=`<div class="empty"><span class="big">⚔️</span>Nenhuma rodada iniciada.<br>${isAdmin()?'Toque em <b>Começar próxima rodada</b>.':'Aguarde o administrador começar.'}</div>`; return; }
-  body.innerHTML=ROUNDS.map(r=>{
-    const matches=(r.matches||[]); const done=matches.filter(m=>m.winner).length;
-    const closed=!!r.closed; const editable=adm&&!closed;
-    return `<div class="round-block"><div class="round-head">
-        <span class="rtitle">⚔️ Rodada ${r.number} ${closed?'<span title="Rodada encerrada">🔒</span>':''}</span>
-        <span class="rmeta">${done}/${matches.length} decididas${adm&&closed?` · <button class="mini" data-act="reopenround" data-r="${r.id}" style="padding:3px 8px">Reabrir</button>`:''}</span></div>
-      ${matches.map((m,idx)=>{
-        const aw=m.winner===m.a, bw=m.winner===m.b;
-        return `<div class="match">
-            <div class="side left ${aw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.a))}</div></div>
-            <div class="vs">VS</div>
-            <div class="side right ${bw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.b))}</div></div></div>
-          ${editable?`<div class="win-btns">
-              <button class="wbtn ${aw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.a}">Venceu ${esc(playerName(m.a))}</button>
-              <button class="wbtn ${bw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.b}">Venceu ${esc(playerName(m.b))}</button>
-              ${m.winner?`<button class="wbtn clear" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="">✕</button>`:``}
-            </div>`:`<div class="result-tag">${m.winner?`Vencedor: <b>${esc(playerName(m.winner))}</b>`:(closed?'Sem resultado':'Aguardando resultado')}</div>`}`;
-      }).join("")}</div>`;
+function fmtBR(iso){ if(!iso) return ""; const p=String(iso).split("-"); return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:iso; }
+function todayISO(){ const d=new Date(); const mm=String(d.getMonth()+1).padStart(2,"0"), dd=String(d.getDate()).padStart(2,"0"); return `${d.getFullYear()}-${mm}-${dd}`; }
+function daysUntil(iso){ if(!iso) return null; const [y,m,d]=iso.split("-").map(Number); const end=Date.UTC(y,m-1,d);
+  const n=new Date(); const today=Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()); return Math.round((end-today)/86400000); }
+
+function renderChampInfo(){
+  const slot=$("champ-info"); if(!slot) return;
+  const c=champData(); if(!c||!c.endDate || (c.status==="encerrado")){ slot.innerHTML=""; return; }
+  const du=daysUntil(c.endDate);
+  let txt;
+  if(du>1) txt=`faltam ${du} dias`; else if(du===1) txt="falta 1 dia"; else if(du===0) txt="último dia é hoje"; else txt=`data final passou há ${Math.abs(du)} dia(s)`;
+  slot.innerHTML=`<div class="card" style="padding:12px 16px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:20px">🏁</span>
+    <div><div style="font-family:'Cinzel',serif;color:var(--gold-soft);font-size:14px">Data final: ${fmtBR(c.endDate)}</div>
+    <div style="font-size:12px;color:var(--muted)">${txt}</div></div></div>`;
+}
+
+function roundBlockHTML(r){
+  const adm=canEdit(); const matches=(r.matches||[]); const done=matches.filter(m=>m.winner).length;
+  const closed=!!r.closed; const editable=adm&&!closed;
+  return `<div class="round-block"><div class="round-head">
+      <span class="rtitle">⚔️ Rodada ${r.number} ${closed?'<span title="Rodada encerrada">🔒</span>':''}</span>
+      <span class="rmeta">${done}/${matches.length} decididas${adm&&closed?` · <button class="mini" data-act="reopenround" data-r="${r.id}" style="padding:3px 8px">Reabrir</button>`:''}</span></div>
+    ${matches.map((m,idx)=>{
+      const aw=m.winner===m.a, bw=m.winner===m.b;
+      return `<div class="match">
+          <div class="side left ${aw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.a))}</div></div>
+          <div class="vs">VS</div>
+          <div class="side right ${bw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.b))}</div></div></div>
+        ${editable?`<div class="win-btns">
+            <button class="wbtn ${aw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.a}">Venceu ${esc(playerName(m.a))}</button>
+            <button class="wbtn ${bw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.b}">Venceu ${esc(playerName(m.b))}</button>
+            ${m.winner?`<button class="wbtn clear" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="">✕</button>`:``}
+          </div>`:`<div class="result-tag">${m.winner?`Vencedor: <b>${esc(playerName(m.winner))}</b>`:(closed?'Sem resultado':'Aguardando resultado')}</div>`}`;
+    }).join("")}</div>`;
+}
+
+function renderCalendar(){
+  if(CURRENT_DAY && !DAYS.find(d=>d.id===CURRENT_DAY)) CURRENT_DAY=null;
+  if(CURRENT_DAY){ $("cal-daylist").classList.add("hidden"); $("cal-day").classList.remove("hidden"); renderDayDetail(); }
+  else { $("cal-day").classList.add("hidden"); $("cal-daylist").classList.remove("hidden"); renderDayList(); }
+}
+function renderDayList(){
+  const body=$("days-body"); if(!body) return;
+  // preenche inputs de admin
+  const nd=$("new-day"); if(nd && !nd.value) nd.value=todayISO();
+  const ce=$("champ-end"); const c=champData(); if(ce && document.activeElement!==ce) ce.value=(c&&c.endDate)||"";
+  const adm=isAdmin();
+  const days=[...DAYS].sort((a,b)=> (a.date<b.date?1:a.date>b.date?-1:0)); // mais recente primeiro
+  if(days.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓎼</span>Nenhum dia criado.<br>${adm?'Crie um dia escolhendo a data acima.':'Aguarde o administrador criar um dia.'}</div>`; return; }
+  body.innerHTML=days.map(d=>{
+    const n=ROUNDS.filter(r=>r.dayId===d.id).length;
+    return `<div class="champ-card" data-act="openday" data-id="${d.id}">
+      <span style="font-size:24px;flex:0 0 auto">📅</span>
+      <div class="cc-body"><div class="cc-name">${fmtBR(d.date)}</div>
+        <div class="cc-meta">${n} rodada${n===1?'':'s'}</div></div>
+      ${adm?`<button class="mini danger" data-act="delday" data-id="${d.id}">Excluir</button>`:``}
+      <span class="cc-arrow">›</span></div>`;
   }).join("");
+}
+function renderDayDetail(){
+  const day=DAYS.find(d=>d.id===CURRENT_DAY); if(!day){ renderCalendar(); return; }
+  const t=$("day-title"); if(t) t.textContent="Dia "+fmtBR(day.date);
+  const body=$("rounds-body"); if(!body) return;
+  const rounds=ROUNDS.filter(r=>r.dayId===CURRENT_DAY).sort((a,b)=>a.number-b.number);
+  if(rounds.length===0){ body.innerHTML=`<div class="empty"><span class="big">⚔️</span>Nenhuma rodada neste dia.<br>${isAdmin()?'Toque em <b>Começar rodada neste dia</b>.':'Aguarde o administrador.'}</div>`; return; }
+  body.innerHTML=rounds.map(roundBlockHTML).join("");
 }
 
 /* ---------- access ---------- */
@@ -934,6 +1006,19 @@ document.addEventListener("click", async ev=>{
   if(act==="card"){ openCard(b.dataset.full,b.dataset.name); return; }
 
   if(!CURRENT_CHAMP) return;
+  if(act==="openday"){ CURRENT_DAY=b.dataset.id; renderCalendar(); return; }
+  if(act==="delday"){
+    if(!canEdit()) return;
+    const day=DAYS.find(d=>d.id===b.dataset.id); if(!day) return;
+    if(!confirm(`Excluir o dia ${fmtBR(day.date)} e todas as rodadas dele? Os pontos dessas rodadas sairão da classificação.`)) return;
+    try{ const rs=ROUNDS.filter(r=>r.dayId===b.dataset.id);
+      for(const r of rs) await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",r.id));
+      await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"days",b.dataset.id));
+      if(CURRENT_DAY===b.dataset.id) CURRENT_DAY=null;
+      renderCalendar(); toast("Dia excluído");
+    }catch(e){ toast(fbError(e)); }
+    return;
+  }
   if(act==="delplayer"){
     if(!canEdit()) return;
     if(!confirm("Remover este jogador? As partidas já jogadas mantêm o registro, mas ele sai da classificação.")) return;
@@ -991,36 +1076,63 @@ function roundRobinSchedule(ids){
     rounds.push(pairs); const fixed=list[0], rest=list.slice(1); rest.unshift(rest.pop()); list=[fixed,...rest]; }
   return rounds;
 }
+$("btn-add-day").onclick=async()=>{
+  showMsg("day-msg","");
+  if(!isAdmin()){ showMsg("day-msg","Só o admin pode criar dias.","err"); return; }
+  if(isLocked()){ showMsg("day-msg","Campeonato encerrado. Reabra para editar.","err"); return; }
+  const date=$("new-day").value;
+  if(!date){ showMsg("day-msg","Escolha uma data.","err"); return; }
+  const existing=DAYS.find(d=>d.date===date);
+  if(existing){ CURRENT_DAY=existing.id; renderCalendar(); toast("Esse dia já existe — abrindo."); return; }
+  const b=$("btn-add-day"); b.disabled=true;
+  try{ const ref=await addDoc(collection(db,"championships",CURRENT_CHAMP,"days"),{date,createdAt:serverTimestamp()});
+    CURRENT_DAY=ref.id; renderCalendar(); toast("Dia criado 📅"); }
+  catch(e){ showMsg("day-msg",fbError(e),"err"); } finally{ b.disabled=false; }
+};
+$("btn-set-end").onclick=async()=>{
+  if(!isAdmin()) return;
+  const v=$("champ-end").value||null;
+  try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{endDate:v}); renderChampInfo(); toast(v?"Data final salva 🏁":"Data final removida"); }catch(e){ toast(fbError(e)); }
+};
+$("btn-day-back").onclick=()=>{ CURRENT_DAY=null; renderCalendar(); };
+
 $("btn-start-round").onclick=async()=>{
   showMsg("round-ctrl-msg","");
   if(!isAdmin()){ showMsg("round-ctrl-msg","Só o admin pode iniciar rodadas.","err"); return; }
   if(isLocked()){ showMsg("round-ctrl-msg","Campeonato encerrado. Reabra para continuar.","err"); return; }
+  if(!CURRENT_DAY){ toast("Abra um dia primeiro."); return; }
   if(PLAYERS.length<2){ showMsg("round-ctrl-msg","Cadastre pelo menos 2 jogadores.","err"); return; }
-  const c=champData();
-  let scheduleIds=(c&&c.scheduleIds&&c.scheduleIds.length)?c.scheduleIds:null;
-  if(!scheduleIds||ROUNDS.length===0){ scheduleIds=PLAYERS.map(p=>p.id);
-    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{scheduleIds}); }catch(e){} }
-  const schedule=roundRobinSchedule(scheduleIds); const next=ROUNDS.length;
-  if(next>=schedule.length){ showMsg("round-ctrl-msg","🏆 Todos já se enfrentaram (rodízio completo). Use <b>Encerrar campeonato</b> para coroar o campeão. Para um novo turno, crie outro campeonato.","info"); return; }
-  const matches=schedule[next].map(([a,b])=>({a,b,winner:null}));
-  const b=$("btn-start-round"); b.disabled=true;
-  try{ await addDoc(collection(db,"championships",CURRENT_CHAMP,"rounds"),{number:next+1,matches,createdAt:serverTimestamp()});
-    toast(`Rodada ${next+1} criada! ⚔️`); switchTab("rounds");
-  }catch(e){ showMsg("round-ctrl-msg",fbError(e),"err"); } finally{ b.disabled=isLocked(); }
+  const day=DAYS.find(d=>d.id===CURRENT_DAY); if(!day) return;
+  const c=champData(); const total=ROUNDS.length;
+  let sched=(c&&c.scheduleIds)||[]; let base=(c&&typeof c.cycleBaseRounds==="number")?c.cycleBaseRounds:0;
+  let cycleLen=sched.length?roundRobinSchedule(sched).length:0;
+  const posNow=cycleLen?((total-base)%cycleLen):0;
+  if(!sched.length || cycleLen===0 || posNow===0){ // início de um novo ciclo → inclui os jogadores atuais
+    sched=PLAYERS.map(p=>p.id); base=total;
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{scheduleIds:sched,cycleBaseRounds:base}); }catch(e){}
+    cycleLen=roundRobinSchedule(sched).length;
+  }
+  const idx=cycleLen?((total-base)%cycleLen):0;
+  const pairs=(roundRobinSchedule(sched)[idx]||[]);
+  if(!pairs.length){ showMsg("round-ctrl-msg","Não há confrontos a gerar. Cadastre pelo menos 2 jogadores.","err"); return; }
+  const matches=pairs.map(([a,b])=>({a,b,winner:null}));
+  const btn=$("btn-start-round"); btn.disabled=true;
+  try{ await addDoc(collection(db,"championships",CURRENT_CHAMP,"rounds"),{number:total+1,dayId:CURRENT_DAY,date:day.date,matches,closed:false,createdAt:serverTimestamp()});
+    toast(`Rodada ${total+1} criada! ⚔️`); }
+  catch(e){ showMsg("round-ctrl-msg",fbError(e),"err"); } finally{ btn.disabled=isLocked(); }
 };
 $("btn-undo-round").onclick=async()=>{
-  if(!canEdit()) return; if(ROUNDS.length===0){ toast("Não há rodadas."); return; }
-  const last=ROUNDS[ROUNDS.length-1];
-  if(!confirm(`Desfazer a Rodada ${last.number}? Os resultados dela serão apagados (os pontos das outras rodadas continuam).`)) return;
-  try{ await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",last.id));
-    if(ROUNDS.length-1===0){ try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{scheduleIds:[]}); }catch(e){} }
-    toast("Última rodada desfeita");
-  }catch(e){ toast(fbError(e)); }
+  if(!canEdit()||!CURRENT_DAY) return;
+  const dayRounds=ROUNDS.filter(r=>r.dayId===CURRENT_DAY).sort((a,b)=>a.number-b.number);
+  if(!dayRounds.length){ toast("Não há rodadas neste dia."); return; }
+  const last=dayRounds[dayRounds.length-1];
+  if(!confirm(`Desfazer a Rodada ${last.number} deste dia? Os confrontos e resultados dela serão apagados (os pontos das outras rodadas continuam).`)) return;
+  try{ await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",last.id)); toast("Rodada desfeita"); }catch(e){ toast(fbError(e)); }
 };
 $("btn-close-round").onclick=async()=>{
-  if(!canEdit()) return; if(ROUNDS.length===0){ toast("Não há rodadas."); return; }
-  const open=[...ROUNDS].reverse().find(r=>!r.closed);
-  if(!open){ toast("Todas as rodadas já estão encerradas."); return; }
+  if(!canEdit()||!CURRENT_DAY) return;
+  const open=[...ROUNDS.filter(r=>r.dayId===CURRENT_DAY)].sort((a,b)=>a.number-b.number).reverse().find(r=>!r.closed);
+  if(!open){ toast("Nenhuma rodada aberta neste dia."); return; }
   const undecided=(open.matches||[]).filter(m=>!m.winner).length;
   const msg = undecided>0
     ? `Encerrar a Rodada ${open.number}? Há ${undecided} partida(s) sem resultado (que não pontuam). Os resultados ficam travados e os pontos são mantidos.`
