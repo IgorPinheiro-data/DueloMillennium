@@ -287,6 +287,30 @@
   .music-bar{display:flex;flex-direction:column;gap:10px;margin-top:16px;padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.2)}
   .music-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .music-row select,.music-row input[type=range]{flex:1;min-width:120px}
+
+  /* lista de cards / decks */
+  .card-detail{max-width:92vw;text-align:left}
+  .cd-meta{color:var(--muted);font-size:13px;margin:6px 0}
+  .cd-desc{color:var(--text);font-size:13px;line-height:1.5;max-height:32vh;overflow:auto;margin-top:8px;white-space:pre-wrap}
+  .deck-sec{margin-bottom:14px}
+  .deck-sec h3{font-family:'Cinzel',serif;color:var(--gold-soft);font-size:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .deck-sec h3 .cnt{font-family:'Rajdhani',sans-serif;font-size:12px;color:var(--muted)}
+  .deck-sec h3 .cnt.bad{color:#e79b8c}
+  .deck-sec h3 .cnt.ok{color:var(--green)}
+  .dk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  @media(min-width:520px){.dk-grid{grid-template-columns:repeat(6,1fr)}}
+  .dk-card{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--panel);cursor:pointer}
+  .dk-card img{width:100%;aspect-ratio:.686;object-fit:cover;display:block;background:#0e0b06}
+  .dk-card .qty{position:absolute;top:3px;right:3px;background:rgba(6,4,2,.85);color:var(--gold-soft);font-size:11px;font-weight:700;border-radius:6px;padding:1px 6px;border:1px solid var(--gold-deep)}
+  .dk-card .rm{position:absolute;bottom:0;left:0;right:0;background:rgba(120,30,20,.85);color:#fff;font-size:11px;text-align:center;padding:2px 0}
+  .seg{display:flex;gap:6px;margin:8px 0}
+  .seg button{flex:1;padding:8px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:var(--muted);font-weight:700;cursor:pointer;font-size:13px}
+  .seg button.active{color:#241804;background:linear-gradient(180deg,var(--gold-soft),var(--gold));border-color:var(--gold-deep)}
+  .deck-row{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+  .deck-row:last-child{border-bottom:none}
+  .valid-tag{font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid var(--line2)}
+  .valid-tag.ok{color:var(--green);border-color:#2c5a38;background:rgba(76,175,109,.08)}
+  .valid-tag.bad{color:#e79b8c;border-color:#5a2a20;background:rgba(193,84,63,.08)}
 </style>
 </head>
 <body>
@@ -581,6 +605,66 @@
   </div>
 </div>
 
+<!-- TELA LISTA DE CARDS -->
+<div id="screen-cards" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Lista de Cards</h1></div>
+  <div class="screen-body">
+    <input class="search" id="cards-search" type="text" placeholder="🔎 Buscar carta pelo nome…">
+    <div id="cards-count" class="bl-count"></div>
+    <div id="cards-body"></div>
+  </div>
+</div>
+
+<!-- TELA DECKS -->
+<div id="screen-decks" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Meus Decks</h1></div>
+  <div class="screen-body">
+    <div id="decks-list">
+      <div class="card">
+        <h2><span class="glyph">𓊃</span> Novo deck</h2>
+        <label class="fld">Nome do deck</label>
+        <input id="new-deck" type="text" placeholder="Ex: Dragões Brancos">
+        <label class="fld">Banlist do deck</label>
+        <select id="new-deck-bl" class="search"></select>
+        <div style="height:12px"></div>
+        <button class="btn" id="btn-add-deck">Criar deck</button>
+      </div>
+      <div class="card"><h2><span class="glyph">𓉔</span> Meus decks</h2><div id="decks-body"></div></div>
+    </div>
+    <div id="deck-builder" class="hidden">
+      <button class="btn ghost" id="deck-back-list" style="margin-bottom:12px">‹ Voltar aos decks</button>
+      <div class="card">
+        <input class="lp-name" id="deck-name" style="width:100%;font-size:18px;border-bottom:1px dashed var(--line2)">
+        <div id="deck-bl-line" class="section-note" style="margin:8px 0"></div>
+        <div id="deck-validity" style="margin-bottom:10px"></div>
+        <div class="seg">
+          <button id="seg-main" class="active">Adicionar ao Principal</button>
+          <button id="seg-side">Adicionar ao Side</button>
+        </div>
+        <input class="search" id="deck-add-search" type="text" placeholder="🔎 Buscar carta para adicionar…">
+        <div id="deck-add-results" class="dk-grid" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <div class="deck-sec"><h3>Deck Principal <span class="cnt" id="cnt-main"></span></h3><div id="sec-main" class="dk-grid"></div></div>
+        <div class="deck-sec"><h3>Extra Deck <span class="cnt" id="cnt-extra"></span></h3><div id="sec-extra" class="dk-grid"></div></div>
+        <div class="deck-sec"><h3>Side Deck <span class="cnt" id="cnt-side"></span></h3><div id="sec-side" class="dk-grid"></div></div>
+      </div>
+      <button class="btn danger" id="btn-del-deck">Excluir deck</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETALHE DA CARTA -->
+<div id="card-modal" class="bl-modal">
+  <div class="card-detail">
+    <img id="cm-img" src="" alt="" style="max-width:62vw;max-height:44vh;border-radius:10px;display:block;margin:0 auto">
+    <div id="cm-name" style="font-family:'Cinzel',serif;color:var(--gold-soft);text-align:center;margin-top:10px;font-size:16px"></div>
+    <div id="cm-meta" class="cd-meta" style="text-align:center"></div>
+    <div id="cm-desc" class="cd-desc"></div>
+  </div>
+  <div class="close" id="cm-close">Toque aqui para fechar</div>
+</div>
+
 <!-- RECORTE DE AVATAR -->
 <div id="crop-modal">
   <div style="color:var(--gold-soft);font-family:'Cinzel',serif">Arraste e use o controle para ajustar</div>
@@ -629,7 +713,7 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword,
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
          collection, onSnapshot, addDoc, serverTimestamp,
-         query, orderBy, arrayUnion, arrayRemove }
+         query, orderBy, where, arrayUnion, arrayRemove }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
@@ -665,7 +749,7 @@ const usersCol=collection(db,"users");
 
 /* ---------- state ---------- */
 let CURRENT=null, CONFIG=null, CONFIG_LOADED=false;
-let CHAMPS=[], USERS=[];
+let CHAMPS=[], USERS=[], MEMBERS=[];
 let CURRENT_CHAMP=sessionStorage.getItem("champ")||null;
 let subscribedChamp=null, unsubPlayers=null, unsubRounds=null, unsubDays=null;
 let PLAYERS=[], ROUNDS=[], DAYS=[], CURRENT_DAY=null;
@@ -673,11 +757,15 @@ let ACTIVE_TAB="rank";
 let OFFICIAL=null, OFFICIAL_LOADING=false, OFFICIAL_ERR=false;
 let BANLISTS=[];            // listas personalizadas (globais)
 let TRACKS=[];              // músicas (globais)
-let ACTIVE_SCREEN=null;     // 'counter' | 'profile' | null
+let ACTIVE_SCREEN=null;     // 'counter' | 'profile' | 'cards' | 'decks' | ...
+let MYDECKS=[], unsubDecks=null, CUR_DECK=null, deckAddTarget="main";
+let DECK_ADD=[], DECK_ADD_LOADING=false, deckAddTimer=null, cardsTimer=null, CARDS_RES=[];
+const CARD_CACHE={};
 let BL_MANAGE=false;        // admin editando a lista custom atual
 let BL_ADD=[], BL_ADD_LOADING=false, BL_ADD_TERM="", BL_PENDING=null, addTimer=null;
 
 const isAdmin=()=>!!(CURRENT&&CONFIG&&Array.isArray(CONFIG.adminUids)&&CONFIG.adminUids.includes(CURRENT.uid));
+const isMember=()=>!!(CURRENT&&MEMBERS.some(m=>m.id===CURRENT.uid));
 const champData=()=>CHAMPS.find(c=>c.id===CURRENT_CHAMP)||null;
 const isLocked=()=>{ const c=champData(); return !!(c&&c.status==="encerrado"); };
 const canEdit=()=>isAdmin()&&!isLocked();
@@ -694,6 +782,10 @@ onSnapshot(query(champsCol, orderBy("createdAt","asc")), snap=>{
 
 onSnapshot(usersCol, snap=>{ USERS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAccess(); }, err=>console.error(err));
 
+onSnapshot(collection(db,"members"), snap=>{ MEMBERS=snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderAccess(); if(ACTIVE_TAB==="players" && !$("app").classList.contains("hidden")) renderEnroll();
+}, err=>console.error(err));
+
 onSnapshot(query(collection(db,"banlists"),orderBy("createdAt","asc")), snap=>{
   BANLISTS=snap.docs.map(d=>({id:d.id,...d.data()}));
   if(ACTIVE_TAB==="banlist" && !$("app").classList.contains("hidden")) renderBanlist();
@@ -706,7 +798,12 @@ onSnapshot(query(collection(db,"tracks"),orderBy("createdAt","asc")), snap=>{
 
 onAuthStateChanged(auth, async user=>{
   CURRENT=user;
-  if(user){ try{ await setDoc(doc(db,"users",user.uid),{email:user.email,lastSeen:serverTimestamp()},{merge:true}); }catch(e){} }
+  if(user){
+    try{ await setDoc(doc(db,"users",user.uid),{email:user.email,lastSeen:serverTimestamp()},{merge:true}); }catch(e){}
+    if(unsubDecks) unsubDecks();
+    unsubDecks=onSnapshot(query(collection(db,"decks"),where("ownerUid","==",user.uid)),
+      snap=>{ MYDECKS=snap.docs.map(d=>({id:d.id,...d.data()})); if(ACTIVE_SCREEN==="decks") renderDecks(); }, err=>console.error(err));
+  } else { if(unsubDecks){ unsubDecks(); unsubDecks=null; } MYDECKS=[]; CUR_DECK=null; }
   route(); renderSelector(); renderAll();
 });
 
@@ -986,14 +1083,30 @@ function renderDayDetail(){
 function renderAccess(){
   const body=$("access-body"); if(!body) return;
   if(!isAdmin()){ body.innerHTML=`<div class="empty">Somente administradores.</div>`; return; }
-  if(USERS.length===0){ body.innerHTML=`<div class="empty">Nenhuma conta ainda.</div>`; return; }
   const admins=(CONFIG&&CONFIG.adminUids)||[];
-  body.innerHTML=USERS.map(u=>{
-    const adm=admins.includes(u.id), me=CURRENT&&CURRENT.uid===u.id;
-    return `<div class="list-row"><div class="grow"><div class="l1">${esc(u.email||u.id)}</div>
-      <div class="l2">${adm?'Administrador':'Jogador'}${me?' · você':''}</div></div>
-      <button class="mini ${adm?'danger':''}" data-act="togadmin" data-id="${u.id}" ${me?'disabled style="opacity:.4"':''}>${adm?'Rebaixar':'Tornar Admin'}</button></div>`;
+  const memberIds=new Set(MEMBERS.map(m=>m.id));
+  const pending=USERS.filter(u=>!memberIds.has(u.id) && !admins.includes(u.id));
+  const nameOf=(id,fallback)=>{ const u=USERS.find(x=>x.id===id); return (u&&u.displayName)||fallback; };
+  const photoOf=id=>{ const u=USERS.find(x=>x.id===id); return {photo:u&&u.photo}; };
+  let html=`<div class="section-note" style="margin:0 0 8px">Membros autorizados a jogar:</div>`;
+  if(MEMBERS.length===0){ html+=`<div class="empty" style="padding:14px">Nenhum membro ainda. Crie um acesso acima.</div>`; }
+  else html+=MEMBERS.map(m=>{
+    const adm=admins.includes(m.id), me=CURRENT&&CURRENT.uid===m.id;
+    return `<div class="list-row">${avatarHTML(photoOf(m.id),'sm')}
+      <div class="grow"><div class="l1">${esc(nameOf(m.id,m.email||m.id))}</div>
+        <div class="l2">${esc(m.email||'')} · ${adm?'Administrador':'Jogador'}${me?' · você':''}</div></div>
+      <button class="mini ${adm?'danger':''}" data-act="togadmin" data-id="${m.id}" ${me?'disabled style="opacity:.4"':''}>${adm?'Rebaixar':'Admin'}</button>
+      <button class="mini danger" data-act="delmember" data-id="${m.id}" data-name="${esc(nameOf(m.id,m.email||m.id))}" ${me?'disabled style="opacity:.4"':''}>Remover</button></div>`;
   }).join("");
+  if(pending.length){
+    html+=`<div style="height:1px;background:var(--line);margin:16px 0"></div>
+      <div class="section-note" style="margin:0 0 8px;color:#e79b8c">⚠️ Contas que entraram mas NÃO estão autorizadas:</div>`;
+    html+=pending.map(u=>`<div class="list-row">${avatarHTML(photoOf(u.id),'sm')}
+      <div class="grow"><div class="l1">${esc(u.displayName||u.email||u.id)}</div><div class="l2">${esc(u.email||'')}</div></div>
+      <button class="mini" data-act="authorize" data-id="${u.id}" data-email="${esc(u.email||'')}">Autorizar</button>
+      <button class="mini danger" data-act="delmember" data-id="${u.id}" data-name="${esc(u.displayName||u.email||u.id)}">Remover</button></div>`).join("");
+  }
+  body.innerHTML=html;
 }
 
 /* ---------- banlist (oficial TCG + listas personalizadas) ---------- */
@@ -1152,10 +1265,12 @@ function renderEnroll(){
       <div style="color:var(--green);font-weight:700">✓ Você está inscrito neste torneio</div>
       <button class="mini danger" id="btn-unenroll">Sair do torneio</button></div>`;
     $("btn-unenroll").onclick=unenroll;
-  } else {
+  } else if(isMember()||isAdmin()){
     box.innerHTML=`<p class="section-note" style="margin:0 0 10px">Ao entrar, você já vira jogador e aparece na classificação. Suas vitórias ficam ligadas à sua conta.</p>
       <button class="btn" id="btn-enroll">⚔️ Entrar no torneio</button>`;
     $("btn-enroll").onclick=enroll;
+  } else {
+    box.innerHTML=`<div class="msg info" style="margin:0">⏳ Sua conta ainda <b>não foi autorizada</b> pelo administrador. Peça para ele liberar seu acesso (menu → Acessos). Enquanto isso, você pode acompanhar como visitante.</div>`;
   }
 }
 async function enroll(){
@@ -1165,6 +1280,21 @@ async function enroll(){
     await setDoc(doc(db,"championships",CURRENT_CHAMP,"players",CURRENT.uid),{name,uid:CURRENT.uid,createdAt:serverTimestamp()},{merge:true});
     await setDoc(doc(db,"users",CURRENT.uid),{enrollments:arrayUnion(CURRENT_CHAMP)},{merge:true});
     toast("Você entrou no torneio! ⚔️");
+  }catch(e){ toast(fbError(e)); }
+}
+async function removeAccount(uid, label){
+  if(!isAdmin()) return;
+  if(!confirm(`Remover "${label}" completamente?\n\nEla sai de TODOS os torneios (deixa de aparecer na classificação) e perde a autorização.\n\nObs.: a conta de login em si só pode ser apagada no console do Firebase (Authentication → Users).`)) return;
+  try{
+    const u=USERS.find(x=>x.id===uid);
+    const champs=new Set((u&&u.enrollments)||[]);
+    if(CURRENT_CHAMP) champs.add(CURRENT_CHAMP); // garante o torneio atual
+    for(const cid of champs){ try{ await deleteDoc(doc(db,"championships",cid,"players",uid)); }catch(_){} }
+    const admins=(CONFIG&&CONFIG.adminUids)||[];
+    if(admins.includes(uid)){ try{ await updateDoc(configRef,{adminUids:arrayRemove(uid)}); }catch(_){} }
+    try{ await deleteDoc(doc(db,"members",uid)); }catch(_){}
+    try{ await deleteDoc(doc(db,"users",uid)); }catch(_){}
+    toast("Acesso removido");
   }catch(e){ toast(fbError(e)); }
 }
 async function unenroll(){
@@ -1201,6 +1331,10 @@ document.addEventListener("click", async ev=>{
     return;
   }
   if(act==="card"){ openCard(b.dataset.full,b.dataset.name); return; }
+  if(act==="cardinfo"||act==="deckcardinfo"){ openCardModal(b.dataset.id); return; }
+  if(act==="deckadd"){ addToDeck(b.dataset.id, deckAddTarget); return; }
+  if(act==="deckremove"){ ev.stopPropagation(); removeFromDeck(b.dataset.sec,b.dataset.id); return; }
+  if(act==="opendeck"){ openDeck(b.dataset.id); return; }
 
   if(!CURRENT_CHAMP) return;
   if(act==="openday"){ CURRENT_DAY=b.dataset.id; renderCalendar(); return; }
@@ -1239,6 +1373,14 @@ document.addEventListener("click", async ev=>{
     if(!isAdmin()) return;
     const uid=b.dataset.id, admins=(CONFIG&&CONFIG.adminUids)||[];
     try{ if(admins.includes(uid)) await updateDoc(configRef,{adminUids:arrayRemove(uid)}); else await updateDoc(configRef,{adminUids:arrayUnion(uid)}); toast("Permissão atualizada"); }catch(e){ toast(fbError(e)); }
+  }
+  if(act==="authorize"){
+    if(!isAdmin()) return;
+    try{ await setDoc(doc(db,"members",b.dataset.id),{email:b.dataset.email||"",createdAt:serverTimestamp()},{merge:true}); toast("Conta autorizada ✓"); }catch(e){ toast(fbError(e)); }
+  }
+  if(act==="delmember"){
+    if(!isAdmin()) return;
+    await removeAccount(b.dataset.id, b.dataset.name||"esta conta");
   }
   if(act==="addcard"){
     if(!isAdmin()) return;
@@ -1354,8 +1496,10 @@ $("btn-add-access").onclick=async()=>{
   if(pass.length<6){ showMsg("access-msg","Senha mínima de 6 caracteres.","err"); return; }
   const b=$("btn-add-access"); b.disabled=true; b.textContent="Criando…";
   try{ const sAuth=secondaryAuth(); const cred=await createUserWithEmailAndPassword(sAuth,email,pass);
-    await setDoc(doc(db,"users",cred.user.uid),{email,createdAt:serverTimestamp()},{merge:true}); await signOut(sAuth);
-    $("acc-email").value=""; $("acc-pass").value=""; showMsg("access-msg","Acesso criado! Repasse e-mail e senha ao jogador.","ok"); toast("Acesso criado 𓂀");
+    await setDoc(doc(db,"users",cred.user.uid),{email,createdAt:serverTimestamp()},{merge:true});
+    await setDoc(doc(db,"members",cred.user.uid),{email,createdAt:serverTimestamp()},{merge:true});
+    await signOut(sAuth);
+    $("acc-email").value=""; $("acc-pass").value=""; showMsg("access-msg","Acesso criado e autorizado! Repasse e-mail e senha ao jogador.","ok"); toast("Acesso criado 𓂀");
   }catch(e){ showMsg("access-msg",fbError(e),"err"); } finally{ b.disabled=false; b.textContent="Criar acesso"; }
 };
 
@@ -1384,6 +1528,8 @@ function renderDrawer(){
     nav+=`<div class="drawer-sep"></div>`;
   }
   nav+=item('counter','⚔️','Contador de Duelo');
+  nav+=item('cards','🃏','Lista de Cards');
+  if(authed) nav+=item('decks','🗂️','Meus Decks');
   if(authed) nav+=item('history','📜','Meu histórico');
   if(authed) nav+=item('profile','👤','Perfil');
   nav+=`<div class="drawer-sep"></div>`;
@@ -1397,6 +1543,8 @@ document.addEventListener("click", ev=>{
   const nav=it.dataset.nav; closeDrawer();
   if(["rank","rounds","players","banlist","access"].includes(nav)){ closeScreen(); if(CURRENT_CHAMP) switchTab(nav); }
   else if(nav==="counter"){ openScreen("counter"); }
+  else if(nav==="cards"){ openScreen("cards"); }
+  else if(nav==="decks"){ if(CURRENT) openScreen("decks"); }
   else if(nav==="history"){ if(CURRENT) openScreen("history"); }
   else if(nav==="profile"){ if(CURRENT) openScreen("profile"); }
   else if(nav==="switch"){ closeScreen(); leaveChamp(); }
@@ -1405,7 +1553,11 @@ document.addEventListener("click", ev=>{
 });
 
 /* screens overlay */
-function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.classList.remove("show")); const s=$("screen-"+name); if(s) s.classList.add("show"); if(name==="profile") renderProfile(); if(name==="counter") initCounter(); if(name==="history") renderHistory(); }
+function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.classList.remove("show")); const s=$("screen-"+name); if(s) s.classList.add("show");
+  if(name==="profile") renderProfile(); if(name==="counter") initCounter(); if(name==="history") renderHistory();
+  if(name==="cards"){ if(!CARDS_RES.length) $("cards-body").innerHTML=`<div class="empty">Digite ao menos 3 letras para buscar uma carta.</div>`; }
+  if(name==="decks") renderDecks();
+}
 function closeScreen(){ ACTIVE_SCREEN=null; els(".screen").forEach(s=>s.classList.remove("show")); }
 document.addEventListener("click", ev=>{ if(ev.target.closest("[data-close-screen]")) closeScreen(); });
 
@@ -1525,6 +1677,145 @@ $("music-add").onclick=async()=>{ if(!isAdmin()){ toast("Só o admin adiciona m�
   if(!name||!url){ toast("Preencha nome e link."); return; }
   try{ await addDoc(collection(db,"tracks"),{name,url,createdAt:serverTimestamp()}); $("music-name").value=""; $("music-url").value=""; toast("Música adicionada 🎵"); }
   catch(e){ toast(fbError(e)); } };
+
+/* ================= LISTA DE CARDS + DECKS (API YGOPRODeck) ================= */
+function mapCard(c){
+  const o={ id:String(c.id), name:c.name, type:c.type||"", race:c.race||"", attribute:c.attribute||"",
+    atk:(c.atk!=null?c.atk:null), def:(c.def!=null?c.def:null), level:(c.level!=null?c.level:null),
+    desc:c.desc||"", banTcg:(c.banlist_info&&c.banlist_info.ban_tcg)||"",
+    small:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url_small)||"",
+    full:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url)||"" };
+  CARD_CACHE[o.id]=o; return o;
+}
+const isExtraType=t=>/Fusion|Synchro|Xyz|XYZ|Link/.test(t||"");
+async function apiSearch(term){
+  const res=await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php?fname="+encodeURIComponent(term));
+  if(!res.ok) throw new Error("HTTP "+res.status);
+  const j=await res.json(); return (j.data||[]).slice(0,40).map(mapCard);
+}
+function openCardModal(id){ const c=CARD_CACHE[id]; if(!c) return;
+  $("cm-img").src=c.full||c.small; $("cm-name").textContent=c.name;
+  const bits=[c.type]; if(c.race) bits.push(c.race); if(c.attribute) bits.push(c.attribute);
+  if(c.level!=null) bits.push("Nível/Rank "+c.level);
+  if(c.atk!=null) bits.push("ATK "+c.atk+(c.def!=null?" / DEF "+c.def:""));
+  if(c.banTcg) bits.push("Banlist TCG: "+c.banTcg);
+  $("cm-meta").textContent=bits.filter(Boolean).join(" · ");
+  $("cm-desc").textContent=c.desc||"";
+  $("card-modal").classList.add("show");
+}
+$("cm-close").onclick=()=>$("card-modal").classList.remove("show");
+$("card-modal").addEventListener("click",e=>{ if(e.target.id==="card-modal") $("card-modal").classList.remove("show"); });
+
+/* Lista de Cards */
+$("cards-search").addEventListener("input",()=>{ clearTimeout(cardsTimer); cardsTimer=setTimeout(runCardsSearch,350); });
+async function runCardsSearch(){
+  const term=$("cards-search").value.trim(), body=$("cards-body"), count=$("cards-count");
+  if(term.length<3){ CARDS_RES=[]; body.innerHTML=`<div class="empty">Digite ao menos 3 letras para buscar uma carta.</div>`; count.textContent=""; return; }
+  body.innerHTML=`<div class="spin"></div>`; count.textContent="buscando…";
+  try{ CARDS_RES=await apiSearch(term); }catch(e){ CARDS_RES=[]; count.textContent="erro ao buscar"; }
+  count.textContent=`${CARDS_RES.length} carta(s) · fonte: YGOPRODeck`;
+  body.innerHTML=CARDS_RES.length
+    ? `<div class="bl-grid">${CARDS_RES.map(c=>`<div class="bl-card" data-act="cardinfo" data-id="${esc(c.id)}"><img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}"><div class="bl-name">${esc(c.name)}</div></div>`).join("")}</div>`
+    : `<div class="empty">Nenhuma carta encontrada.</div>`;
+}
+
+/* Decks */
+function deckBanlistLimit(deck, card){
+  const mode=deck.banlist||"tcg";
+  const lim=s=>s==="Forbidden"?0:s==="Limited"?1:s==="Semi-Limited"?2:3;
+  if(mode==="tcg") return lim(card.banTcg);
+  const custom=BANLISTS.find(b=>b.id===mode); if(!custom) return 3;
+  const found=(custom.cards||[]).find(x=>x.id===card.id); return found?lim(found.status):3;
+}
+function deckCopies(deck,cardId){ let n=0; for(const s of ['main','extra','side']) n+=((deck[s]||[]).filter(c=>c.id===cardId)).length; return n; }
+function openDeck(id){ CUR_DECK=id; renderDecks(); }
+function renderDecks(){
+  if($("screen-decks").classList.contains("hidden")||!$("screen-decks").classList.contains("show")){ /* still render if open */ }
+  const list=$("decks-list"), builder=$("deck-builder");
+  if(CUR_DECK && MYDECKS.find(d=>d.id===CUR_DECK)){ list.classList.add("hidden"); builder.classList.remove("hidden"); renderBuilder(); }
+  else { CUR_DECK=null; builder.classList.add("hidden"); list.classList.remove("hidden"); renderDeckList(); }
+}
+function blOptionsHTML(sel){ return `<option value="tcg">TCG (oficial)</option>`+BANLISTS.map(b=>`<option value="${b.id}" ${sel===b.id?'selected':''}>${esc(b.name)}</option>`).join(""); }
+function renderDeckList(){
+  const s=$("new-deck-bl"); const keep=s.value; s.innerHTML=blOptionsHTML(keep); if(keep) s.value=keep;
+  const body=$("decks-body"); if(!body) return;
+  if(!MYDECKS.length){ body.innerHTML=`<div class="empty"><span class="big">🗂️</span>Você ainda não tem decks.<br>Crie um acima.</div>`; return; }
+  body.innerHTML=MYDECKS.map(d=>{ const m=(d.main||[]).length,e=(d.extra||[]).length,si=(d.side||[]).length; const legal=m>=40&&m<=60&&e<=15&&si<=15;
+    const blName=(d.banlist||"tcg")==="tcg"?"TCG":((BANLISTS.find(b=>b.id===d.banlist)||{}).name||"?");
+    return `<div class="deck-row" data-act="opendeck" data-id="${d.id}">
+      <div class="grow"><div class="l1">${esc(d.name)}</div><div class="l2">${m} principal · ${e} extra · ${si} side · banlist: ${esc(blName)}</div></div>
+      <span class="valid-tag ${legal?'ok':'bad'}">${legal?'ok':'incompleto'}</span></div>`; }).join("");
+}
+function renderSection(sec){
+  const deck=MYDECKS.find(d=>d.id===CUR_DECK); const arr=(deck&&deck[sec])||[]; const el=$("sec-"+sec); if(!el) return;
+  const map={}; arr.forEach(c=>{ if(!map[c.id]) map[c.id]={c,n:0}; map[c.id].n++; });
+  const items=Object.values(map);
+  el.innerHTML=items.length? items.map(({c,n})=>`<div class="dk-card" data-act="deckcardinfo" data-id="${esc(c.id)}">
+      <img loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">
+      ${n>1?`<span class="qty">x${n}</span>`:''}
+      <div class="rm" data-act="deckremove" data-sec="${sec}" data-id="${esc(c.id)}">− remover</div></div>`).join("")
+    : `<div class="section-note" style="grid-column:1/-1;margin:0">vazio</div>`;
+}
+function renderBuilder(){
+  const deck=MYDECKS.find(d=>d.id===CUR_DECK); if(!deck){ CUR_DECK=null; renderDecks(); return; }
+  if(document.activeElement!==$("deck-name")) $("deck-name").value=deck.name||"";
+  const mode=deck.banlist||"tcg"; const blName=mode==="tcg"?"TCG (oficial)":((BANLISTS.find(b=>b.id===mode)||{}).name||"?");
+  $("deck-bl-line").innerHTML=`Banlist obrigatória: <b style="color:var(--gold-soft)">${esc(blName)}</b> — cartas proibidas/limitadas são bloqueadas ao adicionar.`;
+  const m=(deck.main||[]).length,e=(deck.extra||[]).length,si=(deck.side||[]).length;
+  const setC=(id,txt,ok)=>{ const el=$(id); if(el){ el.textContent=txt; el.className="cnt "+(ok?'ok':'bad'); } };
+  setC("cnt-main",`${m}/40–60`, m>=40&&m<=60); setC("cnt-extra",`${e}/15`, e<=15); setC("cnt-side",`${si}/15`, si<=15);
+  renderSection('main'); renderSection('extra'); renderSection('side');
+  const legal=m>=40&&m<=60&&e<=15&&si<=15;
+  $("deck-validity").innerHTML=`<span class="valid-tag ${legal?'ok':'bad'}">${legal?'✓ Deck válido':'✗ Ajuste o tamanho (Principal 40–60, Extra e Side até 15)'}</span>`;
+  renderDeckAddResults();
+}
+function renderDeckAddResults(){
+  const box=$("deck-add-results"); if(!box) return;
+  if(DECK_ADD_LOADING){ box.innerHTML=`<div class="spin" style="grid-column:1/-1"></div>`; return; }
+  if(!DECK_ADD.length){ box.innerHTML=`<div class="section-note" style="grid-column:1/-1;margin:0">Busque uma carta para adicionar (3+ letras).</div>`; return; }
+  box.innerHTML=DECK_ADD.map(c=>`<div class="dk-card" data-act="deckadd" data-id="${esc(c.id)}">
+    <img loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">
+    <div class="rm" style="background:rgba(30,90,40,.85)">+ adicionar</div></div>`).join("");
+}
+$("deck-add-search").addEventListener("input",()=>{ clearTimeout(deckAddTimer); deckAddTimer=setTimeout(runDeckAdd,350); });
+async function runDeckAdd(){
+  const term=$("deck-add-search").value.trim();
+  if(term.length<3){ DECK_ADD=[]; renderDeckAddResults(); return; }
+  DECK_ADD_LOADING=true; renderDeckAddResults();
+  try{ DECK_ADD=await apiSearch(term); }catch(e){ DECK_ADD=[]; }
+  DECK_ADD_LOADING=false; renderDeckAddResults();
+}
+$("seg-main").onclick=()=>{ deckAddTarget="main"; $("seg-main").classList.add("active"); $("seg-side").classList.remove("active"); };
+$("seg-side").onclick=()=>{ deckAddTarget="side"; $("seg-side").classList.add("active"); $("seg-main").classList.remove("active"); };
+async function addToDeck(cardId,target){
+  const deck=MYDECKS.find(d=>d.id===CUR_DECK); if(!deck) return;
+  const card=CARD_CACHE[cardId]; if(!card) return;
+  const limit=Math.min(3, deckBanlistLimit(deck,card));
+  if(deckCopies(deck,cardId)>=limit){ toast(limit===0?`🚫 ${card.name} está PROIBIDA nesta banlist.`:`Limite de ${limit} cópia(s) de ${card.name} nesta banlist.`); return; }
+  const sec = target==="side" ? "side" : (isExtraType(card.type)?"extra":"main");
+  const cap = sec==="main"?60:15;
+  if(((deck[sec]||[]).length)>=cap){ toast(sec==="main"?"Deck Principal cheio (máx. 60).":sec==="extra"?"Extra Deck cheio (máx. 15).":"Side Deck cheio (máx. 15)."); return; }
+  const arr=(deck[sec]||[]).slice();
+  arr.push({id:card.id,name:card.name,type:card.type,small:card.small,full:card.full,banTcg:card.banTcg});
+  try{ await updateDoc(doc(db,"decks",CUR_DECK),{[sec]:arr,updatedAt:serverTimestamp()}); }catch(e){ toast(fbError(e)); }
+}
+async function removeFromDeck(sec,cardId){
+  const deck=MYDECKS.find(d=>d.id===CUR_DECK); if(!deck) return;
+  const arr=(deck[sec]||[]).slice(); const i=arr.findIndex(c=>c.id===cardId); if(i<0) return; arr.splice(i,1);
+  try{ await updateDoc(doc(db,"decks",CUR_DECK),{[sec]:arr,updatedAt:serverTimestamp()}); }catch(e){ toast(fbError(e)); }
+}
+$("btn-add-deck").onclick=async()=>{
+  if(!CURRENT){ toast("Entre para criar decks."); return; }
+  const name=$("new-deck").value.trim(); if(!name){ toast("Digite um nome."); return; }
+  const bl=$("new-deck-bl").value||"tcg";
+  try{ const ref=await addDoc(collection(db,"decks"),{ownerUid:CURRENT.uid,name,banlist:bl,main:[],extra:[],side:[],updatedAt:serverTimestamp()});
+    $("new-deck").value=""; CUR_DECK=ref.id; renderDecks(); toast("Deck criado 𓊃"); }catch(e){ toast(fbError(e)); }
+};
+$("deck-name").addEventListener("change",async()=>{ if(!CUR_DECK) return; const nm=$("deck-name").value.trim()||"Deck";
+  try{ await updateDoc(doc(db,"decks",CUR_DECK),{name:nm}); }catch(e){} });
+$("deck-back-list").onclick=()=>{ CUR_DECK=null; renderDecks(); };
+$("btn-del-deck").onclick=async()=>{ if(!CUR_DECK) return; if(!confirm("Excluir este deck? Não dá para desfazer.")) return;
+  try{ await deleteDoc(doc(db,"decks",CUR_DECK)); CUR_DECK=null; renderDecks(); toast("Deck excluído"); }catch(e){ toast(fbError(e)); } };
 
 /* ---------- enter to submit ---------- */
 $("login-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-login").click(); });
