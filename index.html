@@ -439,14 +439,7 @@
   </section>
 
   <section id="tab-players" class="tabpane hidden">
-    <div class="card admin-only" id="add-player-card">
-      <h2><span class="glyph">𓁶</span> Novo participante</h2>
-      <div id="player-msg"></div>
-      <label class="fld">Nome do duelista</label>
-      <input id="new-player" type="text" placeholder="Ex: Yami Yugi">
-      <div style="height:12px"></div>
-      <button class="btn" id="btn-add-player">Cadastrar jogador</button>
-    </div>
+    <div class="card" id="enroll-card"></div>
     <div class="card">
       <h2><span class="glyph">𓀀</span> Participantes</h2>
       <div id="players-body"></div>
@@ -523,6 +516,12 @@
     </div>
     <div class="card" id="prof-account"></div>
   </div>
+</div>
+
+<!-- TELA HISTÓRICO -->
+<div id="screen-history" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Meu histórico</h1></div>
+  <div class="screen-body"><div id="history-body"></div></div>
 </div>
 
 <!-- TELA CONTADOR DE DUELO -->
@@ -875,39 +874,45 @@ function renderChampionBanner(){
 
 /* ---------- standings ---------- */
 function computeStandings(){
-  const s={}; PLAYERS.forEach(p=>s[p.id]={id:p.id,name:p.name,wins:0,played:0});
+  const s={}; PLAYERS.forEach(p=>s[p.id]={id:p.id,name:playerName(p.id),wins:0,played:0});
   ROUNDS.forEach(r=>(r.matches||[]).forEach(m=>{
     if(m.winner&&s[m.winner]) s[m.winner].wins++;
     if(m.winner){ if(s[m.a])s[m.a].played++; if(s[m.b])s[m.b].played++; }
   }));
   return Object.values(s).sort((a,b)=>b.wins-a.wins||b.played-a.played||a.name.localeCompare(b.name));
 }
+function playerPhoto(id){ const u=USERS.find(x=>x.id===id); return {photo:u&&u.photo}; }
 function renderRank(){
   const body=$("rank-body"); if(!body) return;
   const rows=computeStandings();
-  if(rows.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓉔</span>Nenhum jogador cadastrado ainda.<br>${isAdmin()?'Adicione participantes na aba <b>Jogadores</b>.':'Aguarde o administrador.'}</div>`; return; }
+  if(rows.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓉔</span>Nenhum jogador inscrito ainda.<br>${CURRENT?'Entre no torneio pela aba <b>Jogadores</b>.':'Faça login e inscreva-se.'}</div>`; return; }
   const medals=["🥇","🥈","🥉"];
   body.innerHTML=`<table class="rank"><thead><tr><th class="pos">#</th><th>Duelista</th><th class="num">V</th><th class="num">J</th><th class="pts">Pts</th></tr></thead>
     <tbody>${rows.map((r,i)=>`<tr class="${i===0&&r.wins>0?'top1':''}">
       <td class="pos">${medals[i]?`<span class="medal">${medals[i]}</span>`:(i+1)}</td>
-      <td class="name">${esc(r.name)}</td><td class="num">${r.wins}</td><td class="num">${r.played}</td><td class="pts">${r.wins}</td></tr>`).join("")}
+      <td class="name"><span style="display:inline-flex;align-items:center;gap:8px">${avatarHTML(playerPhoto(r.id),'sm')}${esc(r.name)}${r.id===(CURRENT&&CURRENT.uid)?' <span style="font-size:11px;color:var(--muted)">(você)</span>':''}</span></td>
+      <td class="num">${r.wins}</td><td class="num">${r.played}</td><td class="pts">${r.wins}</td></tr>`).join("")}
     </tbody></table>`;
 }
 
-/* ---------- players ---------- */
+/* ---------- players / inscritos ---------- */
 function renderPlayers(){
+  renderEnroll();
   const body=$("players-body"); if(!body) return;
   const adm=canEdit();
-  if(PLAYERS.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓀀</span>Nenhum participante cadastrado.</div>`; return; }
-  body.innerHTML=PLAYERS.map(p=>`<div class="list-row" data-id="${p.id}">
-    <div class="grow"><div class="l1">${esc(p.name)}</div></div>
-    ${adm?`<button class="mini" data-act="rename" data-id="${p.id}">Renomear</button>
-           <button class="mini danger" data-act="delplayer" data-id="${p.id}">Remover</button>`:``}
-  </div>`).join("");
+  if(PLAYERS.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓀀</span>Ninguém inscrito ainda.<br>${CURRENT?'Toque em <b>Entrar no torneio</b> acima.':'Faça login para participar.'}</div>`; return; }
+  body.innerHTML=PLAYERS.map(p=>{
+    const nm=playerName(p.id), me=p.id===(CURRENT&&CURRENT.uid);
+    return `<div class="list-row" data-id="${p.id}">
+      ${avatarHTML(playerPhoto(p.id),'sm')}
+      <div class="grow"><div class="l1">${esc(nm)}${me?' · você':''}</div></div>
+      ${adm?`<button class="mini danger" data-act="delplayer" data-id="${p.id}">Remover</button>`:``}
+    </div>`;
+  }).join("");
 }
 
 /* ---------- calendário (dias → rodadas) ---------- */
-function playerName(id){ const p=PLAYERS.find(x=>x.id===id); return p?p.name:"(removido)"; }
+function playerName(id){ const u=USERS.find(x=>x.id===id); if(u&&u.displayName) return u.displayName; const p=PLAYERS.find(x=>x.id===id); return p?p.name:"(removido)"; }
 function fmtBR(iso){ if(!iso) return ""; const p=String(iso).split("-"); return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:iso; }
 function todayISO(){ const d=new Date(); const mm=String(d.getMonth()+1).padStart(2,"0"), dd=String(d.getDate()).padStart(2,"0"); return `${d.getFullYear()}-${mm}-${dd}`; }
 function daysUntil(iso){ if(!iso) return null; const [y,m,d]=iso.split("-").map(Number); const end=Date.UTC(y,m-1,d);
@@ -1134,16 +1139,43 @@ els("#bl-add-modal [data-st]").forEach(btn=>btn.onclick=async e=>{
 $("bl-new").onclick=newCustomList;
 $("bl-add-search").addEventListener("input",()=>{ BL_ADD_TERM=$("bl-add-search").value.trim(); scheduleAddSearch(); });
 
-/* ---------- admin: players ---------- */
-$("btn-add-player").onclick=async()=>{
-  const name=$("new-player").value.trim(); showMsg("player-msg","");
-  if(!name){ showMsg("player-msg","Digite um nome.","err"); return; }
-  if(!isAdmin()){ showMsg("player-msg","Só o admin pode cadastrar.","err"); return; }
-  if(isLocked()){ showMsg("player-msg","Campeonato encerrado. Reabra para editar.","err"); return; }
-  try{ await addDoc(collection(db,"championships",CURRENT_CHAMP,"players"),{name,createdAt:serverTimestamp()});
-    $("new-player").value=""; toast("Duelista cadastrado 𓀀");
-  }catch(e){ showMsg("player-msg",fbError(e),"err"); }
-};
+/* ---------- auto-inscrição no torneio ---------- */
+function renderEnroll(){
+  const box=$("enroll-card"); if(!box) return;
+  if(!CURRENT_CHAMP){ box.innerHTML=""; box.classList.add("hidden"); return; }
+  box.classList.remove("hidden");
+  if(!CURRENT){ box.innerHTML=`<div class="section-note" style="margin:0">🔒 Entre com sua conta (menu → Entrar) para participar deste torneio.</div>`; return; }
+  if(isLocked()){ box.innerHTML=`<div class="section-note" style="margin:0">🏆 Campeonato encerrado.</div>`; return; }
+  const enrolled=PLAYERS.some(p=>p.id===CURRENT.uid);
+  if(enrolled){
+    box.innerHTML=`<div style="display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap">
+      <div style="color:var(--green);font-weight:700">✓ Você está inscrito neste torneio</div>
+      <button class="mini danger" id="btn-unenroll">Sair do torneio</button></div>`;
+    $("btn-unenroll").onclick=unenroll;
+  } else {
+    box.innerHTML=`<p class="section-note" style="margin:0 0 10px">Ao entrar, você já vira jogador e aparece na classificação. Suas vitórias ficam ligadas à sua conta.</p>
+      <button class="btn" id="btn-enroll">⚔️ Entrar no torneio</button>`;
+    $("btn-enroll").onclick=enroll;
+  }
+}
+async function enroll(){
+  if(!CURRENT||!CURRENT_CHAMP) return;
+  const prof=myProfile(); const name=(prof&&prof.displayName)|| (CURRENT.email?CURRENT.email.split("@")[0]:"Duelista");
+  try{
+    await setDoc(doc(db,"championships",CURRENT_CHAMP,"players",CURRENT.uid),{name,uid:CURRENT.uid,createdAt:serverTimestamp()},{merge:true});
+    await setDoc(doc(db,"users",CURRENT.uid),{enrollments:arrayUnion(CURRENT_CHAMP)},{merge:true});
+    toast("Você entrou no torneio! ⚔️");
+  }catch(e){ toast(fbError(e)); }
+}
+async function unenroll(){
+  if(!CURRENT||!CURRENT_CHAMP) return;
+  if(!confirm("Sair do torneio? Você sai da classificação (partidas já jogadas mantêm o registro).")) return;
+  try{
+    await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"players",CURRENT.uid));
+    await setDoc(doc(db,"users",CURRENT.uid),{enrollments:arrayRemove(CURRENT_CHAMP)},{merge:true});
+    toast("Você saiu do torneio.");
+  }catch(e){ toast(fbError(e)); }
+}
 
 /* ---------- delegated clicks ---------- */
 document.addEventListener("click", async ev=>{
@@ -1186,13 +1218,10 @@ document.addEventListener("click", async ev=>{
   }
   if(act==="delplayer"){
     if(!canEdit()) return;
-    if(!confirm("Remover este jogador? As partidas já jogadas mantêm o registro, mas ele sai da classificação.")) return;
-    try{ await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"players",b.dataset.id)); toast("Jogador removido"); }catch(e){ toast(fbError(e)); }
-  }
-  if(act==="rename"){
-    if(!canEdit()) return;
-    const nn=prompt("Novo nome:", playerName(b.dataset.id));
-    if(nn&&nn.trim()){ try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"players",b.dataset.id),{name:nn.trim()}); toast("Nome atualizado"); }catch(e){ toast(fbError(e)); } }
+    if(!confirm("Remover este jogador do torneio? Ele sai da classificação (partidas já jogadas mantêm o registro).")) return;
+    try{ await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"players",b.dataset.id));
+      try{ await setDoc(doc(db,"users",b.dataset.id),{enrollments:arrayRemove(CURRENT_CHAMP)},{merge:true}); }catch(_){}
+      toast("Jogador removido"); }catch(e){ toast(fbError(e)); }
   }
   if(act==="reopenround"){
     if(!canEdit()) return;
@@ -1355,6 +1384,7 @@ function renderDrawer(){
     nav+=`<div class="drawer-sep"></div>`;
   }
   nav+=item('counter','⚔️','Contador de Duelo');
+  if(authed) nav+=item('history','📜','Meu histórico');
   if(authed) nav+=item('profile','👤','Perfil');
   nav+=`<div class="drawer-sep"></div>`;
   if(inChamp) nav+=`<button class="drawer-item" data-nav="switch"><span class="di-ic">🔁</span>Trocar campeonato</button>`;
@@ -1367,6 +1397,7 @@ document.addEventListener("click", ev=>{
   const nav=it.dataset.nav; closeDrawer();
   if(["rank","rounds","players","banlist","access"].includes(nav)){ closeScreen(); if(CURRENT_CHAMP) switchTab(nav); }
   else if(nav==="counter"){ openScreen("counter"); }
+  else if(nav==="history"){ if(CURRENT) openScreen("history"); }
   else if(nav==="profile"){ if(CURRENT) openScreen("profile"); }
   else if(nav==="switch"){ closeScreen(); leaveChamp(); }
   else if(nav==="logout"){ closeScreen(); signOut(auth); }
@@ -1374,7 +1405,7 @@ document.addEventListener("click", ev=>{
 });
 
 /* screens overlay */
-function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.classList.remove("show")); const s=$("screen-"+name); if(s) s.classList.add("show"); if(name==="profile") renderProfile(); if(name==="counter") initCounter(); }
+function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.classList.remove("show")); const s=$("screen-"+name); if(s) s.classList.add("show"); if(name==="profile") renderProfile(); if(name==="counter") initCounter(); if(name==="history") renderHistory(); }
 function closeScreen(){ ACTIVE_SCREEN=null; els(".screen").forEach(s=>s.classList.remove("show")); }
 document.addEventListener("click", ev=>{ if(ev.target.closest("[data-close-screen]")) closeScreen(); });
 
@@ -1394,6 +1425,40 @@ $("prof-save").onclick=async()=>{
 };
 $("prof-pick").onclick=()=>$("prof-file").click();
 $("prof-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>openCrop(rd.result); rd.readAsDataURL(f); e.target.value=""; };
+
+/* ---------- histórico do jogador ---------- */
+function getDocsOnce(colRef){ return new Promise(res=>{ const un=onSnapshot(colRef,s=>{ un(); res(s.docs.map(d=>({id:d.id,...d.data()}))); },()=>{ un(); res([]); }); }); }
+async function renderHistory(){
+  const body=$("history-body"); if(!body) return;
+  if(!CURRENT){ body.innerHTML=`<div class="empty">Entre para ver seu histórico.</div>`; return; }
+  const prof=myProfile(); const enr=(prof&&prof.enrollments)||[];
+  if(!enr.length){ body.innerHTML=`<div class="empty"><span class="big">📜</span>Você ainda não entrou em nenhum torneio.<br>Entre em um campeonato pela aba <b>Jogadores</b>.</div>`; return; }
+  body.innerHTML=`<div class="spin"></div>`;
+  const cards=[];
+  for(const cid of enr){
+    const champ=CHAMPS.find(c=>c.id===cid);
+    const players=await getDocsOnce(collection(db,"championships",cid,"players"));
+    const rounds=await getDocsOnce(collection(db,"championships",cid,"rounds"));
+    const s={}; players.forEach(p=>s[p.id]={id:p.id,wins:0,played:0});
+    rounds.forEach(r=>(r.matches||[]).forEach(m=>{ if(m.winner&&s[m.winner]) s[m.winner].wins++; if(m.winner){ if(s[m.a])s[m.a].played++; if(s[m.b])s[m.b].played++; } }));
+    const ranked=Object.values(s).sort((a,b)=>b.wins-a.wins||b.played-a.played);
+    const mine=s[CURRENT.uid];
+    const rank=mine?ranked.findIndex(x=>x.id===CURRENT.uid)+1:null;
+    cards.push({name:champ?champ.name:"(campeonato removido)", status:champ?champ.status:null, exists:!!champ, wins:mine?mine.wins:0, played:mine?mine.played:0, rank, total:ranked.length});
+  }
+  body.innerHTML=cards.map(c=>{
+    const champLine = c.exists
+      ? `${c.wins} vitória${c.wins===1?'':'s'} · ${c.played} jogo${c.played===1?'':'s'}${c.rank?` · <b style="color:var(--gold-soft)">${c.rank}º</b> de ${c.total}`:''}`
+      : "este campeonato não existe mais";
+    return `<div class="card" style="padding:14px 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+        <div style="font-family:'Cinzel',serif;color:var(--gold-soft);font-size:16px">${esc(c.name)}</div>
+        ${c.exists?`<span class="status-pill ${c.status==='encerrado'?'encerrado':'ativo'}">${c.status==='encerrado'?'Encerrado':'Em andamento'}</span>`:''}
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-top:6px">${champLine}${c.exists&&c.status==='encerrado'&&c.rank===1?' 👑 Campeão!':''}</div>
+    </div>`;
+  }).join("");
+}
 
 /* ---------- recorte de avatar ---------- */
 const CROP_D=260; let cropImg=null, cropZoom=1, cropX=0, cropY=0, cropDrag=null;
@@ -1465,7 +1530,6 @@ $("music-add").onclick=async()=>{ if(!isAdmin()){ toast("Só o admin adiciona m�
 $("login-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-login").click(); });
 $("setup-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-setup").click(); });
 $("new-champ").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-add-champ").click(); });
-$("new-player").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-add-player").click(); });
 $("acc-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btn-add-access").click(); });
 </script>
 </body>
