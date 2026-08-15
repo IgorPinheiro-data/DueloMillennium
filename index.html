@@ -62,13 +62,6 @@
     border-radius:10px;padding:8px 10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
   .icon-btn:active{transform:scale(.96)}
 
-  nav.tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
-  nav.tabs::-webkit-scrollbar{display:none}
-  .tab{flex:0 0 auto;text-align:center;padding:10px 16px;border-radius:12px;cursor:pointer;
-    border:1px solid var(--line);color:var(--muted);background:var(--panel);
-    font-weight:600;font-size:14px;letter-spacing:.5px;white-space:nowrap}
-  .tab.active{color:#241804;border-color:var(--gold-deep);
-    background:linear-gradient(180deg,var(--gold-soft),var(--gold));box-shadow:0 4px 14px rgba(232,193,90,.25)}
 
   .card{background:linear-gradient(180deg,var(--panel2),var(--panel));
     border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
@@ -403,6 +396,49 @@
   .io-report{font-size:12px;color:var(--muted);line-height:1.5;max-height:26vh;overflow:auto;margin-top:10px;
     border-top:1px solid var(--line);padding-top:10px}
   .io-report b{color:#e79b8c}
+
+  /* ---- home ---- */
+  .home-sec{margin:18px 2px 8px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2.5px;
+    text-transform:uppercase;color:var(--gold-deep);display:flex;align-items:center;gap:8px}
+  .home-sec:first-child{margin-top:0}
+  .home-sec svg{width:15px;height:15px}
+  .hero{border-radius:16px;border:1px solid var(--gold-deep);padding:15px 16px;margin-bottom:12px;cursor:pointer;
+    background:radial-gradient(circle at 50% -30%,rgba(232,193,90,.22),rgba(232,193,90,.03) 70%),var(--panel);
+    box-shadow:0 0 22px rgba(232,193,90,.12);display:flex;align-items:center;gap:12px}
+  .hero:active{transform:scale(.99)}
+  .hero .hb{flex:1;min-width:0}
+  .hero .hl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-deep)}
+  .hero .hm{font-family:'Cinzel',serif;color:var(--gold-soft);font-size:17px;margin:3px 0 2px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hero .hs{font-size:12px;color:var(--muted)}
+  .hero .hico{flex:0 0 auto;color:var(--gold);line-height:0}
+  .hero .hico svg{width:30px;height:30px}
+  .hero.calm{border-color:var(--line2);box-shadow:none;background:linear-gradient(180deg,var(--panel2),var(--panel))}
+  .hero.calm .hico{color:var(--gold-deep)}
+  .invite-acts{display:flex;gap:8px;margin-top:10px}
+  .invite-acts .btn{padding:10px;font-size:13px}
+  .qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:4px}
+  @media(min-width:480px){.qa-grid{grid-template-columns:repeat(4,1fr)}}
+  .qa{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:15px 6px;
+    border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));
+    color:var(--gold-soft);font-weight:600;font-size:12px;cursor:pointer;text-align:center;line-height:1.2}
+  .qa svg{width:23px;height:23px;color:var(--gold-deep)}
+  .qa:active{transform:scale(.96)}
+  .mini-live{display:flex;align-items:center;gap:9px;padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+  .mini-live:last-child{border-bottom:none}
+  .mini-live .ml-n{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mini-live .ml-lp{font-family:'Cinzel',serif;font-size:12px;color:var(--gold-deep);font-variant-numeric:tabular-nums;flex:0 0 auto}
+  .me-line{display:flex;align-items:center;gap:12px;padding:13px 15px;border-radius:14px;border:1px solid var(--line);
+    background:linear-gradient(180deg,var(--panel2),var(--panel));margin-bottom:12px;cursor:pointer}
+  .me-line .mv{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold-soft);line-height:1}
+  .me-line .ms{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+  .me-line .mcol{text-align:center;flex:1}
+  .me-line .mcol+.mcol{border-left:1px solid var(--line)}
+
+  /* ---- modais do tema (confirmar / digitar) ---- */
+  #ask-modal .sheet{max-width:420px}
+  #ask-text{color:var(--text);font-size:14px;line-height:1.5;white-space:pre-wrap;margin-bottom:4px}
+  #ask-text b{color:var(--gold-soft)}
 </style>
 </head>
 <body>
@@ -446,6 +482,8 @@
       <div style="height:12px"></div>
       <button class="btn" id="btn-login">Entrar no duelo</button>
       <div style="height:10px"></div>
+      <button class="btn ghost" id="btn-forgot">Esqueci minha senha</button>
+      <div style="height:10px"></div>
       <button class="btn ghost" id="btn-guest">Ver sem entrar</button>
     </div>
     <div id="setup-box" class="card hidden">
@@ -463,17 +501,18 @@
     </div>
   </div></div></div>
 
-<!-- CHAMPIONSHIP SELECTOR -->
+<!-- HOME -->
 <div id="select-screen" class="wrap hidden">
   <header class="app-head">
     <svg class="eye" style="color:var(--gold)"><use href="#wdjat"/></svg>
     <div class="head-titles">
-      <div class="kicker">Escolha o campeonato</div>
-      <h1 class="display">Duelo Millennium</h1>
+      <div class="kicker">Duelo Millennium</div>
+      <h1 class="display" id="home-greet">Início</h1>
       <div class="champ-name" id="sel-user-line">visitante</div>
     </div>
     <div class="head-actions" id="sel-actions"></div>
   </header>
+  <div id="home-body"></div>
   <div class="card admin-only" id="new-champ-card">
     <h2><span class="glyph">𓊃</span> Novo campeonato</h2>
     <div id="champ-msg"></div>
@@ -482,11 +521,7 @@
     <div style="height:12px"></div>
     <button class="btn" id="btn-add-champ">Criar campeonato</button>
   </div>
-  <div class="card">
-    <h2><span class="glyph">𓉔</span> Campeonatos</h2>
-    <div id="champ-list"></div>
-  </div>
-  <div class="foot">𓋹 Escolha um campeonato para entrar 𓋹</div>
+  <div class="foot">𓋹 Que comece o duelo 𓋹</div>
 </div>
 
 <!-- MAIN APP -->
@@ -654,10 +689,34 @@
 
 <!-- TELA ESTATÍSTICAS -->
 <div id="screen-stats" class="screen">
-  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Estatísticas</h1></div>
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Estatísticas</h1>
+    <button class="icon-btn" id="stats-refresh">Atualizar</button></div>
   <div class="screen-body">
     <div id="stats-filter" class="duel-chips"></div>
     <div id="stats-body"></div>
+  </div>
+</div>
+
+<!-- TELA DUELISTAS (diretório) -->
+<div id="screen-dir" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Duelistas</h1></div>
+  <div class="screen-body">
+    <input class="search" id="dir-search" type="text" placeholder="𓂀 Buscar duelista pelo nome…">
+    <div id="dir-count" class="bl-count"></div>
+    <div class="card"><div id="dir-body"></div></div>
+  </div>
+</div>
+
+<!-- CONFIRMAR / DIGITAR (no tema) -->
+<div id="ask-modal" class="bl-modal">
+  <div class="sheet">
+    <h3><span id="ask-icon"></span> <span id="ask-title">Confirmar</span></h3>
+    <div id="ask-text"></div>
+    <input id="ask-input" type="text" class="hidden">
+    <div class="btn-row">
+      <button class="btn ghost" id="ask-no">Cancelar</button>
+      <button class="btn" id="ask-yes">Confirmar</button>
+    </div>
   </div>
 </div>
 
@@ -910,7 +969,7 @@ const firebaseConfig = {
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-         createUserWithEmailAndPassword, signOut }
+         createUserWithEmailAndPassword, sendPasswordResetEmail, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc,
          collection, onSnapshot, addDoc, serverTimestamp,
@@ -929,6 +988,7 @@ function fbError(e){
     "auth/user-not-found":"Conta não encontrada.","auth/email-already-in-use":"Este e-mail já tem uma conta.",
     "auth/weak-password":"Senha muito curta (mín. 6 caracteres).","auth/network-request-failed":"Sem conexão. Verifique a internet.",
     "auth/too-many-requests":"Muitas tentativas. Aguarde um pouco.","auth/operation-not-allowed":"Ative Login por E-mail/Senha no Firebase.",
+    "auth/missing-email":"Digite o e-mail da conta.",
     "permission-denied":"Sem permissão. Só o administrador pode fazer isso."};
   return map[m] || m;
 }
@@ -973,7 +1033,50 @@ let HIST_SCOPE="all";
 let DP_STATE=null;          // seleção de decks do duelo
 let DN_STATE=null;          // seleção de duelistas do novo duelo
 let DIO_MODE=null, DIO_TARGET=null;  // exportar/importar deck
-let deckBackfilled=false;
+let deckBackfilled=false, photoShrunk=false;
+let VIEW=sessionStorage.getItem("view")||"home";   // 'home' | 'champ'
+let ALL_DUELS=null, allDuelsLoading=false;         // histórico completo (estatísticas exatas)
+let STAT_IDX=null, duelSig="";
+let DIR_TERM="";
+
+/* ---------- confirmar / digitar no tema do app ---------- */
+let askResolve=null;
+function askClose(v){ $("ask-modal").classList.remove("show"); const r=askResolve; askResolve=null; if(r) r(v); }
+function askOpen(o){
+  return new Promise(res=>{
+    if(askResolve) askResolve(null);
+    askResolve=res;
+    $("ask-icon").innerHTML=o.icon||IC.alert;
+    $("ask-title").textContent=o.title||"Confirmar";
+    $("ask-text").innerHTML=o.html||"";
+    const inp=$("ask-input");
+    inp.classList.toggle("hidden",!o.input);
+    inp.value=o.value||"";
+    $("ask-yes").textContent=o.ok||"Confirmar";
+    $("ask-no").textContent=o.cancel||"Cancelar";
+    $("ask-yes").classList.toggle("danger",!!o.danger);
+    $("ask-modal").classList.add("show");
+    if(o.input) setTimeout(()=>{ inp.focus(); inp.select(); },60);
+  });
+}
+/* substitui confirm() — devolve true/false */
+async function ask(text,opts){
+  const o=opts||{};
+  const v=await askOpen({icon:o.icon||(o.danger?IC.jar:IC.alert),title:o.title||"Confirmar",
+    html:String(text).replace(/\n/g,"<br>"),ok:o.ok,cancel:o.cancel,danger:o.danger});
+  return v===true;
+}
+/* substitui prompt() — devolve o texto ou null */
+async function askText(text,def,opts){
+  const o=opts||{};
+  const v=await askOpen({icon:o.icon||IC.reed,title:o.title||"Digite",
+    html:String(text).replace(/\n/g,"<br>"),input:true,value:def||"",ok:o.ok||"Salvar"});
+  return (typeof v==="string"&&v.trim())?v.trim():null;
+}
+$("ask-no").onclick=()=>askClose(false);
+$("ask-yes").onclick=()=>askClose($("ask-input").classList.contains("hidden")?true:$("ask-input").value);
+$("ask-input").addEventListener("keydown",e=>{ if(e.key==="Enter") $("ask-yes").click(); });
+$("ask-modal").addEventListener("click",e=>{ if(e.target.id==="ask-modal") askClose(false); });
 
 /* vibração + feedback visual */
 function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(_){} }
@@ -1003,13 +1106,17 @@ onSnapshot(query(champsCol, orderBy("createdAt","asc")), snap=>{
   route(); renderSelector(); renderAll();
 }, err=>console.error(err));
 
-onSnapshot(usersCol, snap=>{ USERS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAccess();
+onSnapshot(usersCol, snap=>{ USERS=snap.docs.map(d=>({id:d.id,...d.data()})); shrinkMyPhoto();
+  if(!$("app").classList.contains("hidden")&&ACTIVE_TAB==="access") renderAccess();
   if(ACTIVE_SCREEN==="profile") renderProfile();
   if(ACTIVE_SCREEN==="stats") renderStats();
+  if(ACTIVE_SCREEN==="dir") renderDirectory();
 }, err=>console.error(err));
 
 onSnapshot(collection(db,"members"), snap=>{ MEMBERS=snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderAccess(); if(ACTIVE_TAB==="players" && !$("app").classList.contains("hidden")) renderEnroll();
+  if(!$("app").classList.contains("hidden")){ if(ACTIVE_TAB==="access") renderAccess(); if(ACTIVE_TAB==="players") renderPlayers(); }
+  if(!$("select-screen").classList.contains("hidden")) renderHome();
+  if(ACTIVE_SCREEN==="dir") renderDirectory();
 }, err=>console.error(err));
 
 onSnapshot(query(collection(db,"banlists"),orderBy("createdAt","asc")), snap=>{
@@ -1024,10 +1131,17 @@ onSnapshot(query(collection(db,"tracks"),orderBy("createdAt","asc")), snap=>{
 
 onSnapshot(query(collection(db,"duels"),orderBy("createdAt","desc"),limit(400)), snap=>{
   DUELS=snap.docs.map(d=>({id:d.id,...d.data()}));
+  STAT_IDX=null;
+  // só redesenha de verdade quando entra/sai duelo ou muda resultado;
+  // mudança de pontos de vida atualiza apenas os números na tela
+  const sig=DUELS.map(d=>d.id+":"+d.status+":"+(d.winner||"")).join("|");
+  const structural = sig!==duelSig; duelSig=sig;
+  if(ACTIVE_SCREEN==="counter") syncCounterFromDuel();
+  if(!structural){ refreshLiveNumbers(); return; }
   if(ACTIVE_SCREEN==="duels") renderDuels();
   if(ACTIVE_SCREEN==="stats") renderStats();
   if(ACTIVE_SCREEN==="profile") renderProfile();
-  if(ACTIVE_SCREEN==="counter") syncCounterFromDuel();
+  if(!$("select-screen").classList.contains("hidden")) renderHome();
   if(ACTIVE_TAB==="rounds" && !$("app").classList.contains("hidden")) renderCalendar();
 }, err=>console.error(err));
 
@@ -1059,10 +1173,11 @@ function subscribeChamp(id){
   unsubDays=onSnapshot(query(collection(db,"championships",id,"days"),orderBy("date","asc")),
     snap=>{ DAYS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, err=>console.error(err));
 }
-function selectChamp(id){ CURRENT_CHAMP=id; sessionStorage.setItem("champ",id); subscribeChamp(id); ACTIVE_TAB="rank"; switchTab("rank"); route(); renderAll(); }
+function selectChamp(id){ CURRENT_CHAMP=id; sessionStorage.setItem("champ",id); subscribeChamp(id); setView("champ"); ACTIVE_TAB="rank"; switchTab("rank"); route(); renderAll(); }
 function leaveChamp(){
   if(unsubPlayers){unsubPlayers();unsubPlayers=null;} if(unsubRounds){unsubRounds();unsubRounds=null;} if(unsubDays){unsubDays();unsubDays=null;}
-  subscribedChamp=null; CURRENT_CHAMP=null; PLAYERS=[]; ROUNDS=[]; DAYS=[]; CURRENT_DAY=null; sessionStorage.removeItem("champ"); route(); renderSelector();
+  subscribedChamp=null; CURRENT_CHAMP=null; PLAYERS=[]; ROUNDS=[]; DAYS=[]; CURRENT_DAY=null;
+  sessionStorage.removeItem("champ"); setView("home"); route();
 }
 
 /* ---------- routing ---------- */
@@ -1079,17 +1194,22 @@ function route(){
     return;
   }
   $("auth-screen").classList.add("hidden");
-  const inChamp = CURRENT_CHAMP && CHAMPS.find(c=>c.id===CURRENT_CHAMP);
-  if(!inChamp){
-    if(CURRENT_CHAMP && CHAMPS.length && !CHAMPS.find(c=>c.id===CURRENT_CHAMP)){ CURRENT_CHAMP=null; sessionStorage.removeItem("champ"); }
-    $("app").classList.add("hidden"); $("select-screen").classList.remove("hidden");
-    renderSelectorHead();
-  } else {
-    if(subscribedChamp!==CURRENT_CHAMP) subscribeChamp(CURRENT_CHAMP);
+  if(CURRENT_CHAMP && CHAMPS.length && !CHAMPS.find(c=>c.id===CURRENT_CHAMP)){
+    CURRENT_CHAMP=null; sessionStorage.removeItem("champ"); VIEW="home";
+  }
+  if(CURRENT_CHAMP && subscribedChamp!==CURRENT_CHAMP) subscribeChamp(CURRENT_CHAMP);
+  const inChamp=!!(CURRENT_CHAMP && CHAMPS.find(c=>c.id===CURRENT_CHAMP));
+  if(VIEW==="champ" && inChamp){
     $("select-screen").classList.add("hidden"); $("app").classList.remove("hidden");
     applyRoleUI();
+  } else {
+    setView("home");
+    $("app").classList.add("hidden"); $("select-screen").classList.remove("hidden");
+    renderSelectorHead(); renderHome();
   }
 }
+function setView(v){ VIEW=v; sessionStorage.setItem("view",v); }
+function goHome(){ closeScreen(); setView("home"); route(); }
 
 /* ---------- role / header ---------- */
 function applyRoleUI(){
@@ -1106,21 +1226,20 @@ function applyRoleUI(){
   acts.innerHTML=`<button class="menu-btn" id="btn-menu" aria-label="menu">${CURRENT?avatarHTML(prof,''):'<span class="avatar avatar-ph">'+iSVG('<path d="M5 7.5h14M5 12h14M5 16.5h14"/>')+'</span>'}</button>`;
   $("btn-menu").onclick=openDrawer;
   ["btn-start-round","btn-undo-round","btn-close-round","btn-add-day","btn-set-end"].forEach(id=>{ const e=$(id); if(e) e.disabled=locked; });
+  document.body.classList.toggle("champ-locked", locked);
   const fin=$("btn-finish-champ");
   if(fin){ fin.innerHTML = locked ? (iSVG('<path d="M4 12a8 8 0 108-8"/><path d="M4 4v5h5"/>')+" Reabrir campeonato") : (IC.crown+" Encerrar campeonato");
     fin.classList.toggle("danger", !locked); fin.classList.toggle("ghost", locked); }
-  const ap=$("add-player-card"); if(ap) ap.style.opacity=locked?.5:1;
   if(!adm && ACTIVE_TAB==="access") switchTab("rank");
 }
 
-/* ---------- tabs ---------- */
-els(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
+/* ---------- seções do campeonato (navegação pelo menu lateral) ---------- */
 function switchTab(name){
   ACTIVE_TAB=name;
-  els(".tab").forEach(t=>t.classList.toggle("active", t.dataset.tab===name));
   els(".tabpane").forEach(p=>p.classList.add("hidden"));
   const pane=$("tab-"+name); if(pane) pane.classList.remove("hidden");
-  if(name==="banlist") loadBanlist();
+  if(name==="players"||name==="rank") ensureAllDuels();
+  renderTab();
 }
 
 /* ---------- auth handlers ---------- */
@@ -1131,6 +1250,18 @@ $("btn-login").onclick=async()=>{
   const b=$("btn-login"); b.disabled=true; b.textContent="Entrando…";
   try{ sessionStorage.removeItem("guest"); await signInWithEmailAndPassword(auth,email,pass); }
   catch(e){ showMsg("login-msg",fbError(e),"err"); } finally{ b.disabled=false; b.textContent="Entrar no duelo"; }
+};
+$("btn-forgot").onclick=async()=>{
+  showMsg("login-msg","");
+  const email=await askText("Enviaremos um link para você criar uma senha nova.",
+    $("login-email").value.trim(),{title:"Recuperar senha",icon:IC.unseal,ok:"Enviar link"});
+  if(!email) return;
+  const b=$("btn-forgot"); b.disabled=true; b.textContent="Enviando…";
+  try{
+    await sendPasswordResetEmail(auth,email);
+    showMsg("login-msg",`Se existir uma conta com <b>${esc(email)}</b>, o link para criar uma senha nova acabou de ser enviado.<br>Confira também a caixa de spam.`,"ok");
+  }catch(e){ showMsg("login-msg",fbError(e),"err"); }
+  finally{ b.disabled=false; b.textContent="Esqueci minha senha"; }
 };
 $("btn-setup").onclick=async()=>{
   const email=$("setup-email").value.trim(), pass=$("setup-pass").value; showMsg("setup-msg","");
@@ -1153,38 +1284,205 @@ $("btn-setup").onclick=async()=>{
 };
 
 /* ---------- render orchestration ---------- */
-function renderAll(){ renderChampInfo(); renderChampionBanner(); renderRank(); renderCalendar(); renderPlayers(); renderAccess();
-  if(!$("app").classList.contains("hidden")){ applyRoleUI(); if(ACTIVE_TAB==="banlist") renderBanlist(); } }
+/* redesenha só o que está na tela — evita reconstruir tudo a cada atualização */
+function renderTab(){
+  if(ACTIVE_TAB==="rank") renderRank();
+  else if(ACTIVE_TAB==="rounds") renderCalendar();
+  else if(ACTIVE_TAB==="players") renderPlayers();
+  else if(ACTIVE_TAB==="access") renderAccess();
+  else if(ACTIVE_TAB==="banlist") renderBanlist();
+}
+function renderAll(){
+  if(!$("select-screen").classList.contains("hidden")){ renderSelectorHead(); renderHome(); }
+  if($("app").classList.contains("hidden")) return;
+  applyRoleUI(); renderChampInfo(); renderChampionBanner(); renderTab();
+}
+const renderSelector=()=>{ if(!$("select-screen").classList.contains("hidden")){ renderSelectorHead(); renderHome(); } };
 
-/* ---------- selector ---------- */
+/* ---------- cabeçalho da home ---------- */
 function renderSelectorHead(){
-  const authed=!!CURRENT, adm=isAdmin();
-  const line=$("sel-user-line"), acts=$("sel-actions"), prof=myProfile();
+  const authed=!!CURRENT, adm=isAdmin(), prof=myProfile();
+  const line=$("sel-user-line"), acts=$("sel-actions");
   els("#select-screen .admin-only").forEach(n=>n.classList.toggle("hidden",!adm));
+  const nm=authed?((prof&&prof.displayName)||CURRENT.email.split("@")[0]):"Visitante";
+  $("home-greet").textContent=authed?nm:"Duelo Millennium";
   line.innerHTML = authed
     ? `${esc((prof&&prof.displayName)||CURRENT.email)} · <span class="badge-role ${adm?'adm':''}">${adm?'Admin':'Jogador'}</span>`
     : `<span class="badge-role">Visitante</span>`;
   acts.innerHTML=`<button class="menu-btn" id="sel-menu" aria-label="menu">${authed?avatarHTML(prof,''):'<span class="avatar avatar-ph"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7.5h14M5 12h14M5 16.5h14"/></svg></span>'}</button>`;
   $("sel-menu").onclick=openDrawer;
 }
-function renderSelector(){
-  if($("select-screen").classList.contains("hidden")) return;
-  renderSelectorHead();
-  const body=$("champ-list"); const adm=isAdmin();
-  if(CHAMPS.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓉔</span>Nenhum campeonato ainda.<br>${adm?'Crie o primeiro acima.':'Aguarde o administrador criar um campeonato.'}</div>`; return; }
-  body.innerHTML=CHAMPS.map(c=>{
-    const st=c.status==="encerrado"?"encerrado":"ativo";
-    const stLabel=st==="encerrado"?"Encerrado":"Em andamento";
-    return `<div class="champ-card" data-act="openchamp" data-id="${c.id}">
-      <svg class="cc-eye"><use href="#wdjat"/></svg>
-      <div class="cc-body">
-        <div class="cc-name">${esc(c.name)}</div>
-        <div class="cc-meta"><span class="status-pill ${st}">${stLabel}</span></div>
-      </div>
-      ${adm?`<button class="mini danger" data-act="delchamp" data-id="${c.id}">Excluir</button>`:``}
-      <span class="cc-arrow">›</span>
-    </div>`;
-  }).join("");
+
+/* ---------- HOME: o que está acontecendo agora ---------- */
+const sec=(icon,label)=>`<div class="home-sec">${icon}${label}</div>`;
+function myOpenDuels(){ return CURRENT?DUELS.filter(d=>d.status==="ativo"&&(d.aId===CURRENT.uid||d.bId===CURRENT.uid)):[]; }
+function invitesToMe(){ return CURRENT?DUELS.filter(d=>d.status==="convite"&&d.bId===CURRENT.uid):[]; }
+function invitesFromMe(){ return CURRENT?DUELS.filter(d=>d.status==="convite"&&d.aId===CURRENT.uid):[]; }
+function myNextMatch(){
+  if(!CURRENT||!CURRENT_CHAMP) return null;
+  const open=ROUNDS.filter(r=>!r.closed).sort((a,b)=>b.number-a.number);
+  for(const r of open){
+    const ms=r.matches||[];
+    for(let i=0;i<ms.length;i++){
+      const m=ms[i];
+      if((m.a===CURRENT.uid||m.b===CURRENT.uid)&&!m.winner){
+        const day=DAYS.find(d=>d.id===r.dayId);
+        return {round:r,idx:i,match:m,foe:m.a===CURRENT.uid?m.b:m.a,date:day?day.date:null};
+      }
+    }
+  }
+  return null;
+}
+function myByeRound(){
+  if(!CURRENT||!CURRENT_CHAMP) return null;
+  const open=ROUNDS.filter(r=>!r.closed).sort((a,b)=>b.number-a.number)[0];
+  if(!open) return null;
+  if(!PLAYERS.some(p=>p.id===CURRENT.uid)) return null;
+  const playing=new Set(); (open.matches||[]).forEach(m=>{ playing.add(m.a); playing.add(m.b); });
+  return playing.has(CURRENT.uid)?null:open;
+}
+function renderHome(){
+  const body=$("home-body"); if(!body) return;
+  const authed=!!CURRENT, adm=isAdmin();
+  let h="";
+
+  /* 1 — o que exige ação sua */
+  const inv=invitesToMe(), mine=myOpenDuels(), next=myNextMatch(), bye=myByeRound();
+  if(inv.length){
+    h+=sec(IC.challenge,"Você foi desafiado");
+    h+=inv.map(d=>`<div class="hero">
+      <span class="hico">${IC.challenge}</span>
+      <div class="hb"><div class="hl">Desafio</div>
+        <div class="hm">${esc(d.aName)} quer duelar</div>
+        <div class="hs">${d.champId&&CHAMPS.find(c=>c.id===d.champId)?esc((CHAMPS.find(c=>c.id===d.champId)||{}).name):"duelo avulso"}</div>
+        <div class="invite-acts">
+          <button class="btn ghost" data-act="invno" data-id="${d.id}">Recusar</button>
+          <button class="btn" data-act="invyes" data-id="${d.id}">${IC.swords} Aceitar</button>
+        </div></div></div>`).join("");
+  }
+  if(mine.length){
+    h+=sec(IC.swords,"Seu duelo em andamento");
+    h+=mine.map(d=>{
+      const meA=d.aId===(CURRENT&&CURRENT.uid);
+      return `<div class="hero" data-act="goduel" data-id="${d.id}">
+        <span class="hico">${IC.swords}</span>
+        <div class="hb"><div class="hl">Continuar duelo</div>
+          <div class="hm">${esc(meA?d.bName:d.aName)}</div>
+          <div class="hs">seus pontos: <b style="color:var(--gold-soft)">${meA?(d.lpA??8000):(d.lpB??8000)}</b> · adversário: ${meA?(d.lpB??8000):(d.lpA??8000)}</div></div>
+        <span class="cc-arrow">›</span></div>`;
+    }).join("");
+  }
+  if(next){
+    h+=sec(IC.sun,"Sua partida");
+    h+=`<div class="hero calm" data-act="duel" data-r="${next.round.id}" data-i="${next.idx}">
+      <span class="hico">${IC.sun}</span>
+      <div class="hb"><div class="hl">Rodada ${next.round.number}${next.date?" · "+fmtBR(next.date):""}</div>
+        <div class="hm">você vs ${esc(playerName(next.foe))}</div>
+        <div class="hs">toque para abrir o contador deste duelo</div></div>
+      <span class="cc-arrow">›</span></div>`;
+  } else if(bye){
+    h+=sec(IC.sun,"Sua partida");
+    h+=`<div class="hero calm"><span class="hico">${IC.wait}</span>
+      <div class="hb"><div class="hl">Rodada ${bye.number}</div>
+        <div class="hm">Você está de folga</div>
+        <div class="hs">o número de duelistas é ímpar — na próxima rodada você joga</div></div></div>`;
+  }
+  const out=invitesFromMe();
+  if(out.length){
+    h+=out.map(d=>`<div class="hero calm"><span class="hico">${IC.wait}</span>
+      <div class="hb"><div class="hl">Desafio enviado</div><div class="hm">${esc(d.bName)}</div>
+        <div class="hs">aguardando resposta</div>
+        <div class="invite-acts"><button class="btn ghost" data-act="invno" data-id="${d.id}">Cancelar desafio</button></div></div></div>`).join("");
+  }
+
+  /* 2 — avisos do admin */
+  if(adm&&CURRENT_CHAMP){
+    const pend=DUELS.filter(d=>{ if(d.champId!==CURRENT_CHAMP||!d.roundId||d.status!=="encerrado"||!d.winner) return false;
+      const r=ROUNDS.find(x=>x.id===d.roundId); const m=r&&(r.matches||[])[d.matchIdx];
+      return !!(m&&m.winner!==d.winner); });
+    const openR=ROUNDS.filter(r=>!r.closed);
+    const undec=openR.reduce((n,r)=>n+(r.matches||[]).filter(m=>!m.winner).length,0);
+    if(pend.length||undec){
+      h+=sec(IC.seal,"Administração");
+      if(pend.length) h+=`<div class="hero" data-act="gotorounds"><span class="hico">${IC.feather}</span>
+        <div class="hb"><div class="hl">Confirmar resultado</div>
+          <div class="hm">${pend.length} duelo${pend.length===1?'':'s'} aguardando você</div>
+          <div class="hs">os jogadores encerraram pelo contador — falta lançar na rodada</div></div>
+        <span class="cc-arrow">›</span></div>`;
+      if(undec) h+=`<div class="hero calm" data-act="gotorounds"><span class="hico">${IC.sun}</span>
+        <div class="hb"><div class="hl">Rodada em aberto</div>
+          <div class="hm">${undec} partida${undec===1?'':'s'} sem resultado</div>
+          <div class="hs">toque para abrir o calendário</div></div>
+        <span class="cc-arrow">›</span></div>`;
+    }
+  }
+
+  /* 3 — conta ainda não autorizada */
+  if(authed&&!isMember()&&!adm){
+    h+=`<div class="card"><div class="msg info" style="margin:0;display:flex;align-items:flex-start;gap:8px">
+      <span style="flex:0 0 auto">${IC.wait}</span>
+      <span>Sua conta ainda <b>não foi autorizada</b> pelo administrador. Você pode acompanhar tudo como visitante, mas ainda não entra em torneios nem duela.</span></div></div>`;
+  }
+
+  /* 4 — sua posição no campeonato atual */
+  if(CURRENT&&CURRENT_CHAMP&&PLAYERS.some(p=>p.id===CURRENT.uid)){
+    const rows=computeStandings(); const pos=rows.findIndex(r=>r.id===CURRENT.uid)+1;
+    const me=rows[pos-1]; const st=statsOf(CURRENT.uid,"all");
+    if(me){
+      h+=sec(IC.maat,"Você no campeonato");
+      h+=`<div class="me-line" data-act="gotorank">
+        <div class="mcol"><div class="mv">${pos}º</div><div class="ms">posição</div></div>
+        <div class="mcol"><div class="mv">${me.wins}</div><div class="ms">pontos</div></div>
+        <div class="mcol"><div class="mv">${st.t?st.pct+"%":"—"}</div><div class="ms">aproveit.</div></div>
+      </div>`;
+    }
+  }
+
+  /* 5 — duelos ao vivo dos outros */
+  const others=DUELS.filter(d=>d.status==="ativo"&&!(CURRENT&&(d.aId===CURRENT.uid||d.bId===CURRENT.uid)));
+  if(others.length){
+    h+=sec(IC.eye,"Acontecendo agora");
+    h+=`<div class="card" style="padding:6px 14px">${others.slice(0,6).map(d=>
+      `<div class="mini-live" data-act="goduel" data-id="${d.id}">
+        <span class="live-dot"></span>
+        <span class="ml-n">${esc(d.aName)} × ${esc(d.bName)}</span>
+        <span class="ml-lp" data-live="${d.id}">${d.lpA??8000} · ${d.lpB??8000}</span></div>`).join("")}</div>`;
+  }
+
+  /* 6 — campeonatos */
+  h+=sec(IC.crown,"Campeonatos");
+  if(!CHAMPS.length){
+    h+=`<div class="card"><div class="empty" style="padding:16px"><span class="big">𓉔</span>Nenhum campeonato ainda.<br>${adm?'Crie o primeiro abaixo.':'Aguarde o administrador criar um.'}</div></div>`;
+  } else {
+    h+=CHAMPS.map(c=>{
+      const st=c.status==="encerrado"?"encerrado":"ativo";
+      const nP=c.id===CURRENT_CHAMP?PLAYERS.length:null;
+      return `<div class="champ-card" data-act="openchamp" data-id="${c.id}">
+        <svg class="cc-eye"><use href="#wdjat"/></svg>
+        <div class="cc-body"><div class="cc-name">${esc(c.name)}</div>
+          <div class="cc-meta"><span class="status-pill ${st}">${st==="encerrado"?"Encerrado":"Em andamento"}</span>${nP!==null?` · ${nP} duelista${nP===1?'':'s'}`:''}</div></div>
+        ${adm?`<button class="mini danger" data-act="delchamp" data-id="${c.id}">Excluir</button>`:``}
+        <span class="cc-arrow">›</span></div>`;
+    }).join("");
+  }
+
+  /* 7 — atalhos */
+  h+=sec(IC.ankh,"Atalhos");
+  h+=`<div class="qa-grid">
+    <button class="qa" data-nav="duels">${IC.swords}Duelos</button>
+    <button class="qa" data-nav="stats">${IC.maat}Estatísticas</button>
+    ${authed?`<button class="qa" data-nav="decks">${IC.chest}Meus Decks</button>`:`<button class="qa" data-nav="cards">${IC.eye}Cards</button>`}
+    <button class="qa" data-nav="dir">${IC.person}Duelistas</button>
+  </div>`;
+
+  body.innerHTML=h;
+}
+/* atualiza só os números dos duelos ao vivo, sem redesenhar a Home */
+function refreshLiveNumbers(){
+  els("[data-live]").forEach(el=>{
+    const d=DUELS.find(x=>x.id===el.dataset.live);
+    if(d) el.textContent=`${d.lpA??8000} · ${d.lpB??8000}`;
+  });
 }
 $("btn-add-champ").onclick=async()=>{
   const name=$("new-champ").value.trim(); showMsg("champ-msg","");
@@ -1296,7 +1594,9 @@ function roundBlockHTML(r){
             <button class="wbtn ${bw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.b}">Venceu ${esc(playerName(m.b))}</button>
             ${m.winner?`<button class="wbtn clear" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="">${IC.x}</button>`:``}
           </div>`:`<div class="result-tag">${m.winner?`Vencedor: <b>${esc(playerName(m.winner))}</b>`:(closed?'Sem resultado':'Aguardando resultado')}</div>`}`;
-    }).join("")}</div>`;
+    }).join("")}
+    ${(r.byes&&r.byes.length)?`<div class="result-tag" style="padding:10px 14px;border-top:1px dashed var(--line)">
+      <span style="color:var(--gold-deep)">${IC.wait}</span> De folga nesta rodada: <b>${r.byes.map(id=>esc(playerName(id))).join(", ")}</b></div>`:""}</div>`;
 }
 
 function renderCalendar(){
@@ -1348,6 +1648,7 @@ function renderAccess(){
       ${avatarHTML(photoOf(m.id),'sm')}
       <span class="grow"><span class="l1" style="display:block">${esc(nameOf(m.id,m.email||m.id))}</span>
         <span class="l2" style="display:block">${esc(m.email||'')} · ${adm?'Administrador':'Jogador'}${me?' · você':''}</span></span></span>
+      ${m.email?`<button class="mini" data-act="resetpass" data-email="${esc(m.email)}" title="Enviar link de nova senha">${IC.unseal}</button>`:``}
       <button class="mini ${adm?'danger':''}" data-act="togadmin" data-id="${m.id}" ${me?'disabled style="opacity:.4"':''}>${adm?'Rebaixar':'Admin'}</button>
       <button class="mini danger" data-act="delmember" data-id="${m.id}" data-name="${esc(nameOf(m.id,m.email||m.id))}" ${me?'disabled style="opacity:.4"':''}>Remover</button></div>`;
   }).join("");
@@ -1474,17 +1775,17 @@ function renderAddResults(){
 }
 async function newCustomList(){
   if(!isAdmin()||!CURRENT_CHAMP) return;
-  const name=prompt("Nome da nova banlist personalizada:","Formato da Casa");
+  const name=await askText("Como vai se chamar a nova banlist personalizada?","Formato da Casa",{title:"Nova banlist",ok:"Criar"});
   if(!name||!name.trim()) return;
   try{ const ref=await addDoc(collection(db,"banlists"),{name:name.trim(),cards:[],createdAt:serverTimestamp(),createdBy:CURRENT.uid});
     await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:ref.id}); BL_MANAGE=true; renderBanlist(); toast("Lista criada — adicione cartas"); }
   catch(e){ toast(fbError(e)); }
 }
 async function renameCustom(){ const custom=currentCustom(); if(!custom) return;
-  const nn=prompt("Novo nome da lista:",custom.name); if(!nn||!nn.trim()) return;
+  const nn=await askText("Novo nome da lista:",custom.name,{title:"Renomear lista"}); if(!nn) return;
   try{ await updateDoc(doc(db,"banlists",custom.id),{name:nn.trim()}); toast("Renomeada"); }catch(e){ toast(fbError(e)); } }
 async function deleteCustom(){ const custom=currentCustom(); if(!custom) return;
-  if(!confirm(`Excluir a lista "${custom.name}"? Este campeonato voltará para a TCG oficial.`)) return;
+  if(!await ask(`Excluir a lista <b>${esc(custom.name)}</b>?\n\nEste campeonato volta para a TCG oficial.`,{title:"Excluir lista",ok:"Excluir",danger:true})) return;
   try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:"tcg"});
     await deleteDoc(doc(db,"banlists",custom.id)); BL_MANAGE=false; loadOfficial(); renderBanlist(); toast("Lista excluída"); }catch(e){ toast(fbError(e)); } }
 
@@ -1537,7 +1838,8 @@ async function enroll(){
 }
 async function removeAccount(uid, label){
   if(!isAdmin()) return;
-  if(!confirm(`Remover "${label}" completamente?\n\nEla sai de TODOS os torneios (deixa de aparecer na classificação) e perde a autorização.\n\nObs.: a conta de login em si só pode ser apagada no console do Firebase (Authentication → Users).`)) return;
+  if(!await ask(`Remover <b>${esc(label)}</b> completamente?\n\nSai de TODOS os torneios (some da classificação) e perde a autorização.\n\nA conta de login em si só pode ser apagada no console do Firebase, em Authentication → Users.`,
+    {title:"Remover acesso",ok:"Remover",danger:true})) return;
   try{
     const u=USERS.find(x=>x.id===uid);
     const champs=new Set((u&&u.enrollments)||[]);
@@ -1552,7 +1854,7 @@ async function removeAccount(uid, label){
 }
 async function unenroll(){
   if(!CURRENT||!CURRENT_CHAMP) return;
-  if(!confirm("Sair do torneio? Você sai da classificação (partidas já jogadas mantêm o registro).")) return;
+  if(!await ask("Sair do torneio?\n\nVocê some da classificação. As partidas já jogadas mantêm o registro.",{title:"Sair do torneio",ok:"Sair",danger:true})) return;
   try{
     await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"players",CURRENT.uid));
     await setDoc(doc(db,"users",CURRENT.uid),{enrollments:arrayRemove(CURRENT_CHAMP)},{merge:true});
@@ -1570,14 +1872,22 @@ document.addEventListener("click", async ev=>{
     ev.stopPropagation();
     if(!isAdmin()) return;
     const c=CHAMPS.find(x=>x.id===b.dataset.id); if(!c) return;
-    if(!confirm(`Excluir o campeonato "${c.name}"? Todos os jogadores, rodadas e resultados dele serão apagados. Esta ação não pode ser desfeita.`)) return;
+    if(!await ask(`Excluir o campeonato <b>${esc(c.name)}</b>?\n\nJogadores, dias, rodadas, resultados e os duelos ligados a ele serão apagados. Não dá para desfazer.`,
+      {title:"Excluir campeonato",ok:"Excluir",danger:true})) return;
     try{
       const cid=b.dataset.id;
-      const ps=await getDocsCompat(collection(db,"championships",cid,"players"),cid,"players");
-      const rs=await getDocsCompat(collection(db,"championships",cid,"rounds"),cid,"rounds");
-      for(const d of ps) await deleteDoc(doc(db,"championships",cid,"players",d.id));
-      for(const d of rs) await deleteDoc(doc(db,"championships",cid,"rounds",d.id));
+      const grab=async sub=>{ try{ const s=await getDocs(collection(db,"championships",cid,sub)); return s.docs.map(d=>d.id); }catch(_){ return []; } };
+      const [ps,rs,ds]=await Promise.all([grab("players"),grab("rounds"),grab("days")]);
+      const dl=[];
+      ps.forEach(id=>dl.push(deleteDoc(doc(db,"championships",cid,"players",id))));
+      rs.forEach(id=>dl.push(deleteDoc(doc(db,"championships",cid,"rounds",id))));
+      ds.forEach(id=>dl.push(deleteDoc(doc(db,"championships",cid,"days",id))));
+      // duelos daquele campeonato saem junto, senão continuariam contando nas estatísticas
+      try{ const dq=await getDocs(query(collection(db,"duels"),where("champId","==",cid)));
+        dq.docs.forEach(d=>dl.push(deleteDoc(doc(db,"duels",d.id)))); }catch(_){}
+      await Promise.all(dl);
       await deleteDoc(doc(db,"championships",cid));
+      ALL_DUELS=null; STAT_IDX=null;
       if(CURRENT_CHAMP===cid) leaveChamp();
       toast("Campeonato excluído");
     }catch(e){ toast(fbError(e)); }
@@ -1588,12 +1898,25 @@ document.addEventListener("click", async ev=>{
   if(act==="deckadd"){ addToDeck(b.dataset.id, deckAddTarget, b, ev); return; }
   if(act==="deckremove"){ ev.stopPropagation(); removeFromDeck(b.dataset.sec,b.dataset.id,b,ev); return; }
   if(act==="opendeck"){ openDeck(b.dataset.id); return; }
-  if(act==="deltrack"){ if(!isAdmin()) return; if(!confirm("Remover esta música?")) return;
+  if(act==="deltrack"){ if(!isAdmin()) return; if(!await ask("Remover esta música da lista?",{title:"Remover música",ok:"Remover",danger:true})) return;
     try{ await deleteDoc(doc(db,"tracks",b.dataset.id)); toast("Música removida"); }catch(e){ toast(fbError(e)); } return; }
 
   /* --- perfil / duelos / estatísticas (funcionam fora de um campeonato) --- */
+  if(act==="resetpass"){
+    ev.stopPropagation();
+    if(!isAdmin()) return;
+    const em=b.dataset.email; if(!em){ toast("Esta conta não tem e-mail registrado."); return; }
+    if(!await ask(`Enviar para <b>${esc(em)}</b> um link para criar uma senha nova?\n\nA senha atual continua valendo até a pessoa usar o link.`,
+      {icon:IC.unseal,title:"Nova senha",ok:"Enviar"})) return;
+    try{ await sendPasswordResetEmail(auth,em); toast("Link enviado para "+em); }catch(e){ toast(fbError(e)); }
+    return;
+  }
   if(act==="profile"){ ev.stopPropagation(); if(b.dataset.id) openProfile(b.dataset.id); return; }
-  if(act==="challenge"){ startDuelBetween(CURRENT&&CURRENT.uid, b.dataset.id, CURRENT_CHAMP||null); return; }
+  if(act==="challenge"){ ev.stopPropagation(); startDuelBetween(CURRENT&&CURRENT.uid, b.dataset.id, CURRENT_CHAMP||null); return; }
+  if(act==="invyes"){ ev.stopPropagation(); answerInvite(b.dataset.id,true); return; }
+  if(act==="invno"){ ev.stopPropagation(); answerInvite(b.dataset.id,false); return; }
+  if(act==="gotorounds"){ setView("champ"); route(); switchTab("rounds"); return; }
+  if(act==="gotorank"){ setView("champ"); route(); switchTab("rank"); return; }
   if(act==="viewdeck"){ openDeckView(b.dataset.id); return; }
   if(act==="pickavatar"){ $("prof-file").click(); return; }
   if(act==="pickcover"){ $("prof-cover-file").click(); return; }
@@ -1611,7 +1934,7 @@ document.addEventListener("click", async ev=>{
   if(act==="deldruel"){ ev.stopPropagation();
     const d=DUELS.find(x=>x.id===b.dataset.id); if(!d) return;
     if(!(isAdmin()||canDuel(d))) return;
-    if(!confirm("Apagar este duelo do histórico? A rodada do campeonato não é alterada.")) return;
+    if(!await ask("Apagar este duelo do histórico?\n\nA rodada do campeonato não é alterada.",{title:"Apagar duelo",ok:"Apagar",danger:true})) return;
     try{ if(ACTIVE_DUEL===d.id) ACTIVE_DUEL=null; await deleteDoc(doc(db,"duels",d.id)); toast("Duelo apagado"); }
     catch(e){ toast(fbError(e)); } return; }
 
@@ -1620,7 +1943,7 @@ document.addEventListener("click", async ev=>{
   if(act==="delday"){
     if(!canEdit()) return;
     const day=DAYS.find(d=>d.id===b.dataset.id); if(!day) return;
-    if(!confirm(`Excluir o dia ${fmtBR(day.date)} e todas as rodadas dele? Os pontos dessas rodadas sairão da classificação.`)) return;
+    if(!await ask(`Excluir o dia <b>${fmtBR(day.date)}</b> e todas as rodadas dele?\n\nOs pontos dessas rodadas saem da classificação.`,{title:"Excluir dia",ok:"Excluir",danger:true})) return;
     try{ const rs=ROUNDS.filter(r=>r.dayId===b.dataset.id);
       for(const r of rs) await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",r.id));
       await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"days",b.dataset.id));
@@ -1631,7 +1954,7 @@ document.addEventListener("click", async ev=>{
   }
   if(act==="delplayer"){
     if(!canEdit()) return;
-    if(!confirm("Remover este jogador do torneio? Ele sai da classificação (partidas já jogadas mantêm o registro).")) return;
+    if(!await ask("Remover este jogador do torneio?\n\nEle sai da classificação. As partidas já jogadas mantêm o registro.",{title:"Remover jogador",ok:"Remover",danger:true})) return;
     try{ await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"players",b.dataset.id));
       try{ await setDoc(doc(db,"users",b.dataset.id),{enrollments:arrayRemove(CURRENT_CHAMP)},{merge:true}); }catch(_){}
       toast("Jogador removido"); }catch(e){ toast(fbError(e)); }
@@ -1682,12 +2005,6 @@ document.addEventListener("click", async ev=>{
   }
 });
 
-// lê ids de uma subcoleção: usa cache dos listeners se for o campeonato atual, senão faz leitura pontual
-async function getDocsCompat(colRef,cid,kind){
-  if(cid===CURRENT_CHAMP){ return (kind==="players"?PLAYERS:ROUNDS).map(x=>({id:x.id})); }
-  const snap=await new Promise(res=>{ const un=onSnapshot(colRef,s=>{un();res(s);},()=>{un();res({docs:[]});}); });
-  return snap.docs.map(d=>({id:d.id}));
-}
 
 /* ---------- rounds control ---------- */
 function roundRobinSchedule(ids){
@@ -1727,7 +2044,9 @@ $("btn-start-round").onclick=async()=>{
   if(PLAYERS.length<2){ showMsg("round-ctrl-msg","Cadastre pelo menos 2 jogadores.","err"); return; }
   const day=DAYS.find(d=>d.id===CURRENT_DAY); if(!day) return;
   const c=champData(); const total=ROUNDS.length;
-  let sched=(c&&c.scheduleIds)||[]; let base=(c&&typeof c.cycleBaseRounds==="number")?c.cycleBaseRounds:0;
+  const active=new Set(PLAYERS.map(p=>p.id));
+  let sched=((c&&c.scheduleIds)||[]).filter(id=>active.has(id));   // quem saiu do torneio não é mais escalado
+  let base=(c&&typeof c.cycleBaseRounds==="number")?c.cycleBaseRounds:0;
   let cycleLen=sched.length?roundRobinSchedule(sched).length:0;
   const posNow=cycleLen?((total-base)%cycleLen):0;
   if(!sched.length || cycleLen===0 || posNow===0){ // início de um novo ciclo → inclui os jogadores atuais
@@ -1739,8 +2058,10 @@ $("btn-start-round").onclick=async()=>{
   const pairs=(roundRobinSchedule(sched)[idx]||[]);
   if(!pairs.length){ showMsg("round-ctrl-msg","Não há confrontos a gerar. Cadastre pelo menos 2 jogadores.","err"); return; }
   const matches=pairs.map(([a,b])=>({a,b,winner:null}));
+  const playing=new Set(); pairs.forEach(([a,b])=>{ playing.add(a); playing.add(b); });
+  const byes=PLAYERS.map(p=>p.id).filter(id=>!playing.has(id));   // quem folga nesta rodada
   const btn=$("btn-start-round"); btn.disabled=true;
-  try{ await addDoc(collection(db,"championships",CURRENT_CHAMP,"rounds"),{number:total+1,dayId:CURRENT_DAY,date:day.date,matches,closed:false,createdAt:serverTimestamp()});
+  try{ await addDoc(collection(db,"championships",CURRENT_CHAMP,"rounds"),{number:total+1,dayId:CURRENT_DAY,date:day.date,matches,byes,closed:false,createdAt:serverTimestamp()});
     toast(`Rodada ${total+1} criada!`); }
   catch(e){ showMsg("round-ctrl-msg",fbError(e),"err"); } finally{ btn.disabled=isLocked(); }
 };
@@ -1749,7 +2070,7 @@ $("btn-undo-round").onclick=async()=>{
   const dayRounds=ROUNDS.filter(r=>r.dayId===CURRENT_DAY).sort((a,b)=>a.number-b.number);
   if(!dayRounds.length){ toast("Não há rodadas neste dia."); return; }
   const last=dayRounds[dayRounds.length-1];
-  if(!confirm(`Desfazer a Rodada ${last.number} deste dia? Os confrontos e resultados dela serão apagados (os pontos das outras rodadas continuam).`)) return;
+  if(!await ask(`Desfazer a <b>Rodada ${last.number}</b> deste dia?\n\nOs confrontos e resultados dela são apagados. Os pontos das outras rodadas continuam.`,{title:"Desfazer rodada",ok:"Desfazer",danger:true})) return;
   try{ await deleteDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",last.id)); toast("Rodada desfeita"); }catch(e){ toast(fbError(e)); }
 };
 $("btn-close-round").onclick=async()=>{
@@ -1760,17 +2081,18 @@ $("btn-close-round").onclick=async()=>{
   const msg = undecided>0
     ? `Encerrar a Rodada ${open.number}? Há ${undecided} partida(s) sem resultado (que não pontuam). Os resultados ficam travados e os pontos são mantidos.`
     : `Encerrar a Rodada ${open.number}? Os resultados ficam travados e os pontos são mantidos.`;
-  if(!confirm(msg)) return;
+  if(!await ask(msg,{title:"Encerrar rodada",ok:"Encerrar"})) return;
   try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",open.id),{closed:true}); toast(`Rodada ${open.number} encerrada`); }
   catch(e){ toast(fbError(e)); }
 };
 $("btn-finish-champ").onclick=async()=>{
   if(!isAdmin()) return;
-  if(isLocked()){ if(!confirm("Reabrir o campeonato? Você poderá editar rodadas e resultados novamente.")) return;
+  if(isLocked()){ if(!await ask("Reabrir o campeonato?\n\nVocê volta a poder editar rodadas e resultados.",{title:"Reabrir campeonato",ok:"Reabrir"})) return;
     try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"ativo"}); toast("Campeonato reaberto"); }catch(e){ toast(fbError(e)); } return; }
   const rows=computeStandings();
   const champ=rows.length&&rows[0].wins>0?rows[0].name:"(sem partidas decididas)";
-  if(!confirm(`Encerrar o campeonato e coroar o campeão?\n\nCampeão atual: ${champ}\n\nOs pontos são mantidos e a edição fica travada (dá para reabrir depois).`)) return;
+  if(!await ask(`Encerrar o campeonato e coroar o campeão?\n\nCampeão atual: <b>${esc(champ)}</b>\n\nOs pontos são mantidos e a edição fica travada — dá para reabrir depois.`,
+    {icon:IC.crown,title:"Encerrar campeonato",ok:"Encerrar"})) return;
   try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"encerrado"}); toast("Campeonato encerrado!"); switchTab("rank"); }catch(e){ toast(fbError(e)); }
 };
 
@@ -1795,6 +2117,30 @@ const AV_PH="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://ww
 function myProfile(){ return CURRENT ? (USERS.find(u=>u.id===CURRENT.uid) || {id:CURRENT.uid,email:CURRENT.email}) : null; }
 function avatarHTML(u,cls){ const src=(u&&u.photo)||AV_PH; return `<img class="avatar ${cls||''}" src="${src}" alt="">`; }
 
+/* A lista de contas é baixada inteira por todo mundo, e a foto vai dentro dela.
+   Fotos antigas (grandes) são reprocessadas uma vez, para o app abrir mais rápido. */
+const AV_SIZE=160, AV_MAX=13000;
+function shrinkMyPhoto(){
+  if(photoShrunk||!CURRENT) return;
+  const p=myProfile(); if(!p||!p.photo||p.photo.length<=AV_MAX) return;
+  photoShrunk=true;
+  const img=new Image();
+  img.onload=async()=>{
+    try{
+      const cv=document.createElement("canvas"); cv.width=cv.height=AV_SIZE;
+      const c=cv.getContext("2d");
+      c.fillStyle="#0e0b06"; c.fillRect(0,0,AV_SIZE,AV_SIZE);
+      c.save(); c.beginPath(); c.arc(AV_SIZE/2,AV_SIZE/2,AV_SIZE/2,0,Math.PI*2); c.closePath(); c.clip();
+      const s=Math.max(AV_SIZE/img.width,AV_SIZE/img.height), w=img.width*s, h=img.height*s;
+      c.drawImage(img,(AV_SIZE-w)/2,(AV_SIZE-h)/2,w,h); c.restore();
+      const url=cv.toDataURL("image/jpeg",0.8);
+      if(url.length<p.photo.length) await setDoc(doc(db,"users",CURRENT.uid),{photo:url},{merge:true});
+    }catch(e){}
+  };
+  img.onerror=()=>{};
+  img.src=p.photo;
+}
+
 /* drawer */
 function openDrawer(){ renderDrawer(); $("drawer").classList.add("show"); $("drawer-ov").classList.add("show"); }
 function closeDrawer(){ $("drawer").classList.remove("show"); $("drawer-ov").classList.remove("show"); }
@@ -1811,6 +2157,10 @@ const ICONS={
   decks:SVG+'<path d="M4 9.5C4 7.6 7.6 6 12 6s8 1.6 8 3.5V17a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M4 9.5c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5"/><path d="M12 13v3"/></svg>',
   history:SVG+'<path d="M7 4h10a2 2 0 012 2v12.5a1.5 1.5 0 01-3 0V6"/><path d="M6 4a2 2 0 00-2 2v1.5h4"/><path d="M8 6v11a1.5 1.5 0 001.5 1.5H16"/><path d="M8.5 10h6M8.5 13h6"/></svg>',
   duels:SVG+'<path d="M3.6 4.2c4.6 1.4 7.4 4.6 8.4 8.6"/><path d="M20.4 4.2c-4.6 1.4-7.4 4.6-8.4 8.6"/><path d="M12 12.8v7.4"/><path d="M9 20.2h6"/><path d="M4.8 16.4 8 13.6M19.2 16.4 16 13.6"/></svg>',
+  /* pirâmide com o olho — início */
+  home:SVG+'<path d="M12 3.2 21 20.4H3z"/><path d="M6.6 13.6h10.8"/><path d="M9 16.9s1.2-1.7 3-1.7 3 1.7 3 1.7-1.2 1.7-3 1.7-3-1.7-3-1.7z"/></svg>',
+  /* fila de duelistas — diretório */
+  dir:SVG+'<circle cx="7.5" cy="8" r="2.6"/><path d="M3.2 19c0-2.8 2-4.6 4.3-4.6s4.3 1.8 4.3 4.6"/><circle cx="16.5" cy="8" r="2.6"/><path d="M12.2 19c0-2.8 2-4.6 4.3-4.6s4.3 1.8 4.3 4.6"/></svg>',
   stats:SVG+'<path d="M12 4.4v15.2"/><path d="M6.5 20.6h11"/><path d="M4 8.4h16"/><path d="M4 8.4 1.9 13a2.6 2.6 0 004.2 0z"/><path d="M20 8.4 17.9 13a2.6 2.6 0 004.2 0z"/><circle cx="12" cy="4.4" r="1.3"/></svg>',
   profile:SVG+'<circle cx="12" cy="7.5" r="3.2"/><path d="M6.5 18c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M5 21h14"/></svg>',
   switch:SVG+'<path d="M4 9h12l-3.5-3.5"/><path d="M20 15H8l3.5 3.5"/></svg>',
@@ -1866,17 +2216,20 @@ function renderDrawer(){
       ${avatarHTML(prof,'')}
       <div class="dh-info"><div class="dh-name">${authed?esc((prof&&prof.displayName)||CURRENT.email):'Visitante'}</div>
       <div class="dh-sub">${authed?((adm?'Administrador':'Jogador')+' · ver perfil'):'não logado'}</div></div></div>`;
-  const on=nav=>(ACTIVE_SCREEN===nav)||(ACTIVE_SCREEN===null&&inChamp&&ACTIVE_TAB===nav);
+  const inView=VIEW==="champ"&&inChamp;
+  const on=nav=>(ACTIVE_SCREEN===nav)||(ACTIVE_SCREEN===null&&(nav==="home"?!inView:(inView&&ACTIVE_TAB===nav)));
   const item=(nav,label,extra)=>`<button class="drawer-item ${on(nav)?'active':''} ${extra||''}" data-nav="${nav}"><span class="di-ic">${ICONS[nav]||''}</span>${label}</button>`;
-  let nav="";
-  if(inChamp){
+  let nav=item('home','Início');
+  if(inView){
+    nav+=`<div class="drawer-sep"></div>`;
     nav+=item('rank','Classificação')+item('rounds','Calendário')+item('players','Jogadores')+item('banlist','Banlist');
     if(adm) nav+=item('access','Acessos');
-    nav+=`<div class="drawer-sep"></div>`;
   }
+  nav+=`<div class="drawer-sep"></div>`;
   nav+=item('duels','Duelos');
   nav+=item('counter','Contador de Duelo');
   nav+=item('stats','Estatísticas');
+  nav+=item('dir','Duelistas');
   nav+=item('cards','Lista de Cards');
   if(authed) nav+=item('decks','Meus Decks');
   if(authed) nav+=item('history','Meu histórico');
@@ -1889,7 +2242,10 @@ function renderDrawer(){
 document.addEventListener("click", ev=>{
   const it=ev.target.closest("[data-nav]"); if(!it) return;
   const nav=it.dataset.nav; closeDrawer();
-  if(["rank","rounds","players","banlist","access"].includes(nav)){ closeScreen(); if(CURRENT_CHAMP) switchTab(nav); }
+  if(nav==="home"){ goHome(); }
+  else if(["rank","rounds","players","banlist","access"].includes(nav)){
+    closeScreen(); if(CURRENT_CHAMP){ setView("champ"); route(); switchTab(nav); } else toast("Escolha um campeonato primeiro."); }
+  else if(nav==="dir"){ openScreen("dir"); }
   else if(nav==="duels"){ openScreen("duels"); }
   else if(nav==="counter"){ ACTIVE_DUEL=null; openScreen("counter"); }
   else if(nav==="stats"){ openScreen("stats"); }
@@ -1909,6 +2265,7 @@ function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.class
   if(name==="decks") renderDecks();
   if(name==="duels") renderDuels();
   if(name==="stats") renderStats();
+  if(name==="dir") renderDirectory();
   els("#screen-duels .admin-only").forEach(n=>n.classList.toggle("hidden",!isAdmin()));
 }
 function closeScreen(){ flushLP(); ACTIVE_SCREEN=null; els(".screen").forEach(s=>s.classList.remove("show")); }
@@ -2047,7 +2404,7 @@ function openDeckView(deckId){
 $("dv-close").onclick=()=>$("deck-view").classList.remove("show");
 
 /* ---------- histórico do jogador ---------- */
-function getDocsOnce(colRef){ return new Promise(res=>{ const un=onSnapshot(colRef,s=>{ un(); res(s.docs.map(d=>({id:d.id,...d.data()}))); },()=>{ un(); res([]); }); }); }
+async function getDocsOnce(colRef){ try{ const s=await getDocs(colRef); return s.docs.map(d=>({id:d.id,...d.data()})); }catch(e){ return []; } }
 async function renderHistory(){
   const body=$("history-body"); if(!body) return;
   if(!CURRENT){ body.innerHTML=`<div class="empty">Entre para ver seu histórico.</div>`; return; }
@@ -2055,17 +2412,19 @@ async function renderHistory(){
   if(!enr.length){ body.innerHTML=`<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.scroll}</span>Você ainda não entrou em nenhum torneio.<br>Entre em um campeonato pela aba <b>Jogadores</b>.</div>`; return; }
   body.innerHTML=`<div class="spin"></div>`;
   const cards=[];
-  for(const cid of enr){
+  const loaded=await Promise.all(enr.map(cid=>Promise.all([
+    getDocsOnce(collection(db,"championships",cid,"players")),
+    getDocsOnce(collection(db,"championships",cid,"rounds"))])));
+  enr.forEach((cid,ci)=>{
     const champ=CHAMPS.find(c=>c.id===cid);
-    const players=await getDocsOnce(collection(db,"championships",cid,"players"));
-    const rounds=await getDocsOnce(collection(db,"championships",cid,"rounds"));
+    const [players,rounds]=loaded[ci];
     const s={}; players.forEach(p=>s[p.id]={id:p.id,wins:0,played:0});
     rounds.forEach(r=>(r.matches||[]).forEach(m=>{ if(m.winner&&s[m.winner]) s[m.winner].wins++; if(m.winner){ if(s[m.a])s[m.a].played++; if(s[m.b])s[m.b].played++; } }));
     const ranked=Object.values(s).sort((a,b)=>b.wins-a.wins||b.played-a.played);
     const mine=s[CURRENT.uid];
     const rank=mine?ranked.findIndex(x=>x.id===CURRENT.uid)+1:null;
     cards.push({name:champ?champ.name:"(campeonato removido)", status:champ?champ.status:null, exists:!!champ, wins:mine?mine.wins:0, played:mine?mine.played:0, rank, total:ranked.length});
-  }
+  });
   body.innerHTML=cards.map(c=>{
     const champLine = c.exists
       ? `${c.wins} vitória${c.wins===1?'':'s'} · ${c.played} jogo${c.played===1?'':'s'}${c.rank?` · <b style="color:var(--gold-soft)">${c.rank}º</b> de ${c.total}`:''}`
@@ -2124,7 +2483,7 @@ $("crop-cancel").onclick=()=>$("crop-modal").classList.remove("show");
 $("crop-ok").onclick=async()=>{
   if(!CURRENT||!cropImg) return;
   const cover=CROP_MODE==="cover";
-  const url=cover?cropOutput(900,306,false,0.72):cropOutput(220,220,true,0.85);
+  const url=cover?cropOutput(900,306,false,0.72):cropOutput(AV_SIZE,AV_SIZE,true,0.8);
   $("crop-modal").classList.remove("show");
   try{
     if(cover){ await setDoc(doc(db,"covers",CURRENT.uid),{img:url,updatedAt:serverTimestamp()},{merge:true});
@@ -2208,29 +2567,68 @@ async function openMatchDuel(roundId,idx){
   const round=ROUNDS.find(r=>r.id===roundId); if(!round) return;
   const m=(round.matches||[])[idx]; if(!m) return;
   const id=duelKey(roundId,idx), ex=DUELS.find(d=>d.id===id);
-  if(ex&&ex.status==="encerrado"&&!confirm("Este duelo já foi encerrado. Reabrir e zerar os pontos de vida?")) return;
+  const resuming=!!(ex&&ex.status==="ativo");     // continuar duelo NUNCA zera os pontos
+  if(ex&&ex.status==="encerrado"&&!await ask("Este duelo já foi encerrado.\nReabrir e zerar os pontos de vida?",{title:"Reabrir duelo",ok:"Reabrir"})) return;
   const data={champId:CURRENT_CHAMP,roundId,matchIdx:idx,dayId:round.dayId||null,
     aId:m.a,bId:m.b,aName:playerName(m.a),bName:playerName(m.b),
     aPhoto:playerPhoto(m.a).photo||null,bPhoto:playerPhoto(m.b).photo||null,
     aDeck:(ex&&ex.aDeck)||null,bDeck:(ex&&ex.bDeck)||null,
-    lpA:8000,lpB:8000,status:"ativo",winner:null,
-    createdAt:(ex&&ex.createdAt)||serverTimestamp(),createdBy:CURRENT?CURRENT.uid:null};
+    lpA:resuming?(ex.lpA??8000):8000, lpB:resuming?(ex.lpB??8000):8000,
+    status:"ativo",winner:null,
+    createdAt:(ex&&ex.createdAt)||serverTimestamp(),createdBy:(ex&&ex.createdBy)||(CURRENT?CURRENT.uid:null)};
   try{ await setDoc(doc(db,"duels",id),data,{merge:true}); }catch(e){ toast(fbError(e)); return; }
-  ACTIVE_DUEL=id; lpLocalTs=0; LP=[8000,8000]; openScreen("counter");
+  ACTIVE_DUEL=id; lpLocalTs=0; LP=[data.lpA,data.lpB]; openScreen("counter");
   if(!(ex&&(ex.aDeck||ex.bDeck))) openDeckPicker(id);
 }
-async function startDuelBetween(aId,bId,champId){
+async function startDuelBetween(aId,bId,champId,forceDirect){
   if(!CURRENT){ toast("Entre com sua conta para registrar um duelo."); return; }
   if(!aId||!bId||aId===bId){ toast("Escolha dois duelistas diferentes."); return; }
   const pa=playerPhoto(aId), pb=playerPhoto(bId);
+  // se quem cria é um dos dois, vira convite e o outro aceita; senão (admin montando a mesa) já começa
+  const invite=!forceDirect&&(CURRENT.uid===aId||CURRENT.uid===bId);
+  // quem convida fica sempre no lado A, para o convite chegar em B
+  const [x,y]=(invite&&CURRENT.uid===bId)?[bId,aId]:[aId,bId];
+  const px=x===aId?pa:pb, py=y===bId?pb:pa;
   try{
     const ref=await addDoc(collection(db,"duels"),{champId:champId||null,roundId:null,matchIdx:null,dayId:null,
-      aId,bId,aName:nameOfUid(aId),bName:nameOfUid(bId),aPhoto:pa.photo||null,bPhoto:pb.photo||null,
-      aDeck:null,bDeck:null,lpA:8000,lpB:8000,status:"ativo",winner:null,
+      aId:x,bId:y,aName:nameOfUid(x),bName:nameOfUid(y),aPhoto:px.photo||null,bPhoto:py.photo||null,
+      aDeck:null,bDeck:null,lpA:8000,lpB:8000,status:invite?"convite":"ativo",winner:null,
       createdAt:serverTimestamp(),createdBy:CURRENT.uid});
-    ACTIVE_DUEL=ref.id; lpLocalTs=0; LP=[8000,8000]; haptic(30); openScreen("counter"); openDeckPicker(ref.id);
+    haptic(30);
+    if(invite){ toast(`Desafio enviado para ${nameOfUid(y)}`); goHome(); return; }
+    ACTIVE_DUEL=ref.id; lpLocalTs=0; LP=[8000,8000]; openScreen("counter"); openDeckPicker(ref.id);
   }catch(e){ toast(fbError(e)); }
 }
+async function answerInvite(id,accept){
+  const d=DUELS.find(x=>x.id===id); if(!d) return;
+  try{
+    if(!accept){ await deleteDoc(doc(db,"duels",id)); haptic(20); toast("Desafio recusado"); renderHome(); return; }
+    await updateDoc(doc(db,"duels",id),{status:"ativo",lpA:8000,lpB:8000});
+    ACTIVE_DUEL=id; lpLocalTs=0; LP=[8000,8000]; haptic([25,45,25]); openScreen("counter"); openDeckPicker(id);
+  }catch(e){ toast(fbError(e)); }
+}
+
+/* ---------- diretório de duelistas ---------- */
+function renderDirectory(){
+  ensureAllDuels();
+  const body=$("dir-body"); if(!body) return;
+  const term=DIR_TERM.toLowerCase();
+  const pool=duelistPool().filter(p=>!term||p.name.toLowerCase().includes(term));
+  $("dir-count").textContent=`${pool.length} duelista(s)`;
+  body.innerHTML=pool.length? pool.map(p=>{
+    const st=statsOf(p.id,"all"), me=CURRENT&&CURRENT.uid===p.id;
+    const adm=!!(CONFIG&&Array.isArray(CONFIG.adminUids)&&CONFIG.adminUids.includes(p.id));
+    return `<div class="list-row">
+      <span data-act="profile" data-id="${p.id}" style="display:inline-flex;align-items:center;gap:10px;flex:1;min-width:0">
+        ${avatarHTML({photo:p.photo},'sm')}
+        <span class="grow"><span class="l1" style="display:block">${esc(p.name)}${me?' · você':''}${adm?' <span class="badge-role adm">Admin</span>':''}</span>
+        <span class="l2" style="display:block">${st.t?`${st.w}V · ${st.l}D · ${st.pct}%`:'sem duelos registrados'}</span></span></span>
+      ${!me&&CURRENT&&isMember()?`<button class="mini" data-act="challenge" data-id="${p.id}">${IC.challenge}</button>`:``}
+    </div>`;
+  }).join("") : `<div class="empty" style="padding:18px">Nenhum duelista encontrado.</div>`;
+}
+$("dir-search").addEventListener("input",()=>{ DIR_TERM=$("dir-search").value.trim(); renderDirectory(); });
+$("stats-refresh").onclick=()=>{ ensureAllDuels(true); toast("Atualizando histórico…"); };
 function offerResult(winnerN){
   const d=activeDuel(); if(!d) return;
   const name=winnerN===1?d.aName:d.bName, photo=winnerN===1?d.aPhoto:d.bPhoto;
@@ -2290,15 +2688,35 @@ function duelRowHTML(d,opts){
     </div>`;
 }
 function renderDuels(){
+  ensureAllDuels();
   const live=DUELS.filter(d=>d.status==="ativo");
-  $("duels-live").innerHTML=live.length
+  const conv=DUELS.filter(d=>d.status==="convite");
+  let head="";
+  if(conv.length){
+    head=`<div class="section-note" style="margin:0 0 8px;color:var(--gold-soft)">${IC.challenge} Desafios aguardando resposta</div>`
+      +conv.map(d=>{
+        const forMe=!!(CURRENT&&d.bId===CURRENT.uid);
+        return `<div class="duel-row">
+          <div class="duel-side"><div class="dn" data-act="profile" data-id="${d.aId}">${avatarHTML({photo:d.aPhoto},'sm')}${esc(d.aName)}</div></div>
+          <div class="duel-mid"><div class="vs">desafia</div></div>
+          <div class="duel-side r"><div class="dn" data-act="profile" data-id="${d.bId}">${esc(d.bName)}${avatarHTML({photo:d.bPhoto},'sm')}</div></div>
+        </div>
+        <div class="duel-acts">
+          ${forMe?`<button class="mini" data-act="invyes" data-id="${d.id}">${IC.swords} Aceitar</button>`:``}
+          <button class="mini danger" data-act="invno" data-id="${d.id}">${forMe?"Recusar":"Cancelar"}</button>
+        </div>`;
+      }).join("")
+      +`<div style="height:1px;background:var(--line);margin:6px 0 12px"></div>`;
+  }
+  $("duels-live").innerHTML=head+(live.length
     ? live.map(d=>duelRowHTML(d,{live:true})).join("")
-    : `<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.swords}</span>Nenhum duelo em andamento.<br>Crie um acima ou abra pelo <b>Calendário</b>.</div>`;
+    : `<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.swords}</span>Nenhum duelo em andamento.<br>Crie um acima ou abra pelo <b>Calendário</b>.</div>`);
 
   const scopes=[["all","Todos"],["champ","Deste campeonato"],["avulso","Avulsos"]];
   $("duels-hist-filter").innerHTML=scopes.map(([k,l])=>
     `<button class="dchip ${HIST_SCOPE===k?'active':''}" data-act="histscope" data-k="${k}">${l}</button>`).join("");
-  const hist=DUELS.filter(d=>d.status==="encerrado"&&d.winner&&duelInScope(d,HIST_SCOPE)).slice(0,60);
+  const hist=duelUniverse().filter(d=>d.status==="encerrado"&&d.winner&&duelInScope(d,HIST_SCOPE))
+    .sort((a,b)=>((b.endedAt&&b.endedAt.seconds)||0)-((a.endedAt&&a.endedAt.seconds)||0)).slice(0,60);
   $("duels-hist").innerHTML=hist.length
     ? hist.map(d=>duelRowHTML(d,{live:false})).join("")
     : `<div class="empty" style="padding:16px">Nenhum duelo encerrado ainda${HIST_SCOPE!=="all"?" neste filtro":""}.</div>`;
@@ -2328,7 +2746,7 @@ async function syncDuelFromMatch(round,idx,winner){
 /* importa partidas já decididas das rodadas para o histórico de duelos */
 async function syncOldDuels(){
   if(!isAdmin()||!CURRENT_CHAMP){ toast("Entre num campeonato como admin."); return; }
-  if(!confirm("Importar para o histórico todas as partidas já decididas deste campeonato?\n\nÉ seguro repetir — nada é duplicado.")) return;
+  if(!await ask("Importar para o histórico todas as partidas já decididas deste campeonato?\n\nÉ seguro repetir — nada é duplicado.",{title:"Importar histórico",ok:"Importar"})) return;
   const b=$("duels-sync"); b.disabled=true; b.textContent="Importando…";
   let n=0;
   try{
@@ -2347,6 +2765,7 @@ async function syncOldDuels(){
         n++;
       }
     }
+    ALL_DUELS=null; STAT_IDX=null; ensureAllDuels(true);
     toast(n?`${n} duelo(s) importado(s)`:"Nada novo para importar");
   }catch(e){ toast(fbError(e)); }
   finally{ b.disabled=false; b.textContent="Importar duelos antigos das rodadas"; }
@@ -2421,33 +2840,58 @@ $("dp-save").onclick=async()=>{
 };
 
 /* ================= ESTATÍSTICAS ================= */
-function statsOf(uid,scope){
-  let w=0,l=0;
-  for(const d of DUELS){
-    if(d.status!=="encerrado"||!d.winner) continue;
-    if(!duelInScope(d,scope||"all")) continue;
-    if(d.aId!==uid&&d.bId!==uid) continue;
-    if(d.winner===uid) w++; else l++;
+/* O ouvinte em tempo real traz só os duelos recentes (para a tela ficar leve).
+   Para as estatísticas serem exatas mesmo depois de milhares de duelos, o
+   histórico completo é lido uma vez por sessão e mesclado com o que está ao vivo. */
+async function ensureAllDuels(force){
+  if(allDuelsLoading) return; if(ALL_DUELS&&!force) return;
+  allDuelsLoading=true;
+  try{ const s=await getDocs(collection(db,"duels")); ALL_DUELS=s.docs.map(d=>({id:d.id,...d.data()})); }
+  catch(e){ console.error(e); if(!ALL_DUELS) ALL_DUELS=[]; }
+  finally{
+    allDuelsLoading=false; STAT_IDX=null;
+    if(ACTIVE_SCREEN==="stats") renderStats();
+    if(ACTIVE_SCREEN==="profile") renderProfile();
+    if(ACTIVE_TAB==="players"&&!$("app").classList.contains("hidden")) renderPlayers();
+    if(!$("select-screen").classList.contains("hidden")) renderHome();
   }
-  const t=w+l; return {w,l,t,pct:t?Math.round(w*100/t):0};
 }
-function deckStatsOf(uid,deckId){
-  let w=0,l=0;
-  for(const d of DUELS){
+function duelUniverse(){
+  if(!ALL_DUELS) return DUELS;
+  const m=new Map(); ALL_DUELS.forEach(d=>m.set(d.id,d)); DUELS.forEach(d=>m.set(d.id,d));
+  return Array.from(m.values());
+}
+/* varre o histórico UMA vez e guarda o resultado, em vez de varrer por jogador */
+function buildStatIdx(){
+  const idx={all:{},champ:{},avulso:{},deck:{}};
+  const bump=(box,key,win)=>{ const o=box[key]||(box[key]={w:0,l:0}); if(win) o.w++; else o.l++; };
+  for(const d of duelUniverse()){
     if(d.status!=="encerrado"||!d.winner) continue;
-    const mine=d.aId===uid?d.aDeck:(d.bId===uid?d.bDeck:null);
-    if(!mine||mine.id!==deckId) continue;
-    if(d.winner===uid) w++; else l++;
+    for(const side of ["a","b"]){
+      const uid=side==="a"?d.aId:d.bId; if(!uid) continue;
+      const win=d.winner===uid;
+      bump(idx.all,uid,win);
+      if(d.champId===CURRENT_CHAMP) bump(idx.champ,uid,win);
+      if(!d.roundId) bump(idx.avulso,uid,win);
+      const dk=side==="a"?d.aDeck:d.bDeck;
+      if(dk&&dk.id) bump(idx.deck,uid+"|"+dk.id,win);
+    }
   }
-  const t=w+l; return {w,l,t,pct:t?Math.round(w*100/t):0};
+  idx.champOf=CURRENT_CHAMP; return idx;
 }
+function statIdx(){ if(!STAT_IDX||STAT_IDX.champOf!==CURRENT_CHAMP) STAT_IDX=buildStatIdx(); return STAT_IDX; }
+const pack=o=>{ const w=(o&&o.w)||0,l=(o&&o.l)||0,t=w+l; return {w,l,t,pct:t?Math.round(w*100/t):0}; };
+function statsOf(uid,scope){ return pack(statIdx()[scope||"all"][uid]); }
+function deckStatsOf(uid,deckId){ return pack(statIdx().deck[uid+"|"+deckId]); }
+const statsPartial=()=>!ALL_DUELS&&DUELS.length>=400;
 function renderStats(){
+  ensureAllDuels();
   const scopes=[["all","Todos os duelos"],["champ","Deste campeonato"],["avulso","Só avulsos"]];
   $("stats-filter").innerHTML=scopes.map(([k,l])=>
     `<button class="dchip ${STATS_SCOPE===k?'active':''}" data-act="statscope" data-k="${k}">${l}</button>`).join("");
 
   const ids=new Set();
-  DUELS.forEach(d=>{ if(d.status==="encerrado"&&d.winner&&duelInScope(d,STATS_SCOPE)){ ids.add(d.aId); ids.add(d.bId); } });
+  duelUniverse().forEach(d=>{ if(d.status==="encerrado"&&d.winner&&duelInScope(d,STATS_SCOPE)){ ids.add(d.aId); ids.add(d.bId); } });
   const rows=Array.from(ids).filter(Boolean).map(id=>({id,name:nameOfUid(id),...statsOf(id,STATS_SCOPE)}))
     .sort((a,b)=>b.w-a.w||b.pct-a.pct||a.name.localeCompare(b.name));
 
@@ -2473,7 +2917,9 @@ function renderStats(){
   }
 
   html+=`<div class="card"><h2>${IC.maat} Ranking de duelos</h2>
-    <p class="section-note">Conta todos os duelos registrados — de rodada e avulsos.</p>`;
+    <p class="section-note">Conta todos os duelos registrados — de rodada e avulsos.
+      ${allDuelsLoading?" <b style='color:var(--gold-soft)'>carregando o histórico completo…</b>":
+        (ALL_DUELS?` Histórico completo: ${ALL_DUELS.length} duelo(s).`:"")}</p>`;
   html+=rows.length
     ? `<table class="rank"><thead><tr><th class="pos">#</th><th>Duelista</th><th class="wl">V</th><th class="wl">D</th><th class="pts">%</th></tr></thead><tbody>
       ${rows.map((r,i)=>`<tr class="${i===0?'top1':''}">
@@ -2492,7 +2938,8 @@ document.addEventListener("click", ev=>{
   const sc=ev.target.closest("[data-step]"); if(sc){ STEP=+sc.dataset.step; els(".step-chip").forEach(c=>c.classList.toggle("active",c===sc)); const cu=$("lp-step-custom"); if(cu) cu.value=""; }
 });
 $("lp-step-custom").addEventListener("input",()=>{ const v=parseInt($("lp-step-custom").value,10); if(v>0){ STEP=v; els(".step-chip").forEach(c=>c.classList.remove("active")); } });
-$("lp-reset").onclick=()=>{ LP=[8000,8000]; renderLP(); $("coin-res").textContent="toque na moeda"; };
+$("lp-reset").onclick=()=>{ LP=[8000,8000]; renderLP(); $("coin-res").textContent="toque na moeda"; haptic(20);
+  const d=activeDuel(); if(d&&canDuel(d)){ lpLocalTs=Date.now(); queueLP(); } };
 $("coin").onclick=()=>{ if(coinBusy) return; coinBusy=true; const coin=$("coin"); coin.classList.remove("flip"); void coin.offsetWidth; coin.classList.add("flip");
   const res=Math.random()<0.5?"CARA":"COROA"; $("coin-res").textContent="girando…"; setTimeout(()=>{ $("coin-res").textContent=res; coinBusy=false; },800); };
 
@@ -2843,7 +3290,7 @@ document.addEventListener("click",ev=>{
 $("deck-name").addEventListener("change",async()=>{ if(!CUR_DECK) return; const nm=$("deck-name").value.trim()||"Deck";
   try{ await updateDoc(doc(db,"decks",CUR_DECK),{name:nm}); }catch(e){} });
 $("deck-back-list").onclick=()=>{ CUR_DECK=null; renderDecks(); };
-$("btn-del-deck").onclick=async()=>{ if(!CUR_DECK) return; if(!confirm("Excluir este deck? Não dá para desfazer.")) return;
+$("btn-del-deck").onclick=async()=>{ if(!CUR_DECK) return; if(!await ask("Excluir este deck?\n\nNão dá para desfazer.",{title:"Excluir deck",ok:"Excluir",danger:true})) return;
   try{ await deleteDoc(doc(db,"decks",CUR_DECK)); CUR_DECK=null; renderDecks(); toast("Deck excluído"); }catch(e){ toast(fbError(e)); } };
 
 /* ---------- enter to submit ---------- */
