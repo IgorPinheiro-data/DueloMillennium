@@ -341,8 +341,9 @@
   .prof-cover .cv-img{transform-origin:center;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
   .prof-cover .cv-glyph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--gold-deep);opacity:.25}
   .prof-cover .cv-glyph svg{width:74px;height:74px}
-  .prof-cover .cv-btn{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;gap:6px}
-  .prof-cover.editing{touch-action:none;cursor:grab;box-shadow:inset 0 0 0 2px var(--gold)}
+  /* os botões ficam no topo: a faixa de baixo é coberta pelo bloco do avatar */
+  .prof-cover .cv-btn{position:absolute;right:10px;top:10px;z-index:4;display:flex;gap:6px}
+  .prof-cover.editing{touch-action:none;cursor:grab;box-shadow:inset 0 0 0 2px var(--gold);z-index:5}
   .prof-cover.editing:active{cursor:grabbing}
   .prof-cover .cv-hint{position:absolute;top:9px;left:50%;transform:translateX(-50%);z-index:3;pointer-events:none;
     background:rgba(6,4,2,.78);color:var(--gold-soft);font-size:11px;padding:5px 11px;border-radius:999px;
@@ -351,7 +352,9 @@
   .prof-cover .cv-tools{position:absolute;left:10px;right:10px;bottom:9px;z-index:3;display:flex;gap:8px;align-items:center;
     background:rgba(6,4,2,.82);border:1px solid var(--line2);border-radius:12px;padding:7px 10px;backdrop-filter:blur(4px)}
   .prof-cover .cv-tools input[type=range]{flex:1;min-width:50px}
-  .prof-id{display:flex;align-items:flex-end;gap:14px;margin-top:-44px;padding:0 4px 12px;position:relative;z-index:2}
+  /* o bloco do avatar invade 44px da capa; sem pointer-events ele roubaria os cliques de lá */
+  .prof-id{display:flex;align-items:flex-end;gap:14px;margin-top:-44px;padding:0 4px 12px;position:relative;z-index:2;pointer-events:none}
+  .prof-id>*{pointer-events:auto}
   .prof-id .avatar{box-shadow:0 6px 20px rgba(0,0,0,.65)}
   .prof-id .pi-txt{flex:1;min-width:0;padding-bottom:4px}
   .prof-id .pi-name{font-family:'Cinzel',serif;color:var(--gold-soft);font-size:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
