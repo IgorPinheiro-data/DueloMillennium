@@ -250,8 +250,6 @@
   .screen-head h1{flex:1;font-family:'Cinzel',serif;color:var(--gold-soft);font-size:18px}
   .screen-body{max-width:720px;margin:0 auto;padding:16px 14px}
 
-  /* profile */
-  .prof-avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:8px}
 
   /* crop modal */
   #crop-modal{position:fixed;inset:0;z-index:95;background:rgba(6,4,2,.92);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
@@ -329,6 +327,82 @@
   .valid-tag{font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid var(--line2)}
   .valid-tag.ok{color:var(--green);border-color:#2c5a38;background:rgba(76,175,109,.08)}
   .valid-tag.bad{color:#e79b8c;border-color:#5a2a20;background:rgba(193,84,63,.08)}
+
+  /* ---- feedback de deck (visual + vibração) ---- */
+  @keyframes dkAdd{0%{box-shadow:0 0 0 0 rgba(76,175,109,.85);transform:scale(1)}40%{transform:scale(1.07)}100%{box-shadow:0 0 0 12px rgba(76,175,109,0);transform:scale(1)}}
+  @keyframes dkRm{0%{box-shadow:0 0 0 0 rgba(193,84,63,.85);transform:scale(1)}40%{transform:scale(.92)}100%{box-shadow:0 0 0 12px rgba(193,84,63,0);transform:scale(1)}}
+  @keyframes dkNo{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}60%{transform:translateX(5px)}}
+  .dk-card.fx-add,.bl-card.fx-add{animation:dkAdd .45s ease-out;border-color:var(--green)}
+  .dk-card.fx-rm,.bl-card.fx-rm{animation:dkRm .45s ease-out;border-color:var(--red)}
+  .dk-card.fx-no,.bl-card.fx-no{animation:dkNo .32s ease-in-out;border-color:var(--red)}
+  @keyframes cntPulse{0%{transform:scale(1)}45%{transform:scale(1.3)}100%{transform:scale(1)}}
+  .cnt.pulse{display:inline-block;animation:cntPulse .42s ease-out}
+  .float-fx{position:fixed;z-index:99;pointer-events:none;font-family:'Cinzel',serif;font-weight:800;font-size:22px;
+    text-shadow:0 2px 10px rgba(0,0,0,.9);animation:floatUp .75s ease-out forwards}
+  @keyframes floatUp{0%{opacity:1;transform:translate(-50%,0) scale(.8)}25%{transform:translate(-50%,-12px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-54px) scale(1)}}
+
+  /* ---- perfil / capa ---- */
+  .prof-cover{position:relative;height:152px;border-radius:0 0 18px 18px;overflow:hidden;border:1px solid var(--line);border-top:none;
+    background:radial-gradient(circle at 50% 130%,rgba(232,193,90,.22),rgba(0,0,0,0) 70%),linear-gradient(180deg,#241c12,#100c07)}
+  .prof-cover img{width:100%;height:100%;object-fit:cover;display:block}
+  .prof-cover .cv-glyph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--gold-deep);opacity:.25}
+  .prof-cover .cv-glyph svg{width:74px;height:74px}
+  .prof-cover .cv-btn{position:absolute;right:10px;bottom:10px;z-index:2}
+  .prof-id{display:flex;align-items:flex-end;gap:14px;margin-top:-44px;padding:0 4px 12px;position:relative;z-index:2}
+  .prof-id .avatar{box-shadow:0 6px 20px rgba(0,0,0,.65)}
+  .prof-id .pi-txt{flex:1;min-width:0;padding-bottom:4px}
+  .prof-id .pi-name{font-family:'Cinzel',serif;color:var(--gold-soft);font-size:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .prof-id .pi-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+  /* ---- estatísticas ---- */
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:2px 0 4px}
+  .stat-box{background:rgba(0,0,0,.24);border:1px solid var(--line);border-radius:12px;padding:12px 6px;text-align:center}
+  .stat-box .sv{font-family:'Cinzel Decorative',serif;font-size:23px;color:var(--gold-soft);line-height:1;font-variant-numeric:tabular-nums}
+  .stat-box .sl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:6px}
+  .stat-box.win .sv{color:#8fd6a3}.stat-box.loss .sv{color:#e79b8c}
+  .bar{height:9px;border-radius:99px;background:#3b2418;overflow:hidden;margin-top:10px;border:1px solid var(--line)}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#3f8f5b,#8fd6a3)}
+  table.rank td.wl{text-align:center;width:44px;font-variant-numeric:tabular-nums}
+  table.rank td.wl.v{color:#8fd6a3}table.rank td.wl.d{color:#e79b8c}
+
+  /* ---- duelos ---- */
+  .duel-row{display:flex;align-items:center;gap:8px;padding:12px 4px;border-bottom:1px solid var(--line)}
+  .duel-row:last-child{border-bottom:none}
+  .duel-side{flex:1;min-width:0}
+  .duel-side .dn{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
+  .duel-side.r{text-align:right}.duel-side.r .dn{justify-content:flex-end}
+  .duel-side.w .dn{color:var(--gold-soft)}
+  .duel-side.w .dn::after{content:"★";color:var(--gold);font-size:11px}
+  .duel-side.l{opacity:.5}
+  .duel-side .dd{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .duel-mid{flex:0 0 auto;text-align:center;min-width:78px}
+  .duel-mid .lp{font-family:'Cinzel',serif;font-size:13px;color:var(--gold-deep);font-variant-numeric:tabular-nums}
+  .duel-mid .vs{font-family:'Cinzel Decorative',serif;color:var(--gold-deep);font-size:12px}
+  .duel-acts{display:flex;gap:8px;padding:0 4px 12px;flex-wrap:wrap}
+  .duel-chips{display:flex;gap:8px;overflow-x:auto;padding:0 0 12px;scrollbar-width:none}
+  .duel-chips::-webkit-scrollbar{display:none}
+  .dchip{flex:0 0 auto;padding:8px 13px;border-radius:11px;border:1px solid var(--line2);background:var(--panel);
+    color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+  .dchip.active{color:#241804;background:linear-gradient(180deg,var(--gold-soft),var(--gold));border-color:var(--gold-deep)}
+  .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:5px;animation:blink 1.6s infinite}
+  @keyframes blink{50%{opacity:.25}}
+
+  /* ---- folhas (modais de conteúdo) ---- */
+  .sheet{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);border-radius:16px;
+    padding:16px;max-width:520px;width:100%;max-height:80vh;overflow:auto;box-shadow:var(--shadow)}
+  .sheet h3{font-family:'Cinzel',serif;color:var(--gold-soft);font-size:16px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  textarea.ta{width:100%;min-height:150px;border-radius:11px;border:1px solid var(--line2);background:#0e0b06;
+    color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;padding:10px;outline:none;resize:vertical}
+  textarea.ta:focus{border-color:var(--gold-deep)}
+  .pick-row{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:8px}
+  .pick-row:last-child{border-bottom:none}
+  .pick-row.sel{background:rgba(232,193,90,.12);box-shadow:inset 0 0 0 1px var(--gold-deep)}
+  .pick-row .pk-name{flex:1;min-width:0;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pick-row .pk-sub{font-size:11px;color:var(--muted)}
+  .crop-stage.wide{width:300px;height:102px;border-radius:12px;max-width:88vw}
+  .io-report{font-size:12px;color:var(--muted);line-height:1.5;max-height:26vh;overflow:auto;margin-top:10px;
+    border-top:1px solid var(--line);padding-top:10px}
+  .io-report b{color:#e79b8c}
 </style>
 </head>
 <body>
@@ -497,7 +571,7 @@
         <label class="fld">Lista usada neste campeonato</label>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select id="bl-choose" class="search" style="flex:1;min-width:150px"></select>
-          <button class="mini" id="bl-new">＋ Nova lista</button>
+          <button class="mini" id="bl-new"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Nova lista</button>
         </div>
         <div id="bl-custom-actions" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
         <div id="bl-manage" class="hidden">
@@ -542,21 +616,97 @@
 
 <!-- TELA PERFIL -->
 <div id="screen-profile" class="screen">
-  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Perfil</h1></div>
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1 id="prof-head">Perfil</h1></div>
+  <div style="max-width:720px;margin:0 auto;padding:0 14px"><div id="prof-cover" class="prof-cover"></div></div>
+  <div class="screen-body" style="padding-top:0">
+    <div id="prof-id" class="prof-id"></div>
+    <div id="prof-body"></div>
+  </div>
+  <input id="prof-file" type="file" accept="image/*" class="hidden">
+  <input id="prof-cover-file" type="file" accept="image/*" class="hidden">
+</div>
+
+<!-- TELA DUELOS -->
+<div id="screen-duels" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Duelos</h1>
+    <button class="icon-btn" id="duels-quick">Contador rápido</button></div>
   <div class="screen-body">
     <div class="card">
-      <div class="prof-avatar-wrap">
-        <img id="prof-avatar" class="avatar lg" alt="avatar">
-        <button class="btn ghost" id="prof-pick" style="max-width:240px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 7 12 7s9.5 5 9.5 5-3.5 5-9.5 5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.4"/></svg> Trocar foto</button>
-        <input id="prof-file" type="file" accept="image/*" class="hidden">
-      </div>
-      <label class="fld">Nome de duelista</label>
-      <input id="prof-name" type="text" placeholder="Como você aparece no torneio">
-      <div id="prof-msg"></div>
-      <div style="height:12px"></div>
-      <button class="btn" id="prof-save">Salvar perfil</button>
+      <h2><span class="glyph">𓊃</span> Novo duelo</h2>
+      <p class="section-note">Escolha dois duelistas. Dá para ter <b>vários duelos rolando ao mesmo tempo</b> — cada um guarda seus próprios pontos de vida.</p>
+      <button class="btn" id="duels-new">Criar duelo avulso</button>
     </div>
-    <div class="card" id="prof-account"></div>
+    <div class="card">
+      <h2><span class="glyph">𓋴</span> Em andamento</h2>
+      <div id="duels-live"></div>
+    </div>
+    <div class="card">
+      <h2><span class="glyph">𓉔</span> Histórico de duelos</h2>
+      <p class="section-note">Toque em <b>Decks</b> para registrar quais decks foram usados — inclusive em duelos antigos.</p>
+      <div id="duels-hist-filter" class="duel-chips"></div>
+      <div id="duels-hist"></div>
+      <div class="admin-only" id="duels-sync-wrap" style="margin-top:12px;border-top:1px solid var(--line);padding-top:12px">
+        <button class="btn ghost" id="duels-sync">Importar duelos antigos das rodadas</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TELA ESTATÍSTICAS -->
+<div id="screen-stats" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Estatísticas</h1></div>
+  <div class="screen-body">
+    <div id="stats-filter" class="duel-chips"></div>
+    <div id="stats-body"></div>
+  </div>
+</div>
+
+<!-- ESCOLHER DECKS DO DUELO -->
+<div id="deck-picker" class="bl-modal">
+  <div class="sheet">
+    <h3><span id="dp-icon"></span> Decks deste duelo</h3>
+    <p class="section-note" style="margin-top:-4px">Opcional — serve para as estatísticas por deck.</p>
+    <div id="dp-body"></div>
+    <div class="btn-row">
+      <button class="btn ghost" id="dp-skip">Agora não</button>
+      <button class="btn" id="dp-save">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ESCOLHER DUELISTAS (duelo avulso) -->
+<div id="duel-new" class="bl-modal">
+  <div class="sheet">
+    <h3><span id="dn-icon"></span> Quem vai duelar?</h3>
+    <div id="dn-body"></div>
+    <div class="btn-row">
+      <button class="btn ghost" id="dn-cancel">Cancelar</button>
+      <button class="btn" id="dn-ok">Começar duelo</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORTAR / IMPORTAR DECK -->
+<div id="deck-io" class="bl-modal">
+  <div class="sheet">
+    <h3><span id="dio-icon"></span> <span id="dio-title">Deck</span></h3>
+    <p class="section-note" style="margin-top:-4px" id="dio-note"></p>
+    <textarea class="ta" id="dio-text" spellcheck="false" placeholder="#main&#10;89631139&#10;..."></textarea>
+    <div id="dio-report" class="io-report hidden"></div>
+    <div class="btn-row" id="dio-acts"></div>
+    <div style="height:8px"></div>
+    <button class="btn ghost" id="dio-close">Fechar</button>
+    <input id="dio-file" type="file" accept=".ydk,text/plain" class="hidden">
+  </div>
+</div>
+
+<!-- VER DECK DE OUTRO JOGADOR -->
+<div id="deck-view" class="bl-modal">
+  <div class="sheet">
+    <h3><span id="dv-icon"></span> <span id="dv-title">Deck</span></h3>
+    <div id="dv-body"></div>
+    <div style="height:10px"></div>
+    <button class="btn ghost" id="dv-close">Fechar</button>
   </div>
 </div>
 
@@ -571,6 +721,7 @@
   <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Contador de Duelo</h1>
     <button class="icon-btn" id="lp-reset"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 108-8"/><path d="M4 4v5h5"/></svg> 8000</button></div>
   <div class="screen-body">
+    <div id="duel-chips" class="duel-chips"></div>
     <div id="duel-banner" class="hidden"></div>
     <div class="lp-wrap">
       <div class="lp-panel p1">
@@ -660,7 +811,9 @@
         <div style="height:12px"></div>
         <button class="btn" id="btn-add-deck">Criar deck</button>
       </div>
-      <div class="card"><h2><span class="glyph">𓉔</span> Meus decks</h2><div id="decks-body"></div></div>
+      <div class="card"><h2><span class="glyph">𓉔</span> Meus decks</h2>
+        <div class="btn-row" style="margin-bottom:10px"><button class="btn ghost" id="btn-import-deck">Importar .ydk</button></div>
+        <div id="decks-body"></div></div>
     </div>
     <div id="deck-builder" class="hidden">
       <button class="btn ghost" id="deck-back-list" style="margin-bottom:12px">‹ Voltar aos decks</button>
@@ -668,6 +821,11 @@
         <input class="lp-name" id="deck-name" style="width:100%;font-size:18px;border-bottom:1px dashed var(--line2)">
         <div id="deck-bl-line" class="section-note" style="margin:8px 0"></div>
         <div id="deck-validity" style="margin-bottom:10px"></div>
+        <div class="btn-row" style="margin-bottom:4px">
+          <button class="btn ghost" id="btn-deck-export">Exportar</button>
+          <button class="btn ghost" id="btn-deck-import">Importar</button>
+          <button class="btn ghost" id="btn-deck-vis">Visibilidade</button>
+        </div>
         <div class="seg">
           <button id="seg-main" class="active">Adicionar ao Principal</button>
           <button id="seg-side">Adicionar ao Side</button>
@@ -754,9 +912,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword,
          createUserWithEmailAndPassword, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc,
+import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc,
          collection, onSnapshot, addDoc, serverTimestamp,
-         query, orderBy, where, arrayUnion, arrayRemove }
+         query, orderBy, where, limit, arrayUnion, arrayRemove }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
@@ -806,6 +964,28 @@ let DECK_ADD=[], DECK_ADD_LOADING=false, deckAddTimer=null, cardsTimer=null, CAR
 const CARD_CACHE={};
 let BL_MANAGE=false;        // admin editando a lista custom atual
 let BL_ADD=[], BL_ADD_LOADING=false, BL_ADD_TERM="", BL_PENDING=null, addTimer=null;
+let DUELS=[];               // duelos (ativos + histórico)
+let ACTIVE_DUEL=null;       // id do duelo aberto no contador (null = contador rápido)
+let PROFILE_UID=null;       // perfil sendo visto (null = o meu)
+let PROFILE_DECKS=[], PROFILE_COVER=null, PROFILE_LOADING=false;
+let STATS_SCOPE="all";      // all | champ | avulso
+let HIST_SCOPE="all";
+let DP_STATE=null;          // seleção de decks do duelo
+let DN_STATE=null;          // seleção de duelistas do novo duelo
+let DIO_MODE=null, DIO_TARGET=null;  // exportar/importar deck
+let deckBackfilled=false;
+
+/* vibração + feedback visual */
+function haptic(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(_){} }
+function floatFx(x,y,txt,color){
+  const el=document.createElement("div"); el.className="float-fx"; el.textContent=txt;
+  el.style.left=x+"px"; el.style.top=(y-14)+"px"; el.style.color=color;
+  document.body.appendChild(el); setTimeout(()=>el.remove(),780);
+}
+function flashEl(el,kind){ if(!el) return; const c="fx-"+kind;
+  el.classList.remove("fx-add","fx-rm","fx-no"); void el.offsetWidth; el.classList.add(c);
+  setTimeout(()=>el.classList.remove(c),500); }
+function pulseCount(id){ const el=$(id); if(!el) return; el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse"); }
 
 const isAdmin=()=>!!(CURRENT&&CONFIG&&Array.isArray(CONFIG.adminUids)&&CONFIG.adminUids.includes(CURRENT.uid));
 const isMember=()=>!!(CURRENT&&MEMBERS.some(m=>m.id===CURRENT.uid));
@@ -823,7 +1003,10 @@ onSnapshot(query(champsCol, orderBy("createdAt","asc")), snap=>{
   route(); renderSelector(); renderAll();
 }, err=>console.error(err));
 
-onSnapshot(usersCol, snap=>{ USERS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAccess(); }, err=>console.error(err));
+onSnapshot(usersCol, snap=>{ USERS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAccess();
+  if(ACTIVE_SCREEN==="profile") renderProfile();
+  if(ACTIVE_SCREEN==="stats") renderStats();
+}, err=>console.error(err));
 
 onSnapshot(collection(db,"members"), snap=>{ MEMBERS=snap.docs.map(d=>({id:d.id,...d.data()}));
   renderAccess(); if(ACTIVE_TAB==="players" && !$("app").classList.contains("hidden")) renderEnroll();
@@ -839,14 +1022,27 @@ onSnapshot(query(collection(db,"tracks"),orderBy("createdAt","asc")), snap=>{
   if(ACTIVE_SCREEN==="counter") renderMusicSel();
 }, err=>console.error(err));
 
+onSnapshot(query(collection(db,"duels"),orderBy("createdAt","desc"),limit(400)), snap=>{
+  DUELS=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(ACTIVE_SCREEN==="duels") renderDuels();
+  if(ACTIVE_SCREEN==="stats") renderStats();
+  if(ACTIVE_SCREEN==="profile") renderProfile();
+  if(ACTIVE_SCREEN==="counter") syncCounterFromDuel();
+  if(ACTIVE_TAB==="rounds" && !$("app").classList.contains("hidden")) renderCalendar();
+}, err=>console.error(err));
+
 onAuthStateChanged(auth, async user=>{
   CURRENT=user;
   if(user){
     try{ await setDoc(doc(db,"users",user.uid),{email:user.email,lastSeen:serverTimestamp()},{merge:true}); }catch(e){}
     if(unsubDecks) unsubDecks();
     unsubDecks=onSnapshot(query(collection(db,"decks"),where("ownerUid","==",user.uid)),
-      snap=>{ MYDECKS=snap.docs.map(d=>({id:d.id,...d.data()})); if(ACTIVE_SCREEN==="decks") renderDecks(); }, err=>console.error(err));
-  } else { if(unsubDecks){ unsubDecks(); unsubDecks=null; } MYDECKS=[]; CUR_DECK=null; }
+      snap=>{ MYDECKS=snap.docs.map(d=>({id:d.id,...d.data()}));
+        if(ACTIVE_SCREEN==="decks") renderDecks();
+        if(ACTIVE_SCREEN==="stats") renderStats();
+        if(ACTIVE_SCREEN==="profile"&&PROFILE_UID===user.uid){ PROFILE_DECKS=MYDECKS; renderProfile(); }
+      }, err=>console.error(err));
+  } else { if(unsubDecks){ unsubDecks(); unsubDecks=null; } MYDECKS=[]; CUR_DECK=null; deckBackfilled=false; PROFILE_UID=null; }
   route(); renderSelector(); renderAll();
 });
 
@@ -1030,7 +1226,7 @@ function renderRank(){
   body.innerHTML=`<table class="rank"><thead><tr><th class="pos">#</th><th>Duelista</th><th class="num">V</th><th class="num">J</th><th class="pts">Pts</th></tr></thead>
     <tbody>${rows.map((r,i)=>`<tr class="${i===0&&r.wins>0?'top1':''}">
       <td class="pos">${i<3?`<span class="medal ${mcls[i]}">${i+1}</span>`:(i+1)}</td>
-      <td class="name"><span style="display:inline-flex;align-items:center;gap:8px">${avatarHTML(playerPhoto(r.id),'sm')}${esc(r.name)}${r.id===(CURRENT&&CURRENT.uid)?' <span style="font-size:11px;color:var(--muted)">(você)</span>':''}</span></td>
+      <td class="name"><span style="display:inline-flex;align-items:center;gap:8px" data-act="profile" data-id="${r.id}">${avatarHTML(playerPhoto(r.id),'sm')}${esc(r.name)}${r.id===(CURRENT&&CURRENT.uid)?' <span style="font-size:11px;color:var(--muted)">(você)</span>':''}</span></td>
       <td class="num">${r.wins}</td><td class="num">${r.played}</td><td class="pts">${r.wins}</td></tr>`).join("")}
     </tbody></table>`;
 }
@@ -1043,9 +1239,13 @@ function renderPlayers(){
   if(PLAYERS.length===0){ body.innerHTML=`<div class="empty"><span class="big">𓀀</span>Ninguém inscrito ainda.<br>${CURRENT?'Toque em <b>Entrar no torneio</b> acima.':'Faça login para participar.'}</div>`; return; }
   body.innerHTML=PLAYERS.map(p=>{
     const nm=playerName(p.id), me=p.id===(CURRENT&&CURRENT.uid);
+    const st=statsOf(p.id,"all");
     return `<div class="list-row" data-id="${p.id}">
-      ${avatarHTML(playerPhoto(p.id),'sm')}
-      <div class="grow"><div class="l1">${esc(nm)}${me?' · você':''}</div></div>
+      <span data-act="profile" data-id="${p.id}" style="display:inline-flex;align-items:center;gap:10px;flex:1;min-width:0">
+        ${avatarHTML(playerPhoto(p.id),'sm')}
+        <span class="grow"><span class="l1" style="display:block">${esc(nm)}${me?' · você':''}</span>
+        <span class="l2" style="display:block">${st.t?`${st.w}V · ${st.l}D · ${st.pct}%`:'sem duelos registrados'}</span></span></span>
+      ${!me&&CURRENT?`<button class="mini" data-act="challenge" data-id="${p.id}">${IC.challenge}</button>`:``}
       ${adm?`<button class="mini danger" data-act="delplayer" data-id="${p.id}">Remover</button>`:``}
     </div>`;
   }).join("");
@@ -1078,12 +1278,20 @@ function roundBlockHTML(r){
       <span class="rmeta">${done}/${matches.length} decididas${adm&&closed?` · <button class="mini" data-act="reopenround" data-r="${r.id}" style="padding:3px 8px">Reabrir</button>`:''}</span></div>
     ${matches.map((m,idx)=>{
       const aw=m.winner===m.a, bw=m.winner===m.b;
+      const du=duelOf(r.id,idx);
+      const mine=!!(CURRENT&&(CURRENT.uid===m.a||CURRENT.uid===m.b));
+      const canOpen=(adm||mine)&&!closed;
+      const live=!!(du&&du.status==="ativo");
+      const pending=!!(du&&du.status==="encerrado"&&du.winner&&du.winner!==m.winner);
       return `<div class="match">
           <div class="side left ${aw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.a))}</div></div>
           <div class="vs">VS</div>
           <div class="side right ${bw?'winner':(m.winner?'loser':'')}"><div class="pname">${esc(playerName(m.b))}</div></div></div>
-        ${editable?`<div style="padding:2px 14px 8px"><button class="btn ghost" style="padding:9px" data-act="duel" data-r="${r.id}" data-i="${idx}">${IC.swords} Abrir contador deste duelo</button></div>
-          <div class="win-btns">
+        ${live?`<div class="result-tag" style="color:var(--green)"><span class="live-dot"></span>duelo em andamento · ${du.lpA} × ${du.lpB}</div>`:""}
+        ${pending&&editable?`<div style="padding:2px 14px 8px"><button class="btn" style="padding:9px" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${du.winner}">${IC.feather} Confirmar: venceu ${esc(playerName(du.winner))}</button></div>`
+          :(pending?`<div class="result-tag">Duelo indica <b>${esc(playerName(du.winner))}</b> — aguardando o admin confirmar.</div>`:"")}
+        ${canOpen?`<div style="padding:2px 14px 8px"><button class="btn ghost" style="padding:9px" data-act="duel" data-r="${r.id}" data-i="${idx}">${IC.swords} ${live?"Continuar duelo":"Abrir contador deste duelo"}</button></div>`:""}
+        ${editable?`<div class="win-btns">
             <button class="wbtn ${aw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.a}">Venceu ${esc(playerName(m.a))}</button>
             <button class="wbtn ${bw?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.b}">Venceu ${esc(playerName(m.b))}</button>
             ${m.winner?`<button class="wbtn clear" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="">${IC.x}</button>`:``}
@@ -1136,15 +1344,16 @@ function renderAccess(){
   if(MEMBERS.length===0){ html+=`<div class="empty" style="padding:14px">Nenhum membro ainda. Crie um acesso acima.</div>`; }
   else html+=MEMBERS.map(m=>{
     const adm=admins.includes(m.id), me=CURRENT&&CURRENT.uid===m.id;
-    return `<div class="list-row">${avatarHTML(photoOf(m.id),'sm')}
-      <div class="grow"><div class="l1">${esc(nameOf(m.id,m.email||m.id))}</div>
-        <div class="l2">${esc(m.email||'')} · ${adm?'Administrador':'Jogador'}${me?' · você':''}</div></div>
+    return `<div class="list-row"><span data-act="profile" data-id="${m.id}" style="display:inline-flex;align-items:center;gap:10px;flex:1;min-width:0">
+      ${avatarHTML(photoOf(m.id),'sm')}
+      <span class="grow"><span class="l1" style="display:block">${esc(nameOf(m.id,m.email||m.id))}</span>
+        <span class="l2" style="display:block">${esc(m.email||'')} · ${adm?'Administrador':'Jogador'}${me?' · você':''}</span></span></span>
       <button class="mini ${adm?'danger':''}" data-act="togadmin" data-id="${m.id}" ${me?'disabled style="opacity:.4"':''}>${adm?'Rebaixar':'Admin'}</button>
       <button class="mini danger" data-act="delmember" data-id="${m.id}" data-name="${esc(nameOf(m.id,m.email||m.id))}" ${me?'disabled style="opacity:.4"':''}>Remover</button></div>`;
   }).join("");
   if(pending.length){
     html+=`<div style="height:1px;background:var(--line);margin:16px 0"></div>
-      <div class="section-note" style="margin:0 0 8px;color:#e79b8c">⚠️ Contas que entraram mas NÃO estão autorizadas:</div>`;
+      <div class="section-note" style="margin:0 0 8px;color:#e79b8c;display:flex;align-items:center;gap:6px">${IC.alert} Contas que entraram mas NÃO estão autorizadas:</div>`;
     html+=pending.map(u=>`<div class="list-row">${avatarHTML(photoOf(u.id),'sm')}
       <div class="grow"><div class="l1">${esc(u.displayName||u.email||u.id)}</div><div class="l2">${esc(u.email||'')}</div></div>
       <button class="mini" data-act="authorize" data-id="${u.id}" data-email="${esc(u.email||'')}">Autorizar</button>
@@ -1376,11 +1585,35 @@ document.addEventListener("click", async ev=>{
   }
   if(act==="card"){ openCard(b.dataset.full,b.dataset.name); return; }
   if(act==="cardinfo"||act==="deckcardinfo"){ openCardModal(b.dataset.id); return; }
-  if(act==="deckadd"){ addToDeck(b.dataset.id, deckAddTarget); return; }
-  if(act==="deckremove"){ ev.stopPropagation(); removeFromDeck(b.dataset.sec,b.dataset.id); return; }
+  if(act==="deckadd"){ addToDeck(b.dataset.id, deckAddTarget, b, ev); return; }
+  if(act==="deckremove"){ ev.stopPropagation(); removeFromDeck(b.dataset.sec,b.dataset.id,b,ev); return; }
   if(act==="opendeck"){ openDeck(b.dataset.id); return; }
   if(act==="deltrack"){ if(!isAdmin()) return; if(!confirm("Remover esta música?")) return;
     try{ await deleteDoc(doc(db,"tracks",b.dataset.id)); toast("Música removida"); }catch(e){ toast(fbError(e)); } return; }
+
+  /* --- perfil / duelos / estatísticas (funcionam fora de um campeonato) --- */
+  if(act==="profile"){ ev.stopPropagation(); if(b.dataset.id) openProfile(b.dataset.id); return; }
+  if(act==="challenge"){ startDuelBetween(CURRENT&&CURRENT.uid, b.dataset.id, CURRENT_CHAMP||null); return; }
+  if(act==="viewdeck"){ openDeckView(b.dataset.id); return; }
+  if(act==="pickavatar"){ $("prof-file").click(); return; }
+  if(act==="pickcover"){ $("prof-cover-file").click(); return; }
+  if(act==="profsave"){ saveProfileName(); return; }
+  if(act==="goduel"){ flushLP(); ACTIVE_DUEL=b.dataset.id; lpLocalTs=0; openScreen("counter"); return; }
+  if(act==="godquick"){ flushLP(); ACTIVE_DUEL=null; openScreen("counter"); return; }
+  if(act==="godlist"){ flushLP(); openScreen("duels"); return; }
+  if(act==="dpopen"){ ev.stopPropagation(); openDeckPicker(b.dataset.id); return; }
+  if(act==="dppick"){ if(!DP_STATE) return; const side=b.dataset.side, id=b.dataset.id;
+    const list=side==="a"?DP_STATE.aDecks:DP_STATE.bDecks; const k=list.find(x=>x.id===id);
+    DP_STATE[side]=k?{id:k.id,name:k.name||"Deck"}:null; haptic(12); renderDeckPicker(); return; }
+  if(act==="dnpick"){ if(!DN_STATE) return; DN_STATE[b.dataset.side]=b.dataset.id; haptic(12); renderDuelNew(); return; }
+  if(act==="histscope"){ HIST_SCOPE=b.dataset.k; renderDuels(); return; }
+  if(act==="statscope"){ STATS_SCOPE=b.dataset.k; renderStats(); return; }
+  if(act==="deldruel"){ ev.stopPropagation();
+    const d=DUELS.find(x=>x.id===b.dataset.id); if(!d) return;
+    if(!(isAdmin()||canDuel(d))) return;
+    if(!confirm("Apagar este duelo do histórico? A rodada do campeonato não é alterada.")) return;
+    try{ if(ACTIVE_DUEL===d.id) ACTIVE_DUEL=null; await deleteDoc(doc(db,"duels",d.id)); toast("Duelo apagado"); }
+    catch(e){ toast(fbError(e)); } return; }
 
   if(!CURRENT_CHAMP) return;
   if(act==="openday"){ CURRENT_DAY=b.dataset.id; renderCalendar(); return; }
@@ -1407,14 +1640,21 @@ document.addEventListener("click", async ev=>{
     if(!canEdit()) return;
     try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",b.dataset.r),{closed:false}); toast("Rodada reaberta"); }catch(e){ toast(fbError(e)); }
   }
-  if(act==="duel"){ if(!canEdit()) return; openMatchCounter(b.dataset.r, +b.dataset.i); return; }
+  if(act==="duel"){
+    const rd=ROUNDS.find(r=>r.id===b.dataset.r); const mt=rd&&(rd.matches||[])[+b.dataset.i];
+    const mine=!!(CURRENT&&mt&&(CURRENT.uid===mt.a||CURRENT.uid===mt.b));
+    if(!canEdit()&&!mine){ toast("Só o admin ou quem vai duelar abre este contador."); return; }
+    openMatchDuel(b.dataset.r, +b.dataset.i); return;
+  }
   if(act==="win"){
     if(!canEdit()) return;
     const rId=b.dataset.r, idx=+b.dataset.i, w=b.dataset.w||null;
     const round=ROUNDS.find(r=>r.id===rId); if(!round||round.closed) return;
     const matches=(round.matches||[]).map(m=>({...m})); if(!matches[idx]) return;
-    matches[idx].winner=(matches[idx].winner===w)?null:w;
-    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",rId),{matches}); }catch(e){ toast(fbError(e)); }
+    const winner=(matches[idx].winner===w)?null:w;
+    matches[idx].winner=winner;
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",rId),{matches}); }catch(e){ toast(fbError(e)); return; }
+    syncDuelFromMatch(round,idx,winner);
   }
   if(act==="togadmin"){
     if(!isAdmin()) return;
@@ -1570,6 +1810,8 @@ const ICONS={
   cards:SVG+'<rect x="3.6" y="6" width="9" height="13" rx="1.5" transform="rotate(-9 8.1 12.5)"/><rect x="10.4" y="5" width="9" height="13" rx="1.5" transform="rotate(8 14.9 11.5)"/></svg>',
   decks:SVG+'<path d="M4 9.5C4 7.6 7.6 6 12 6s8 1.6 8 3.5V17a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M4 9.5c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5"/><path d="M12 13v3"/></svg>',
   history:SVG+'<path d="M7 4h10a2 2 0 012 2v12.5a1.5 1.5 0 01-3 0V6"/><path d="M6 4a2 2 0 00-2 2v1.5h4"/><path d="M8 6v11a1.5 1.5 0 001.5 1.5H16"/><path d="M8.5 10h6M8.5 13h6"/></svg>',
+  duels:SVG+'<path d="M3.6 4.2c4.6 1.4 7.4 4.6 8.4 8.6"/><path d="M20.4 4.2c-4.6 1.4-7.4 4.6-8.4 8.6"/><path d="M12 12.8v7.4"/><path d="M9 20.2h6"/><path d="M4.8 16.4 8 13.6M19.2 16.4 16 13.6"/></svg>',
+  stats:SVG+'<path d="M12 4.4v15.2"/><path d="M6.5 20.6h11"/><path d="M4 8.4h16"/><path d="M4 8.4 1.9 13a2.6 2.6 0 004.2 0z"/><path d="M20 8.4 17.9 13a2.6 2.6 0 004.2 0z"/><circle cx="12" cy="4.4" r="1.3"/></svg>',
   profile:SVG+'<circle cx="12" cy="7.5" r="3.2"/><path d="M6.5 18c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M5 21h14"/></svg>',
   switch:SVG+'<path d="M4 9h12l-3.5-3.5"/><path d="M20 15H8l3.5 3.5"/></svg>',
   logout:SVG+'<path d="M13 4H7a1 1 0 00-1 1v14a1 1 0 001 1h6"/><path d="M13 12h8"/><path d="M18 8.5 21.5 12 18 15.5"/></svg>',
@@ -1591,7 +1833,31 @@ const IC={
   music:iSVG('<circle cx="7" cy="18" r="2.4"/><circle cx="17" cy="16" r="2.4"/><path d="M9.4 18V6l10-2v12"/><path d="M9.4 9l10-2"/>'),
   scroll:iSVG('<path d="M7 4h10a2 2 0 012 2v12.5a1.5 1.5 0 01-3 0V6"/><path d="M6 4a2 2 0 00-2 2v1.5h4"/><path d="M8 6v11a1.5 1.5 0 001.5 1.5H16"/><path d="M8.5 10h6M8.5 13h6"/>'),
   chest:iSVG('<path d="M4 9.5C4 7.6 7.6 6 12 6s8 1.6 8 3.5V17a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M4 9.5c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5"/><path d="M12 13v3"/>'),
-  person:iSVG('<circle cx="9" cy="8" r="3"/><path d="M3.5 20c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><path d="M16 6.5a3 3 0 010 5.6"/><path d="M17 14.6c2.3.6 3.9 2.6 3.9 5.4"/>')
+  person:iSVG('<circle cx="9" cy="8" r="3"/><path d="M3.5 20c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><path d="M16 6.5a3 3 0 010 5.6"/><path d="M17 14.6c2.3.6 3.9 2.6 3.9 5.4"/>'),
+  /* balança de Maat — estatísticas */
+  maat:iSVG('<path d="M12 4.4v15.2"/><path d="M6.5 20.6h11"/><path d="M4 8.4h16"/><path d="M4 8.4 1.9 13a2.6 2.6 0 004.2 0z"/><path d="M20 8.4 17.9 13a2.6 2.6 0 004.2 0z"/><circle cx="12" cy="4.4" r="1.3"/>'),
+  /* pena de Maat — vitória / leveza */
+  feather:iSVG('<path d="M5.5 19.5c-.6-7.2 3.6-13.4 10.6-15.6 1.4 6.6-1 12.6-6.5 15"/><path d="M5.5 19.5 9.6 18.9"/><path d="M3.4 21.4 6 18.8"/><path d="M9.6 18.9c1.6-3.6 3.4-7.2 6.5-15"/>'),
+  /* escaravelho — perfil / renascimento */
+  scarab:iSVG('<ellipse cx="12" cy="13.8" rx="4.1" ry="5.4"/><circle cx="12" cy="6.4" r="1.9"/><path d="M12 8.8v10"/><path d="M7.9 10.4 4.2 7.9M16.1 10.4l3.7-2.5M7.6 14.2H3.9M16.4 14.2h3.7M8.2 17.6 5.3 20M15.8 17.6 18.7 20"/>'),
+  /* akhet: sol no horizonte — capa do perfil */
+  akhet:iSVG('<circle cx="12" cy="10.6" r="3.1"/><path d="M2.6 20.4h18.8"/><path d="M4.4 20.4 9 8.6"/><path d="M19.6 20.4 15 8.6"/>'),
+  /* papiro saindo — exportar */
+  papyrusOut:iSVG('<path d="M7 3.6h8.6a1.9 1.9 0 011.9 1.9v6.2"/><path d="M6 3.6a1.9 1.9 0 00-1.9 1.9v1.4H7"/><path d="M7 5.5v11.6a1.6 1.6 0 001.6 1.6h3.1"/><path d="M8.6 9h6M8.6 12h4.4"/><path d="M16.4 21.2 20.6 17.4l-4.2-3.8"/><path d="M20.6 17.4h-7.4"/>'),
+  /* papiro entrando — importar */
+  papyrusIn:iSVG('<path d="M17 3.6H8.4a1.9 1.9 0 00-1.9 1.9v6.2"/><path d="M18 3.6a1.9 1.9 0 011.9 1.9v1.4H17"/><path d="M17 5.5v11.6a1.6 1.6 0 01-1.6 1.6h-3.1"/><path d="M9.4 9h6M11 12h4.4"/><path d="M7.6 21.2 3.4 17.4l4.2-3.8"/><path d="M3.4 17.4h7.4"/>'),
+  /* cálamo de escriba — editar */
+  reed:iSVG('<path d="M3.8 20.2 5 16.6 16.2 5.4a1.9 1.9 0 012.7 2.7L7.7 19.3z"/><path d="M14.4 7.2 17 9.8"/><path d="M3.8 20.2 7.4 19"/>'),
+  /* vaso canópico — remover */
+  jar:iSVG('<path d="M9.2 3.4h5.6l-.6 2.4H9.8z"/><path d="M8.8 5.8h6.4c1 2 1.6 4.1 1.6 6.4v6.6a2 2 0 01-2 2H9.2a2 2 0 01-2-2v-6.6c0-2.3.6-4.4 1.6-6.4z"/><path d="M7.6 12.2h8.8"/>'),
+  /* pirâmide de alerta */
+  alert:iSVG('<path d="M12 3.4 21.2 20.4H2.8z"/><path d="M12 9.6v4.2"/><circle cx="12" cy="16.8" r=".95" fill="currentColor" stroke="none"/>'),
+  plus:iSVG('<path d="M12 5v14M5 12h14"/>'),
+  play:iSVG('<path d="M8 5.4v13.2L18 12z"/>'),
+  pause:iSVG('<path d="M9.2 5v14M14.8 5v14"/>'),
+  unseal:iSVG('<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0"/><circle cx="12" cy="15" r="1.3" fill="currentColor" stroke="none"/>'),
+  /* dois khopesh cruzados — desafio */
+  challenge:iSVG('<path d="M3.6 4.2c4.6 1.4 7.4 4.6 8.4 8.6"/><path d="M20.4 4.2c-4.6 1.4-7.4 4.6-8.4 8.6"/><path d="M12 12.8v7.4"/><path d="M9 20.2h6"/><path d="M4.8 16.4 8 13.6M19.2 16.4 16 13.6"/>')
 };
 function renderDrawer(){
   const authed=!!CURRENT, adm=isAdmin(), prof=myProfile();
@@ -1608,7 +1874,9 @@ function renderDrawer(){
     if(adm) nav+=item('access','Acessos');
     nav+=`<div class="drawer-sep"></div>`;
   }
+  nav+=item('duels','Duelos');
   nav+=item('counter','Contador de Duelo');
+  nav+=item('stats','Estatísticas');
   nav+=item('cards','Lista de Cards');
   if(authed) nav+=item('decks','Meus Decks');
   if(authed) nav+=item('history','Meu histórico');
@@ -1622,41 +1890,161 @@ document.addEventListener("click", ev=>{
   const it=ev.target.closest("[data-nav]"); if(!it) return;
   const nav=it.dataset.nav; closeDrawer();
   if(["rank","rounds","players","banlist","access"].includes(nav)){ closeScreen(); if(CURRENT_CHAMP) switchTab(nav); }
-  else if(nav==="counter"){ COUNTER_MATCH=null; openScreen("counter"); }
+  else if(nav==="duels"){ openScreen("duels"); }
+  else if(nav==="counter"){ ACTIVE_DUEL=null; openScreen("counter"); }
+  else if(nav==="stats"){ openScreen("stats"); }
   else if(nav==="cards"){ openScreen("cards"); }
   else if(nav==="decks"){ if(CURRENT) openScreen("decks"); }
   else if(nav==="history"){ if(CURRENT) openScreen("history"); }
-  else if(nav==="profile"){ if(CURRENT) openScreen("profile"); }
+  else if(nav==="profile"){ if(CURRENT) openProfile(CURRENT.uid); }
   else if(nav==="switch"){ closeScreen(); leaveChamp(); }
   else if(nav==="logout"){ closeScreen(); signOut(auth); }
   else if(nav==="login"){ closeScreen(); sessionStorage.removeItem("guest"); if(CURRENT_CHAMP) leaveChamp(); else route(); }
 });
 
 /* screens overlay */
-function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.classList.remove("show")); const s=$("screen-"+name); if(s) s.classList.add("show");
+function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.classList.remove("show")); const s=$("screen-"+name); if(s){ s.classList.add("show"); s.scrollTop=0; }
   if(name==="profile") renderProfile(); if(name==="counter") initCounter(); if(name==="history") renderHistory();
   if(name==="cards"){ if(!CARDS_RES.length) $("cards-body").innerHTML=`<div class="empty">Digite ao menos 3 letras para buscar uma carta.</div>`; }
   if(name==="decks") renderDecks();
+  if(name==="duels") renderDuels();
+  if(name==="stats") renderStats();
+  els("#screen-duels .admin-only").forEach(n=>n.classList.toggle("hidden",!isAdmin()));
 }
-function closeScreen(){ ACTIVE_SCREEN=null; els(".screen").forEach(s=>s.classList.remove("show")); }
+function closeScreen(){ flushLP(); ACTIVE_SCREEN=null; els(".screen").forEach(s=>s.classList.remove("show")); }
 document.addEventListener("click", ev=>{ if(ev.target.closest("[data-close-screen]")) closeScreen(); });
+window.addEventListener("pagehide", flushLP);
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden") flushLP(); });
+$("deck-view").addEventListener("click", e=>{ if(e.target.id==="deck-view") $("deck-view").classList.remove("show"); });
 
-/* ---------- perfil ---------- */
-function renderProfile(){
-  const prof=myProfile();
-  $("prof-avatar").src=(prof&&prof.photo)||AV_PH;
-  $("prof-name").value=(prof&&prof.displayName)||"";
-  $("prof-account").innerHTML=CURRENT?`<div style="color:var(--muted);font-size:13px">Conta: <b style="color:var(--gold-soft)">${esc(CURRENT.email)}</b></div>`:"";
+/* ---------- perfil (próprio e de outros) ---------- */
+function userOf(uid){ return USERS.find(u=>u.id===uid)||null; }
+function nameOfUid(uid){ const u=userOf(uid); return (u&&u.displayName)||(u&&u.email)||"Duelista"; }
+async function loadDecksOf(uid){
+  if(!uid) return [];
+  try{
+    const c=collection(db,"decks");
+    const q=(CURRENT&&CURRENT.uid===uid) ? query(c,where("ownerUid","==",uid))
+                                         : query(c,where("ownerUid","==",uid),where("public","==",true));
+    const s=await getDocs(q); return s.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){ console.error(e); return []; }
 }
-$("prof-save").onclick=async()=>{
-  if(!CURRENT){ toast("Entre para editar o perfil."); return; }
-  showMsg("prof-msg","");
-  const name=$("prof-name").value.trim();
-  try{ await setDoc(doc(db,"users",CURRENT.uid),{displayName:name||CURRENT.email.split("@")[0]},{merge:true}); showMsg("prof-msg","Perfil salvo!","ok"); toast("Perfil salvo 𓂀"); }
+async function openProfile(uid){
+  const target=uid||(CURRENT&&CURRENT.uid); if(!target) return;
+  const changed = PROFILE_UID!==target;
+  PROFILE_UID=target;
+  if(changed){ PROFILE_DECKS=[]; PROFILE_COVER=null; PROFILE_LOADING=true; }
+  openScreen("profile");
+  if(changed){
+    const [decks,cov]=await Promise.all([
+      loadDecksOf(target),
+      getDoc(doc(db,"covers",target)).then(s=>s.exists()?(s.data().img||null):null).catch(()=>null)
+    ]);
+    if(PROFILE_UID!==target) return;
+    PROFILE_DECKS=decks; PROFILE_COVER=cov; PROFILE_LOADING=false; renderProfile();
+  }
+}
+function renderProfile(){
+  const uid=PROFILE_UID||(CURRENT&&CURRENT.uid); if(!uid) return;
+  // não redesenha por cima de quem está digitando o nome
+  if(document.activeElement&&document.activeElement.id==="prof-name") return;
+  const own=!!(CURRENT&&CURRENT.uid===uid);
+  const u=userOf(uid)||(own?{id:uid,email:CURRENT.email}:{id:uid});
+  const adm=!!(CONFIG&&Array.isArray(CONFIG.adminUids)&&CONFIG.adminUids.includes(uid));
+  const member=MEMBERS.some(m=>m.id===uid);
+  $("prof-head").textContent=own?"Meu perfil":"Perfil do duelista";
+
+  $("prof-cover").innerHTML=(PROFILE_COVER?`<img src="${PROFILE_COVER}" alt="">`:`<div class="cv-glyph">${IC.akhet}</div>`)
+    +(own?`<button class="mini cv-btn" data-act="pickcover">${IC.akhet} Capa</button>`:"");
+
+  $("prof-id").innerHTML=`<img class="avatar lg" src="${(u&&u.photo)||AV_PH}" alt="">
+    <div class="pi-txt"><div class="pi-name">${esc((u&&u.displayName)||(u&&u.email)||"Duelista")}</div>
+      <div class="pi-sub"><span class="badge-role ${adm?'adm':''}">${adm?'Admin':(member?'Duelista':'Visitante')}</span></div></div>
+    ${own?`<button class="mini" data-act="pickavatar">${IC.eye} Foto</button>`:""}`;
+
+  const st=statsOf(uid,"all");
+  const recent=DUELS.filter(d=>d.status==="encerrado"&&d.winner&&(d.aId===uid||d.bId===uid)).slice(0,6);
+  let html="";
+
+  html+=`<div class="card"><h2>${IC.maat} Estatísticas</h2>
+    <div class="stat-grid">
+      <div class="stat-box win"><div class="sv">${st.w}</div><div class="sl">Vitórias</div></div>
+      <div class="stat-box loss"><div class="sv">${st.l}</div><div class="sl">Derrotas</div></div>
+      <div class="stat-box"><div class="sv">${st.t?st.pct+"%":"—"}</div><div class="sl">Aproveit.</div></div>
+    </div>
+    ${st.t?`<div class="bar"><i style="width:${st.pct}%"></i></div>
+      <div class="section-note" style="margin:8px 0 0;text-align:center">${st.t} duelo${st.t===1?'':'s'} registrado${st.t===1?'':'s'}</div>`
+      :`<div class="section-note" style="margin:10px 0 0;text-align:center">Nenhum duelo registrado ainda.</div>`}
+    ${recent.length?`<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:8px">
+      <div class="section-note" style="margin:0 0 6px">Últimos duelos</div>
+      ${recent.map(d=>{ const win=d.winner===uid; const foe=d.aId===uid?d.bId:d.aId; const foeName=d.aId===uid?d.bName:d.aName;
+        return `<div class="list-row" style="padding:8px 2px">
+          <span style="color:${win?'#8fd6a3':'#e79b8c'};line-height:0">${win?IC.feather:IC.ban}</span>
+          <div class="grow"><div class="l1" style="font-size:13px">${win?'Vitória':'Derrota'} sobre ${esc(nameOfUid(foe)||foeName||'—')}</div>
+          <div class="l2">${d.roundId?'rodada de campeonato':'duelo avulso'}</div></div></div>`; }).join("")}
+    </div>`:""}
+  </div>`;
+
+  if(!own && CURRENT && member){
+    html+=`<button class="btn" data-act="challenge" data-id="${uid}" style="margin-bottom:14px">${IC.challenge} Desafiar ${esc((u&&u.displayName)||"este duelista")}</button>`;
+  }
+
+  html+=`<div class="card"><h2>${IC.chest} Decks${own?"":" públicos"}</h2>`;
+  if(PROFILE_LOADING) html+=`<div class="spin"></div>`;
+  else if(!PROFILE_DECKS.length) html+=`<div class="empty" style="padding:16px">${own?'Você ainda não tem decks.':'Este duelista não tem decks públicos.'}</div>`;
+  else html+=PROFILE_DECKS.map(d=>{
+    const m=(d.main||[]).length,e=(d.extra||[]).length,si=(d.side||[]).length;
+    const ds=deckStatsOf(uid,d.id);
+    const priv=d.public===false;
+    return `<div class="deck-row" data-act="viewdeck" data-id="${d.id}">
+      <span style="color:var(--gold-deep);line-height:0;flex:0 0 auto">${priv?IC.seal:IC.chest}</span>
+      <div class="grow"><div class="l1">${esc(d.name||"Deck")}${priv?' · privado':''}</div>
+        <div class="l2">${m} principal · ${e} extra · ${si} side${ds.t?` · ${ds.w}V ${ds.l}D`:''}</div></div>
+      <span class="cc-arrow">›</span></div>`;
+  }).join("");
+  html+=`</div>`;
+
+  if(own){
+    html+=`<div class="card"><h2>${IC.reed} Editar perfil</h2>
+      <label class="fld">Nome de duelista</label>
+      <input id="prof-name" type="text" placeholder="Como você aparece no torneio" value="${esc((u&&u.displayName)||"")}">
+      <div id="prof-msg"></div><div style="height:12px"></div>
+      <button class="btn" data-act="profsave">Salvar perfil</button>
+      <div class="section-note" style="margin:12px 0 0">Conta: <b style="color:var(--gold-soft)">${esc((CURRENT&&CURRENT.email)||"")}</b></div>
+    </div>`;
+  }
+  $("prof-body").innerHTML=html;
+}
+async function saveProfileName(){
+  if(!CURRENT) return; showMsg("prof-msg","");
+  const el=$("prof-name"); if(!el) return;
+  const name=el.value.trim();
+  try{ await setDoc(doc(db,"users",CURRENT.uid),{displayName:name||CURRENT.email.split("@")[0]},{merge:true});
+    showMsg("prof-msg","Perfil salvo!","ok"); toast("Perfil salvo 𓂀"); haptic(20); }
   catch(e){ showMsg("prof-msg",fbError(e),"err"); }
-};
-$("prof-pick").onclick=()=>$("prof-file").click();
-$("prof-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>openCrop(rd.result); rd.readAsDataURL(f); e.target.value=""; };
+}
+$("prof-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>openCrop(rd.result,"avatar"); rd.readAsDataURL(f); e.target.value=""; };
+$("prof-cover-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>openCrop(rd.result,"cover"); rd.readAsDataURL(f); e.target.value=""; };
+
+/* ---------- ver deck de outro duelista (somente leitura) ---------- */
+function openDeckView(deckId){
+  const d=PROFILE_DECKS.find(x=>x.id===deckId); if(!d) return;
+  $("dv-icon").innerHTML=IC.chest; $("dv-title").textContent=d.name||"Deck";
+  const blName=(d.banlist||"tcg")==="tcg"?"TCG (oficial)":((BANLISTS.find(b=>b.id===d.banlist)||{}).name||"?");
+  const sec=(label,arr)=>{
+    const map={}; (arr||[]).forEach(c=>{ if(!map[c.id]) map[c.id]={c,n:0}; map[c.id].n++; });
+    const items=Object.values(map);
+    return `<div class="deck-sec"><h3>${label} <span class="cnt">${(arr||[]).length}</span></h3>
+      <div class="dk-grid">${items.length?items.map(({c,n})=>`<div class="dk-card" data-act="cardinfo" data-id="${esc(c.id)}">
+        <img loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">${n>1?`<span class="qty">x${n}</span>`:''}</div>`).join("")
+        :`<div class="section-note" style="grid-column:1/-1;margin:0">vazio</div>`}</div></div>`;
+  };
+  (d.main||[]).concat(d.extra||[],d.side||[]).forEach(c=>{ if(!CARD_CACHE[c.id]) CARD_CACHE[c.id]={...c,desc:"",type:c.type||"",banTcg:c.banTcg||""}; });
+  $("dv-body").innerHTML=`<div class="section-note" style="margin:-4px 0 10px">Banlist: <b style="color:var(--gold-soft)">${esc(blName)}</b></div>`
+    +sec("Deck Principal",d.main)+sec("Extra Deck",d.extra)+sec("Side Deck",d.side);
+  $("deck-view").classList.add("show");
+}
+$("dv-close").onclick=()=>$("deck-view").classList.remove("show");
 
 /* ---------- histórico do jogador ---------- */
 function getDocsOnce(colRef){ return new Promise(res=>{ const un=onSnapshot(colRef,s=>{ un(); res(s.docs.map(d=>({id:d.id,...d.data()}))); },()=>{ un(); res([]); }); }); }
@@ -1692,14 +2080,36 @@ async function renderHistory(){
   }).join("");
 }
 
-/* ---------- recorte de avatar ---------- */
-const CROP_D=260; let cropImg=null, cropZoom=1, cropX=0, cropY=0, cropDrag=null;
-function openCrop(dataUrl){ cropImg=new Image(); cropImg.onload=()=>{ cropZoom=1; cropX=0; cropY=0; $("crop-zoom").value="1"; drawCrop(); $("crop-modal").classList.add("show"); }; cropImg.src=dataUrl; }
-function drawCrop(){ if(!cropImg) return; const cv=$("crop-canvas"), ctx=cv.getContext("2d"); ctx.clearRect(0,0,CROP_D,CROP_D);
-  const base=Math.max(CROP_D/cropImg.width,CROP_D/cropImg.height), s=base*cropZoom;
-  const w=cropImg.width*s, h=cropImg.height*s, maxX=Math.max(0,(w-CROP_D)/2), maxY=Math.max(0,(h-CROP_D)/2);
+/* ---------- recorte de imagem (foto redonda e capa) ---------- */
+let CROP_W=260, CROP_H=260, CROP_MODE="avatar";
+let cropImg=null, cropZoom=1, cropX=0, cropY=0, cropDrag=null;
+function openCrop(dataUrl,mode){
+  CROP_MODE=mode||"avatar";
+  CROP_W=CROP_MODE==="cover"?300:260; CROP_H=CROP_MODE==="cover"?102:260;
+  const stage=document.querySelector(".crop-stage"), cv=$("crop-canvas");
+  stage.classList.toggle("wide",CROP_MODE==="cover");
+  cv.width=CROP_W; cv.height=CROP_H;
+  cropImg=new Image();
+  cropImg.onload=()=>{ cropZoom=1; cropX=0; cropY=0; $("crop-zoom").value="1"; drawCrop(); $("crop-modal").classList.add("show"); };
+  cropImg.src=dataUrl;
+}
+function drawCrop(){ if(!cropImg) return; const cv=$("crop-canvas"), ctx=cv.getContext("2d"); ctx.clearRect(0,0,CROP_W,CROP_H);
+  const base=Math.max(CROP_W/cropImg.width,CROP_H/cropImg.height), s=base*cropZoom;
+  const w=cropImg.width*s, h=cropImg.height*s, maxX=Math.max(0,(w-CROP_W)/2), maxY=Math.max(0,(h-CROP_H)/2);
   cropX=Math.max(-maxX,Math.min(maxX,cropX)); cropY=Math.max(-maxY,Math.min(maxY,cropY));
-  ctx.drawImage(cropImg,(CROP_D-w)/2+cropX,(CROP_D-h)/2+cropY,w,h);
+  ctx.drawImage(cropImg,(CROP_W-w)/2+cropX,(CROP_H-h)/2+cropY,w,h);
+}
+/* gera a saída a partir da imagem ORIGINAL (não do preview) para não perder nitidez */
+function cropOutput(outW,outH,circle,quality){
+  const cv=document.createElement("canvas"); cv.width=outW; cv.height=outH;
+  const ctx=cv.getContext("2d"); const k=outW/CROP_W;
+  const base=Math.max(CROP_W/cropImg.width,CROP_H/cropImg.height), s=base*cropZoom*k;
+  const w=cropImg.width*s, h=cropImg.height*s;
+  ctx.fillStyle="#0e0b06"; ctx.fillRect(0,0,outW,outH);
+  if(circle){ ctx.save(); ctx.beginPath(); ctx.arc(outW/2,outH/2,outW/2,0,Math.PI*2); ctx.closePath(); ctx.clip(); }
+  ctx.drawImage(cropImg,(outW-w)/2+cropX*k,(outH-h)/2+cropY*k,w,h);
+  if(circle) ctx.restore();
+  return cv.toDataURL("image/jpeg",quality);
 }
 $("crop-zoom").oninput=()=>{ cropZoom=parseFloat($("crop-zoom").value); drawCrop(); };
 (function(){ const cv=$("crop-canvas");
@@ -1712,60 +2122,371 @@ $("crop-zoom").oninput=()=>{ cropZoom=parseFloat($("crop-zoom").value); drawCrop
 })();
 $("crop-cancel").onclick=()=>$("crop-modal").classList.remove("show");
 $("crop-ok").onclick=async()=>{
-  const out=document.createElement("canvas"); out.width=out.height=220; const o=out.getContext("2d");
-  o.save(); o.beginPath(); o.arc(110,110,110,0,Math.PI*2); o.closePath(); o.clip();
-  o.drawImage($("crop-canvas"),0,0,CROP_D,CROP_D,0,0,220,220); o.restore();
-  const url=out.toDataURL("image/jpeg",0.85);
-  $("crop-modal").classList.remove("show"); $("prof-avatar").src=url;
-  if(CURRENT){ try{ await setDoc(doc(db,"users",CURRENT.uid),{photo:url},{merge:true}); toast("Foto atualizada"); }catch(e){ toast(fbError(e)); } }
+  if(!CURRENT||!cropImg) return;
+  const cover=CROP_MODE==="cover";
+  const url=cover?cropOutput(900,306,false,0.72):cropOutput(220,220,true,0.85);
+  $("crop-modal").classList.remove("show");
+  try{
+    if(cover){ await setDoc(doc(db,"covers",CURRENT.uid),{img:url,updatedAt:serverTimestamp()},{merge:true});
+      PROFILE_COVER=url; toast("Capa atualizada"); }
+    else { await setDoc(doc(db,"users",CURRENT.uid),{photo:url},{merge:true}); toast("Foto atualizada"); }
+    haptic(25); renderProfile();
+  }catch(e){ toast(fbError(e)); }
 };
 
-/* ---------- contador de duelo ---------- */
-let LP=[8000,8000], STEP=500, coinBusy=false, COUNTER_MATCH=null;
+/* ================= DUELOS (vários ao mesmo tempo) ================= */
+let LP=[8000,8000], STEP=500, coinBusy=false;
+let lpLocalTs=0, lpTimer=null, lpPending=null;
+
+const duelKey=(roundId,idx)=>`r_${roundId}_${idx}`;
+const activeDuel=()=>ACTIVE_DUEL?(DUELS.find(d=>d.id===ACTIVE_DUEL)||null):null;
+const duelOf=(roundId,idx)=>DUELS.find(d=>d.id===duelKey(roundId,idx))||null;
+function canDuel(d){ if(!d) return true; if(isAdmin()) return true;
+  return !!(CURRENT&&(CURRENT.uid===d.aId||CURRENT.uid===d.bId||CURRENT.uid===d.createdBy)); }
+
+function queueLP(){ if(!ACTIVE_DUEL) return;
+  lpPending={lpA:LP[0],lpB:LP[1]}; clearTimeout(lpTimer);
+  lpTimer=setTimeout(()=>{ const id=ACTIVE_DUEL, p=lpPending; lpPending=null; if(!id||!p) return;
+    updateDoc(doc(db,"duels",id),p).catch(()=>{}); },500);
+}
+function flushLP(){ clearTimeout(lpTimer); if(ACTIVE_DUEL&&lpPending){ const p=lpPending; lpPending=null;
+  updateDoc(doc(db,"duels",ACTIVE_DUEL),p).catch(()=>{}); } }
+function syncCounterFromDuel(){
+  const d=activeDuel();
+  if(ACTIVE_DUEL&&!d){ ACTIVE_DUEL=null; initCounter(); return; }
+  if(!d) return;
+  if(Date.now()-lpLocalTs>1600){ LP=[d.lpA??8000,d.lpB??8000]; renderLP(); }
+  renderDuelChips();
+}
+
 function setPanel(n,name,photo){ const av=$("lp"+n+"-av"), nm=$("lp"+n+"-name"); if(av){ av.src=photo||AV_PH; av.classList.remove("hidden"); } if(nm){ nm.value=name; nm.readOnly=true; } }
 function setPanelPlain(n,name){ const av=$("lp"+n+"-av"), nm=$("lp"+n+"-name"); if(av) av.classList.add("hidden"); if(nm){ nm.value=name; nm.readOnly=false; } }
+function renderDuelChips(){
+  const box=$("duel-chips"); if(!box) return;
+  const live=DUELS.filter(d=>d.status==="ativo");
+  const chips=[`<button class="dchip ${ACTIVE_DUEL?'':'active'}" data-act="godquick">${IC.swords} Rápido</button>`]
+    .concat(live.map(d=>`<button class="dchip ${ACTIVE_DUEL===d.id?'active':''}" data-act="goduel" data-id="${d.id}">
+      ${ACTIVE_DUEL===d.id?'':'<span class="live-dot"></span>'}${esc(shortName(d.aName))} × ${esc(shortName(d.bName))}</button>`));
+  chips.push(`<button class="dchip" data-act="godlist">${IC.scroll} Todos</button>`);
+  box.innerHTML=chips.join("");
+}
+const shortName=s=>{ const t=String(s||"—").trim(); return t.length>11?t.slice(0,10)+"…":t; };
 function initCounter(){
-  const m=COUNTER_MATCH, banner=$("duel-banner");
-  if(m){ banner.classList.remove("hidden");
-    banner.innerHTML=`${IC.swords} Duelo da rodada<div class="db-sub"><b>${esc(m.aName)}</b> vs <b>${esc(m.bName)}</b> · <a id="duel-exit">usar contador avulso</a></div>`;
-    setPanel(1,m.aName,m.aPhoto); setPanel(2,m.bName,m.bPhoto);
-    const de=$("duel-exit"); if(de) de.onclick=()=>{ COUNTER_MATCH=null; LP=[8000,8000]; initCounter(); };
-  } else { banner.classList.add("hidden"); setPanelPlain(1,"Jogador 1"); setPanelPlain(2,"Jogador 2"); }
-  renderLP(); renderMusicSel(); const ar=$("music-add-wrap"); if(ar) ar.classList.toggle("hidden",!isAdmin());
+  const d=activeDuel(), banner=$("duel-banner");
+  if(ACTIVE_DUEL&&!d) ACTIVE_DUEL=null;
+  if(d){
+    LP=[d.lpA??8000,d.lpB??8000]; lpLocalTs=0;
+    const deckLine=(d.aDeck||d.bDeck)?`<br>${IC.chest} ${esc((d.aDeck&&d.aDeck.name)||"—")} × ${esc((d.bDeck&&d.bDeck.name)||"—")}`:"";
+    banner.classList.remove("hidden");
+    banner.innerHTML=`${IC.swords} ${d.roundId?"Duelo da rodada":"Duelo avulso"}
+      <div class="db-sub"><b>${esc(d.aName)}</b> vs <b>${esc(d.bName)}</b>${deckLine}
+      <br><a data-act="dpopen" data-id="${d.id}">escolher decks</a> · <a data-act="godquick">contador rápido</a></div>`;
+    setPanel(1,d.aName,d.aPhoto); setPanel(2,d.bName,d.bPhoto);
+  } else {
+    LP=[8000,8000]; banner.classList.add("hidden");
+    setPanelPlain(1,"Jogador 1"); setPanelPlain(2,"Jogador 2");
+  }
+  renderDuelChips(); renderLP(); renderMusicSel();
+  const ar=$("music-add-wrap"); if(ar) ar.classList.toggle("hidden",!isAdmin());
 }
 function renderLP(){ $("lp1-num").textContent=LP[0]; $("lp2-num").textContent=LP[1]; }
 function animateLP(pl,cls){ const el=$("lp"+pl+"-num"); el.classList.remove("hit","heal"); void el.offsetWidth; el.classList.add(cls); }
-function lpApply(pl,op){ const i=pl-1, before=LP[i];
-  if(op==="half"){ LP[i]=Math.ceil(LP[i]/2); animateLP(pl,"hit"); }
-  else if(op==="minus"){ LP[i]=Math.max(0,LP[i]-STEP); animateLP(pl,"hit"); }
-  else { LP[i]+=STEP; animateLP(pl,"heal"); }
+function lpApply(pl,op){
+  const d=activeDuel();
+  if(d&&!canDuel(d)){ toast("Só quem está duelando (ou o admin) altera estes pontos."); haptic([30,50,30]); return; }
+  const i=pl-1, before=LP[i];
+  if(op==="half"){ LP[i]=Math.ceil(LP[i]/2); animateLP(pl,"hit"); haptic(28); }
+  else if(op==="minus"){ LP[i]=Math.max(0,LP[i]-STEP); animateLP(pl,"hit"); haptic(18); }
+  else { LP[i]+=STEP; animateLP(pl,"heal"); haptic(12); }
   renderLP();
-  if(COUNTER_MATCH && before>0 && LP[i]<=0){ const w=(i===0?2:1); if(LP[w-1]>0) offerResult(w); }
+  if(d){ lpLocalTs=Date.now(); queueLP();
+    if(before>0&&LP[i]<=0){ const w=(i===0?2:1); if(LP[w-1]>0){ haptic([40,60,40,60,90]); offerResult(w); } } }
 }
-function openMatchCounter(roundId,idx){
+
+/* --- abrir/criar duelos --- */
+async function openMatchDuel(roundId,idx){
   const round=ROUNDS.find(r=>r.id===roundId); if(!round) return;
-  const mt=(round.matches||[])[idx]; if(!mt) return;
-  COUNTER_MATCH={champId:CURRENT_CHAMP,roundId,idx,aId:mt.a,bId:mt.b,
-    aName:playerName(mt.a),bName:playerName(mt.b),aPhoto:playerPhoto(mt.a).photo,bPhoto:playerPhoto(mt.b).photo};
-  LP=[8000,8000]; openScreen("counter");
+  const m=(round.matches||[])[idx]; if(!m) return;
+  const id=duelKey(roundId,idx), ex=DUELS.find(d=>d.id===id);
+  if(ex&&ex.status==="encerrado"&&!confirm("Este duelo já foi encerrado. Reabrir e zerar os pontos de vida?")) return;
+  const data={champId:CURRENT_CHAMP,roundId,matchIdx:idx,dayId:round.dayId||null,
+    aId:m.a,bId:m.b,aName:playerName(m.a),bName:playerName(m.b),
+    aPhoto:playerPhoto(m.a).photo||null,bPhoto:playerPhoto(m.b).photo||null,
+    aDeck:(ex&&ex.aDeck)||null,bDeck:(ex&&ex.bDeck)||null,
+    lpA:8000,lpB:8000,status:"ativo",winner:null,
+    createdAt:(ex&&ex.createdAt)||serverTimestamp(),createdBy:CURRENT?CURRENT.uid:null};
+  try{ await setDoc(doc(db,"duels",id),data,{merge:true}); }catch(e){ toast(fbError(e)); return; }
+  ACTIVE_DUEL=id; lpLocalTs=0; LP=[8000,8000]; openScreen("counter");
+  if(!(ex&&(ex.aDeck||ex.bDeck))) openDeckPicker(id);
+}
+async function startDuelBetween(aId,bId,champId){
+  if(!CURRENT){ toast("Entre com sua conta para registrar um duelo."); return; }
+  if(!aId||!bId||aId===bId){ toast("Escolha dois duelistas diferentes."); return; }
+  const pa=playerPhoto(aId), pb=playerPhoto(bId);
+  try{
+    const ref=await addDoc(collection(db,"duels"),{champId:champId||null,roundId:null,matchIdx:null,dayId:null,
+      aId,bId,aName:nameOfUid(aId),bName:nameOfUid(bId),aPhoto:pa.photo||null,bPhoto:pb.photo||null,
+      aDeck:null,bDeck:null,lpA:8000,lpB:8000,status:"ativo",winner:null,
+      createdAt:serverTimestamp(),createdBy:CURRENT.uid});
+    ACTIVE_DUEL=ref.id; lpLocalTs=0; LP=[8000,8000]; haptic(30); openScreen("counter"); openDeckPicker(ref.id);
+  }catch(e){ toast(fbError(e)); }
 }
 function offerResult(winnerN){
-  const m=COUNTER_MATCH; if(!m) return;
-  const name=winnerN===1?m.aName:m.bName, photo=winnerN===1?m.aPhoto:m.bPhoto, wid=winnerN===1?m.aId:m.bId;
-  $("dr-av").src=photo||AV_PH; $("dr-name").textContent=name; $("dr-modal").dataset.wid=wid;
+  const d=activeDuel(); if(!d) return;
+  const name=winnerN===1?d.aName:d.bName, photo=winnerN===1?d.aPhoto:d.bPhoto;
+  $("dr-av").src=photo||AV_PH; $("dr-name").textContent=name; $("dr-modal").dataset.side=String(winnerN);
   $("dr-modal").classList.add("show");
 }
-async function recordMatchWinner(winnerId){
-  const m=COUNTER_MATCH; if(!m){ $("dr-modal").classList.remove("show"); return; }
-  if(!canEdit()){ toast("Só o admin registra o resultado."); return; }
-  const round=ROUNDS.find(r=>r.id===m.roundId); if(!round){ toast("Rodada não encontrada."); return; }
-  const matches=(round.matches||[]).map(x=>({...x})); if(!matches[m.idx]) return;
-  matches[m.idx].winner=winnerId;
-  try{ await updateDoc(doc(db,"championships",m.champId,"rounds",m.roundId),{matches}); }catch(e){ toast(fbError(e)); return; }
-  $("dr-modal").classList.remove("show"); COUNTER_MATCH=null; closeScreen(); switchTab("rounds"); toast("Resultado registrado!");
+async function endDuel(winnerSide){
+  const d=activeDuel(); if(!d){ $("dr-modal").classList.remove("show"); return; }
+  if(!canDuel(d)){ toast("Só quem está duelando (ou o admin) encerra este duelo."); return; }
+  const wid=winnerSide===1?d.aId:d.bId;
+  clearTimeout(lpTimer); lpPending=null;   // os LP finais vão no update abaixo
+  let roundOk=false;
+  if(d.roundId&&canEdit()){
+    const round=ROUNDS.find(r=>r.id===d.roundId);
+    if(round&&!round.closed){
+      const matches=(round.matches||[]).map(x=>({...x}));
+      if(matches[d.matchIdx]){ matches[d.matchIdx].winner=wid;
+        try{ await updateDoc(doc(db,"championships",d.champId,"rounds",d.roundId),{matches}); roundOk=true; }
+        catch(e){ roundOk=false; } }
+    }
+  }
+  try{ await updateDoc(doc(db,"duels",d.id),{status:"encerrado",winner:wid,lpA:LP[0],lpB:LP[1],endedAt:serverTimestamp()}); }
+  catch(e){ toast(fbError(e)); return; }
+  $("dr-modal").classList.remove("show"); ACTIVE_DUEL=null; haptic([25,45,25]);
+  if(!d.roundId){ openScreen("duels"); toast("Duelo registrado!"); }
+  else if(roundOk){ closeScreen(); switchTab("rounds"); toast("Resultado registrado!"); }
+  else { openScreen("duels"); toast("Duelo salvo — falta o admin confirmar na rodada."); }
 }
-$("dr-record").onclick=()=>recordMatchWinner($("dr-modal").dataset.wid);
+$("dr-record").onclick=()=>endDuel(+$("dr-modal").dataset.side||1);
 $("dr-continue").onclick=()=>$("dr-modal").classList.remove("show");
+
+/* --- tela: lista de duelos --- */
+function duelInScope(d,scope){
+  if(scope==="champ") return d.champId===CURRENT_CHAMP;
+  if(scope==="avulso") return !d.roundId;
+  return true;
+}
+function duelRowHTML(d,opts){
+  const done=d.status==="encerrado"&&d.winner;
+  const aw=done&&d.winner===d.aId, bw=done&&d.winner===d.bId;
+  const mid=done?`<div class="vs">VS</div><div class="lp">${d.lpA??0} · ${d.lpB??0}</div>`
+                :`<div class="lp">${d.lpA??8000}</div><div class="vs">VS</div><div class="lp">${d.lpB??8000}</div>`;
+  return `<div class="duel-row">
+      <div class="duel-side ${aw?'w':(done?'l':'')}">
+        <div class="dn" data-act="profile" data-id="${d.aId}">${avatarHTML({photo:d.aPhoto},'sm')}${esc(d.aName)}</div>
+        <div class="dd">${d.aDeck?esc(d.aDeck.name):'sem deck'}</div></div>
+      <div class="duel-mid">${mid}</div>
+      <div class="duel-side r ${bw?'w':(done?'l':'')}">
+        <div class="dn" data-act="profile" data-id="${d.bId}">${esc(d.bName)}${avatarHTML({photo:d.bPhoto},'sm')}</div>
+        <div class="dd">${d.bDeck?esc(d.bDeck.name):'sem deck'}</div></div>
+    </div>
+    <div class="duel-acts">
+      ${opts.live?`<button class="mini" data-act="goduel" data-id="${d.id}">${IC.swords} Abrir contador</button>`:""}
+      <button class="mini" data-act="dpopen" data-id="${d.id}">${IC.chest} Decks</button>
+      ${!opts.live?`<span class="mini" style="cursor:default;opacity:.75">${d.roundId?IC.crown+' rodada':IC.swords+' avulso'}</span>`:""}
+      ${(isAdmin()||canDuel(d))?`<button class="mini danger" data-act="deldruel" data-id="${d.id}">${IC.jar}</button>`:""}
+    </div>`;
+}
+function renderDuels(){
+  const live=DUELS.filter(d=>d.status==="ativo");
+  $("duels-live").innerHTML=live.length
+    ? live.map(d=>duelRowHTML(d,{live:true})).join("")
+    : `<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.swords}</span>Nenhum duelo em andamento.<br>Crie um acima ou abra pelo <b>Calendário</b>.</div>`;
+
+  const scopes=[["all","Todos"],["champ","Deste campeonato"],["avulso","Avulsos"]];
+  $("duels-hist-filter").innerHTML=scopes.map(([k,l])=>
+    `<button class="dchip ${HIST_SCOPE===k?'active':''}" data-act="histscope" data-k="${k}">${l}</button>`).join("");
+  const hist=DUELS.filter(d=>d.status==="encerrado"&&d.winner&&duelInScope(d,HIST_SCOPE)).slice(0,60);
+  $("duels-hist").innerHTML=hist.length
+    ? hist.map(d=>duelRowHTML(d,{live:false})).join("")
+    : `<div class="empty" style="padding:16px">Nenhum duelo encerrado ainda${HIST_SCOPE!=="all"?" neste filtro":""}.</div>`;
+  els("#screen-duels .admin-only").forEach(n=>n.classList.toggle("hidden",!isAdmin()));
+}
+$("duels-quick").onclick=()=>{ ACTIVE_DUEL=null; openScreen("counter"); };
+$("duels-new").onclick=()=>openDuelNew();
+$("duels-sync").onclick=syncOldDuels;
+
+/* espelha o resultado marcado na rodada para o histórico de duelos */
+async function syncDuelFromMatch(round,idx,winner){
+  const m=(round.matches||[])[idx]; if(!m) return;
+  const id=duelKey(round.id,idx), ex=DUELS.find(d=>d.id===id);
+  try{
+    if(!winner){ if(ex) await deleteDoc(doc(db,"duels",id)); return; }
+    await setDoc(doc(db,"duels",id),{champId:CURRENT_CHAMP,roundId:round.id,matchIdx:idx,dayId:round.dayId||null,
+      aId:m.a,bId:m.b,aName:playerName(m.a),bName:playerName(m.b),
+      aPhoto:playerPhoto(m.a).photo||null,bPhoto:playerPhoto(m.b).photo||null,
+      aDeck:(ex&&ex.aDeck)||null,bDeck:(ex&&ex.bDeck)||null,
+      lpA:(ex&&ex.lpA)??0,lpB:(ex&&ex.lpB)??0,
+      status:"encerrado",winner,
+      createdAt:(ex&&ex.createdAt)||serverTimestamp(),endedAt:serverTimestamp(),
+      createdBy:(ex&&ex.createdBy)||(CURRENT?CURRENT.uid:null)},{merge:true});
+  }catch(e){ console.error(e); }
+}
+
+/* importa partidas já decididas das rodadas para o histórico de duelos */
+async function syncOldDuels(){
+  if(!isAdmin()||!CURRENT_CHAMP){ toast("Entre num campeonato como admin."); return; }
+  if(!confirm("Importar para o histórico todas as partidas já decididas deste campeonato?\n\nÉ seguro repetir — nada é duplicado.")) return;
+  const b=$("duels-sync"); b.disabled=true; b.textContent="Importando…";
+  let n=0;
+  try{
+    for(const r of ROUNDS){
+      const ms=r.matches||[];
+      for(let i=0;i<ms.length;i++){
+        const m=ms[i]; if(!m.winner) continue;
+        const id=duelKey(r.id,i); const ex=DUELS.find(d=>d.id===id);
+        if(ex&&ex.status==="encerrado"&&ex.winner===m.winner) continue;
+        await setDoc(doc(db,"duels",id),{champId:CURRENT_CHAMP,roundId:r.id,matchIdx:i,dayId:r.dayId||null,
+          aId:m.a,bId:m.b,aName:playerName(m.a),bName:playerName(m.b),
+          aPhoto:playerPhoto(m.a).photo||null,bPhoto:playerPhoto(m.b).photo||null,
+          lpA:(ex&&ex.lpA)??0,lpB:(ex&&ex.lpB)??0,status:"encerrado",winner:m.winner,
+          createdAt:(ex&&ex.createdAt)||serverTimestamp(),endedAt:serverTimestamp(),
+          createdBy:(ex&&ex.createdBy)||CURRENT.uid},{merge:true});
+        n++;
+      }
+    }
+    toast(n?`${n} duelo(s) importado(s)`:"Nada novo para importar");
+  }catch(e){ toast(fbError(e)); }
+  finally{ b.disabled=false; b.textContent="Importar duelos antigos das rodadas"; }
+}
+
+/* --- escolher duelistas (duelo avulso) --- */
+function openDuelNew(){
+  if(!CURRENT){ toast("Entre com sua conta para criar um duelo."); return; }
+  DN_STATE={a:CURRENT.uid,b:null};
+  $("dn-icon").innerHTML=IC.challenge;
+  renderDuelNew(); $("duel-new").classList.add("show");
+}
+function duelistPool(){
+  const ids=new Set(MEMBERS.map(m=>m.id));
+  ((CONFIG&&CONFIG.adminUids)||[]).forEach(id=>ids.add(id));
+  PLAYERS.forEach(p=>ids.add(p.id));
+  return Array.from(ids).map(id=>({id,name:nameOfUid(id),photo:(userOf(id)||{}).photo}))
+    .sort((x,y)=>x.name.localeCompare(y.name));
+}
+function renderDuelNew(){
+  const pool=duelistPool();
+  const col=(side,label)=>`<div style="margin-bottom:12px"><label class="fld">${label}</label>
+    <div style="max-height:30vh;overflow:auto;border:1px solid var(--line);border-radius:11px;padding:4px 8px">
+    ${pool.map(p=>`<div class="pick-row ${DN_STATE[side]===p.id?'sel':''}" data-act="dnpick" data-side="${side}" data-id="${p.id}">
+      ${avatarHTML({photo:p.photo},'sm')}<div class="pk-name">${esc(p.name)}</div></div>`).join("")}</div></div>`;
+  $("dn-body").innerHTML=pool.length<2
+    ? `<div class="empty" style="padding:14px">São necessários pelo menos 2 duelistas autorizados.</div>`
+    : col("a","Duelista 1")+col("b","Duelista 2");
+}
+$("dn-cancel").onclick=()=>{ $("duel-new").classList.remove("show"); DN_STATE=null; };
+$("dn-ok").onclick=async()=>{ if(!DN_STATE) return;
+  if(!DN_STATE.a||!DN_STATE.b||DN_STATE.a===DN_STATE.b){ toast("Escolha dois duelistas diferentes."); return; }
+  $("duel-new").classList.remove("show");
+  await startDuelBetween(DN_STATE.a,DN_STATE.b,CURRENT_CHAMP||null); DN_STATE=null; };
+
+/* --- escolher os decks do duelo (também serve para duelos antigos) --- */
+async function openDeckPicker(duelId){
+  let d=DUELS.find(x=>x.id===duelId);
+  if(!d){ await new Promise(r=>setTimeout(r,350)); d=DUELS.find(x=>x.id===duelId); }
+  if(!d) return;
+  DP_STATE={id:duelId,a:d.aDeck||null,b:d.bDeck||null,aDecks:[],bDecks:[],loading:true};
+  $("dp-icon").innerHTML=IC.chest;
+  renderDeckPicker(); $("deck-picker").classList.add("show");
+  const [ad,bd]=await Promise.all([loadDecksOf(d.aId),loadDecksOf(d.bId)]);
+  if(!DP_STATE||DP_STATE.id!==duelId) return;
+  DP_STATE.aDecks=ad; DP_STATE.bDecks=bd; DP_STATE.loading=false; renderDeckPicker();
+}
+function renderDeckPicker(){
+  if(!DP_STATE) return;
+  const d=DUELS.find(x=>x.id===DP_STATE.id); if(!d) return;
+  const col=(side,name,decks)=>{
+    if(DP_STATE.loading) return `<label class="fld">${esc(name)}</label><div class="spin" style="margin:14px auto"></div>`;
+    if(!decks.length) return `<label class="fld">${esc(name)}</label>
+      <div class="section-note" style="margin:0 0 12px">Sem decks públicos cadastrados.</div>`;
+    const cur=DP_STATE[side];
+    return `<label class="fld">${esc(name)}</label>
+      <div style="max-height:26vh;overflow:auto;border:1px solid var(--line);border-radius:11px;padding:4px 8px;margin-bottom:12px">
+      <div class="pick-row ${cur?'':'sel'}" data-act="dppick" data-side="${side}" data-id=""><div class="pk-name" style="color:var(--muted)">— nenhum —</div></div>
+      ${decks.map(k=>`<div class="pick-row ${cur&&cur.id===k.id?'sel':''}" data-act="dppick" data-side="${side}" data-id="${k.id}">
+        <span style="color:var(--gold-deep);line-height:0">${IC.chest}</span>
+        <div class="pk-name">${esc(k.name||"Deck")}<div class="pk-sub">${(k.main||[]).length} principal</div></div></div>`).join("")}</div>`;
+  };
+  $("dp-body").innerHTML=col("a",d.aName,DP_STATE.aDecks)+col("b",d.bName,DP_STATE.bDecks);
+}
+$("dp-skip").onclick=()=>{ $("deck-picker").classList.remove("show"); DP_STATE=null; };
+$("dp-save").onclick=async()=>{
+  if(!DP_STATE) return; const id=DP_STATE.id, a=DP_STATE.a, b=DP_STATE.b;
+  $("deck-picker").classList.remove("show"); DP_STATE=null;
+  try{ await updateDoc(doc(db,"duels",id),{aDeck:a||null,bDeck:b||null}); toast("Decks salvos"); haptic(20);
+    if(ACTIVE_SCREEN==="counter"&&ACTIVE_DUEL===id) initCounter();
+  }catch(e){ toast(fbError(e)); }
+};
+
+/* ================= ESTATÍSTICAS ================= */
+function statsOf(uid,scope){
+  let w=0,l=0;
+  for(const d of DUELS){
+    if(d.status!=="encerrado"||!d.winner) continue;
+    if(!duelInScope(d,scope||"all")) continue;
+    if(d.aId!==uid&&d.bId!==uid) continue;
+    if(d.winner===uid) w++; else l++;
+  }
+  const t=w+l; return {w,l,t,pct:t?Math.round(w*100/t):0};
+}
+function deckStatsOf(uid,deckId){
+  let w=0,l=0;
+  for(const d of DUELS){
+    if(d.status!=="encerrado"||!d.winner) continue;
+    const mine=d.aId===uid?d.aDeck:(d.bId===uid?d.bDeck:null);
+    if(!mine||mine.id!==deckId) continue;
+    if(d.winner===uid) w++; else l++;
+  }
+  const t=w+l; return {w,l,t,pct:t?Math.round(w*100/t):0};
+}
+function renderStats(){
+  const scopes=[["all","Todos os duelos"],["champ","Deste campeonato"],["avulso","Só avulsos"]];
+  $("stats-filter").innerHTML=scopes.map(([k,l])=>
+    `<button class="dchip ${STATS_SCOPE===k?'active':''}" data-act="statscope" data-k="${k}">${l}</button>`).join("");
+
+  const ids=new Set();
+  DUELS.forEach(d=>{ if(d.status==="encerrado"&&d.winner&&duelInScope(d,STATS_SCOPE)){ ids.add(d.aId); ids.add(d.bId); } });
+  const rows=Array.from(ids).filter(Boolean).map(id=>({id,name:nameOfUid(id),...statsOf(id,STATS_SCOPE)}))
+    .sort((a,b)=>b.w-a.w||b.pct-a.pct||a.name.localeCompare(b.name));
+
+  let html="";
+  if(CURRENT){
+    const me=statsOf(CURRENT.uid,STATS_SCOPE);
+    html+=`<div class="card"><h2>${IC.scarab} Você</h2>
+      <div class="stat-grid">
+        <div class="stat-box win"><div class="sv">${me.w}</div><div class="sl">Vitórias</div></div>
+        <div class="stat-box loss"><div class="sv">${me.l}</div><div class="sl">Derrotas</div></div>
+        <div class="stat-box"><div class="sv">${me.t?me.pct+"%":"—"}</div><div class="sl">Aproveit.</div></div>
+      </div>${me.t?`<div class="bar"><i style="width:${me.pct}%"></i></div>`:""}</div>`;
+
+    const myDecks=MYDECKS.map(k=>({k,s:deckStatsOf(CURRENT.uid,k.id)})).filter(x=>x.s.t>0)
+      .sort((a,b)=>b.s.w-a.s.w||b.s.pct-a.s.pct);
+    if(myDecks.length){
+      html+=`<div class="card"><h2>${IC.chest} Seus decks</h2>
+        <table class="rank"><thead><tr><th>Deck</th><th class="wl">V</th><th class="wl">D</th><th class="pts">%</th></tr></thead><tbody>
+        ${myDecks.map(({k,s})=>`<tr><td class="name">${esc(k.name||"Deck")}</td>
+          <td class="wl v">${s.w}</td><td class="wl d">${s.l}</td><td class="pts">${s.pct}%</td></tr>`).join("")}
+        </tbody></table></div>`;
+    }
+  }
+
+  html+=`<div class="card"><h2>${IC.maat} Ranking de duelos</h2>
+    <p class="section-note">Conta todos os duelos registrados — de rodada e avulsos.</p>`;
+  html+=rows.length
+    ? `<table class="rank"><thead><tr><th class="pos">#</th><th>Duelista</th><th class="wl">V</th><th class="wl">D</th><th class="pts">%</th></tr></thead><tbody>
+      ${rows.map((r,i)=>`<tr class="${i===0?'top1':''}">
+        <td class="pos">${i<3?`<span class="medal ${["g","s","b"][i]}">${i+1}</span>`:(i+1)}</td>
+        <td class="name"><span style="display:inline-flex;align-items:center;gap:8px" data-act="profile" data-id="${r.id}">
+          ${avatarHTML({photo:(userOf(r.id)||{}).photo},'sm')}${esc(r.name)}</span></td>
+        <td class="wl v">${r.w}</td><td class="wl d">${r.l}</td><td class="pts">${r.pct}%</td></tr>`).join("")}
+      </tbody></table>`
+    : `<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.maat}</span>Nenhum duelo registrado ainda.<br>
+        Duelos aparecem aqui quando são encerrados pelo contador ou pela rodada.</div>`;
+  html+=`</div>`;
+  $("stats-body").innerHTML=html;
+}
 document.addEventListener("click", ev=>{
   const b=ev.target.closest("[data-op]"); if(b){ lpApply(+b.dataset.lp,b.dataset.op); return; }
   const sc=ev.target.closest("[data-step]"); if(sc){ STEP=+sc.dataset.step; els(".step-chip").forEach(c=>c.classList.toggle("active",c===sc)); const cu=$("lp-step-custom"); if(cu) cu.value=""; }
@@ -1785,14 +2506,16 @@ function renderMusicList(){ const box=$("music-list"); if(!box) return;
     ? TRACKS.map(t=>`<div class="track-row"><span class="tn">${IC.music} ${esc(t.name)}</span><button class="mini danger" data-act="deltrack" data-id="${t.id}">Remover</button></div>`).join("")
     : `<div class="section-note" style="margin:6px 0 0">Nenhuma música adicionada ainda.</div>`;
 }
-$("music-play").onclick=()=>{ const a=$("bgm"); if(!a.paused){ a.pause(); $("music-play").textContent="▶"; return; }
+const musicIcon=playing=>{ const b=$("music-play"); if(b) b.innerHTML=playing?IC.pause:IC.play; };
+$("music-play").onclick=()=>{ const a=$("bgm"); if(!a.paused){ a.pause(); musicIcon(false); return; }
   const url=$("music-sel").value; if(!url){ toast("Escolha uma música ou toque um arquivo."); return; }
   if(a.src!==url) a.src=url; a.volume=parseFloat($("music-vol").value);
-  a.play().then(()=>$("music-play").textContent="⏸").catch(()=>toast("Não consegui tocar esse link.")); };
+  a.play().then(()=>musicIcon(true)).catch(()=>toast("Não consegui tocar esse link.")); };
+musicIcon(false);
 $("music-vol").oninput=()=>{ $("bgm").volume=parseFloat($("music-vol").value); };
 $("music-local").onclick=()=>$("music-file").click();
 $("music-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const a=$("bgm"); a.src=URL.createObjectURL(f); a.volume=parseFloat($("music-vol").value);
-  a.play().then(()=>$("music-play").textContent="⏸").catch(()=>{}); e.target.value=""; };
+  a.play().then(()=>musicIcon(true)).catch(()=>{}); e.target.value=""; };
 $("music-add").onclick=async()=>{ if(!isAdmin()){ toast("Só o admin adiciona músicas."); return; }
   const name=$("music-name").value.trim(), url=$("music-url").value.trim();
   if(!name||!url){ toast("Preencha nome e link."); return; }
@@ -1857,14 +2580,22 @@ function renderDecks(){
   else { CUR_DECK=null; builder.classList.add("hidden"); list.classList.remove("hidden"); renderDeckList(); }
 }
 function blOptionsHTML(sel){ return `<option value="tcg">TCG (oficial)</option>`+BANLISTS.map(b=>`<option value="${b.id}" ${sel===b.id?'selected':''}>${esc(b.name)}</option>`).join(""); }
+let DECK_FX=null;   // {id,sec,kind} — realce da última carta adicionada/removida
+function backfillDeckVisibility(){
+  if(deckBackfilled||!CURRENT) return; deckBackfilled=true;
+  MYDECKS.filter(d=>d.public===undefined).forEach(d=>{ updateDoc(doc(db,"decks",d.id),{public:true}).catch(()=>{}); });
+}
 function renderDeckList(){
   const s=$("new-deck-bl"); const keep=s.value; s.innerHTML=blOptionsHTML(keep); if(keep) s.value=keep;
+  backfillDeckVisibility();
   const body=$("decks-body"); if(!body) return;
-  if(!MYDECKS.length){ body.innerHTML=`<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.chest}</span>Você ainda não tem decks.<br>Crie um acima.</div>`; return; }
+  if(!MYDECKS.length){ body.innerHTML=`<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.chest}</span>Você ainda não tem decks.<br>Crie um acima ou importe um <b>.ydk</b>.</div>`; return; }
   body.innerHTML=MYDECKS.map(d=>{ const m=(d.main||[]).length,e=(d.extra||[]).length,si=(d.side||[]).length; const legal=m>=40&&m<=60&&e<=15&&si<=15;
     const blName=(d.banlist||"tcg")==="tcg"?"TCG":((BANLISTS.find(b=>b.id===d.banlist)||{}).name||"?");
+    const st=CURRENT?deckStatsOf(CURRENT.uid,d.id):{t:0};
     return `<div class="deck-row" data-act="opendeck" data-id="${d.id}">
-      <div class="grow"><div class="l1">${esc(d.name)}</div><div class="l2">${m} principal · ${e} extra · ${si} side · banlist: ${esc(blName)}</div></div>
+      <span style="color:var(--gold-deep);line-height:0;flex:0 0 auto">${d.public===false?IC.seal:IC.chest}</span>
+      <div class="grow"><div class="l1">${esc(d.name)}</div><div class="l2">${m} principal · ${e} extra · ${si} side · banlist: ${esc(blName)}${st.t?` · ${st.w}V ${st.l}D`:''}</div></div>
       <span class="valid-tag ${legal?'ok':'bad'}">${legal?'ok':'incompleto'}</span></div>`; }).join("");
 }
 function renderSection(sec){
@@ -1876,6 +2607,11 @@ function renderSection(sec){
       ${n>1?`<span class="qty">x${n}</span>`:''}
       <div class="rm" data-act="deckremove" data-sec="${sec}" data-id="${esc(c.id)}">− remover</div></div>`).join("")
     : `<div class="section-note" style="grid-column:1/-1;margin:0">vazio</div>`;
+  if(DECK_FX&&DECK_FX.sec===sec){
+    const card=Array.from(el.querySelectorAll(".dk-card")).find(n=>n.dataset.id===String(DECK_FX.id));
+    if(card) flashEl(card,DECK_FX.kind);
+    pulseCount("cnt-"+sec); DECK_FX=null;
+  }
 }
 function renderBuilder(){
   const deck=MYDECKS.find(d=>d.id===CUR_DECK); if(!deck){ CUR_DECK=null; renderDecks(); return; }
@@ -1888,6 +2624,11 @@ function renderBuilder(){
   renderSection('main'); renderSection('extra'); renderSection('side');
   const legal=m>=40&&m<=60&&e<=15&&si<=15;
   $("deck-validity").innerHTML=`<span class="valid-tag ${legal?'ok':'bad'}">${legal?IC.ankh+' Deck válido':IC.ban+' Ajuste o tamanho (Principal 40–60, Extra e Side até 15)'}</span>`;
+  const vis=$("btn-deck-vis");
+  if(vis) vis.innerHTML=(deck.public===false?IC.seal+" Privado":IC.eye+" Público");
+  const ex=$("btn-deck-export"), im=$("btn-deck-import");
+  if(ex) ex.innerHTML=IC.papyrusOut+" Exportar";
+  if(im) im.innerHTML=IC.papyrusIn+" Importar";
   renderDeckAddResults();
 }
 function renderDeckAddResults(){
@@ -1908,30 +2649,197 @@ async function runDeckAdd(){
 }
 $("seg-main").onclick=()=>{ deckAddTarget="main"; $("seg-main").classList.add("active"); $("seg-side").classList.remove("active"); };
 $("seg-side").onclick=()=>{ deckAddTarget="side"; $("seg-side").classList.add("active"); $("seg-main").classList.remove("active"); };
-async function addToDeck(cardId,target){
+function deckSectionFor(card,target){ return target==="side"?"side":(isExtraType(card.type)?"extra":"main"); }
+const secCap=sec=>sec==="main"?60:15;
+const secLabel=sec=>sec==="main"?"Deck Principal":sec==="extra"?"Extra Deck":"Side Deck";
+async function addToDeck(cardId,target,el,ev){
   const deck=MYDECKS.find(d=>d.id===CUR_DECK); if(!deck) return;
   const card=CARD_CACHE[cardId]; if(!card) return;
-  const limit=Math.min(3, deckBanlistLimit(deck,card));
-  if(deckCopies(deck,cardId)>=limit){ toast(limit===0?`${card.name} está PROIBIDA nesta banlist.`:`Limite de ${limit} cópia(s) de ${card.name} nesta banlist.`); return; }
-  const sec = target==="side" ? "side" : (isExtraType(card.type)?"extra":"main");
-  const cap = sec==="main"?60:15;
-  if(((deck[sec]||[]).length)>=cap){ toast(sec==="main"?"Deck Principal cheio (máx. 60).":sec==="extra"?"Extra Deck cheio (máx. 15).":"Side Deck cheio (máx. 15)."); return; }
+  const maxCopies=Math.min(3, deckBanlistLimit(deck,card));
+  if(deckCopies(deck,cardId)>=maxCopies){
+    flashEl(el,"no"); haptic([35,55,35]);
+    toast(maxCopies===0?`${card.name} está PROIBIDA nesta banlist.`:`Limite de ${maxCopies} cópia(s) de ${card.name} nesta banlist.`); return;
+  }
+  const sec=deckSectionFor(card,target);
+  if(((deck[sec]||[]).length)>=secCap(sec)){
+    flashEl(el,"no"); haptic([35,55,35]); toast(`${secLabel(sec)} cheio (máx. ${secCap(sec)}).`); return;
+  }
+  flashEl(el,"add"); haptic(18);
+  if(ev&&ev.clientX) floatFx(ev.clientX,ev.clientY,"+1","#8fd6a3");
+  DECK_FX={id:card.id,sec,kind:"add"};
   const arr=(deck[sec]||[]).slice();
   arr.push({id:card.id,name:card.name,type:card.type,small:card.small,full:card.full,banTcg:card.banTcg});
-  try{ await updateDoc(doc(db,"decks",CUR_DECK),{[sec]:arr,updatedAt:serverTimestamp()}); }catch(e){ toast(fbError(e)); }
+  try{ await updateDoc(doc(db,"decks",CUR_DECK),{[sec]:arr,updatedAt:serverTimestamp()}); }catch(e){ DECK_FX=null; toast(fbError(e)); }
 }
-async function removeFromDeck(sec,cardId){
+async function removeFromDeck(sec,cardId,el,ev){
   const deck=MYDECKS.find(d=>d.id===CUR_DECK); if(!deck) return;
   const arr=(deck[sec]||[]).slice(); const i=arr.findIndex(c=>c.id===cardId); if(i<0) return; arr.splice(i,1);
-  try{ await updateDoc(doc(db,"decks",CUR_DECK),{[sec]:arr,updatedAt:serverTimestamp()}); }catch(e){ toast(fbError(e)); }
+  flashEl(el&&el.closest(".dk-card"),"rm"); haptic(30);
+  if(ev&&ev.clientX) floatFx(ev.clientX,ev.clientY,"−1","#e79b8c");
+  DECK_FX={id:cardId,sec,kind:"rm"};
+  try{ await updateDoc(doc(db,"decks",CUR_DECK),{[sec]:arr,updatedAt:serverTimestamp()}); }catch(e){ DECK_FX=null; toast(fbError(e)); }
 }
 $("btn-add-deck").onclick=async()=>{
   if(!CURRENT){ toast("Entre para criar decks."); return; }
   const name=$("new-deck").value.trim(); if(!name){ toast("Digite um nome."); return; }
   const bl=$("new-deck-bl").value||"tcg";
-  try{ const ref=await addDoc(collection(db,"decks"),{ownerUid:CURRENT.uid,name,banlist:bl,main:[],extra:[],side:[],updatedAt:serverTimestamp()});
-    $("new-deck").value=""; CUR_DECK=ref.id; renderDecks(); toast("Deck criado 𓊃"); }catch(e){ toast(fbError(e)); }
+  try{ const ref=await addDoc(collection(db,"decks"),{ownerUid:CURRENT.uid,name,banlist:bl,public:true,main:[],extra:[],side:[],updatedAt:serverTimestamp()});
+    $("new-deck").value=""; CUR_DECK=ref.id; renderDecks(); haptic(22); toast("Deck criado 𓊃"); }catch(e){ toast(fbError(e)); }
 };
+$("btn-deck-vis").onclick=async()=>{
+  const deck=MYDECKS.find(d=>d.id===CUR_DECK); if(!deck) return;
+  const next=deck.public===false;
+  try{ await updateDoc(doc(db,"decks",CUR_DECK),{public:next}); haptic(18);
+    toast(next?"Deck público — outros duelistas podem ver":"Deck privado — só você vê"); }
+  catch(e){ toast(fbError(e)); }
+};
+
+/* ---------- exportar / importar deck (.ydk) ---------- */
+function deckToYDK(deck){
+  const blk=arr=>(arr||[]).map(c=>c.id).join("\n");
+  return ["#created by Duelo Millennium","#main",blk(deck.main),"#extra",blk(deck.extra),"!side",blk(deck.side)]
+    .filter(l=>l!=="").join("\n")+"\n";
+}
+function parseYDK(txt){
+  const out={main:[],extra:[],side:[]}; let cur="main";
+  for(const raw of String(txt).split(/\r?\n/)){
+    const l=raw.trim(); if(!l) continue;
+    if(/^#main/i.test(l)){ cur="main"; continue; }
+    if(/^#extra/i.test(l)){ cur="extra"; continue; }
+    if(/^!side/i.test(l)){ cur="side"; continue; }
+    if(l[0]==="#"||l[0]==="!") continue;
+    if(/^\d{1,10}$/.test(l)) out[cur].push(l.replace(/^0+(?=\d)/,""));
+  }
+  return out;
+}
+async function fetchCardsByIds(ids){
+  const uniq=Array.from(new Set(ids.map(String))); const found={};
+  async function grab(list){
+    if(!list.length) return;
+    try{
+      const res=await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php?id="+list.join(","));
+      if(!res.ok) throw new Error("HTTP "+res.status);
+      const j=await res.json(); const data=j.data||[];
+      if(!data.length) throw new Error("vazio");
+      for(const c of data){ const o=mapCard(c);
+        found[String(c.id)]=o;
+        (c.card_images||[]).forEach(im=>{ found[String(im.id)]=o; });
+      }
+    }catch(e){
+      if(list.length<=1) return;                 // id inexistente — ignora
+      const mid=Math.ceil(list.length/2);
+      await grab(list.slice(0,mid)); await grab(list.slice(mid));
+    }
+  }
+  for(let i=0;i<uniq.length;i+=60) await grab(uniq.slice(i,i+60));
+  return found;
+}
+function openDeckIO(mode,target){
+  DIO_MODE=mode; DIO_TARGET=target;
+  const exporting=mode==="export";
+  $("dio-icon").innerHTML=exporting?IC.papyrusOut:IC.papyrusIn;
+  $("dio-title").textContent=exporting?"Exportar deck":"Importar deck (.ydk)";
+  $("dio-report").classList.add("hidden"); $("dio-report").innerHTML="";
+  const ta=$("dio-text");
+  if(exporting){
+    const deck=MYDECKS.find(d=>d.id===target);
+    if(!deck){ toast("Deck não encontrado."); return; }
+    ta.value=deckToYDK(deck); ta.readOnly=true;
+    $("dio-note").textContent="Formato .ydk — funciona no EDOPro, Duelingbook e afins.";
+    $("dio-acts").innerHTML=`<button class="btn ghost" data-act="diocopy">${IC.papyrusOut} Copiar</button>
+      <button class="btn" data-act="diodl">${IC.papyrusOut} Baixar .ydk</button>`;
+  } else {
+    ta.value=""; ta.readOnly=false;
+    $("dio-note").textContent=(target==="new")
+      ? "Cole o conteúdo do .ydk (ou escolha o arquivo). Usa o nome e a banlist do formulário acima."
+      : "Cole o conteúdo do .ydk (ou escolha o arquivo). As cartas substituem as atuais e a banlist do deck é respeitada.";
+    $("dio-acts").innerHTML=`<button class="btn ghost" data-act="diofile">${IC.papyrusIn} Escolher arquivo</button>
+      <button class="btn" data-act="dioimport">${IC.ankh} Importar</button>`;
+  }
+  $("deck-io").classList.add("show");
+}
+$("dio-close").onclick=()=>{ $("deck-io").classList.remove("show"); DIO_MODE=null; DIO_TARGET=null; };
+$("dio-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader(); rd.onload=()=>{ $("dio-text").value=String(rd.result||""); toast("Arquivo carregado — toque em Importar"); };
+  rd.readAsText(f); e.target.value=""; };
+function downloadText(name,txt){
+  try{
+    const blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
+    const url=URL.createObjectURL(blob); const a=document.createElement("a");
+    a.href=url; a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ a.remove(); URL.revokeObjectURL(url); },1200);
+    haptic(20);
+  }catch(e){ toast("Não consegui baixar — use o Copiar."); }
+}
+async function copyText(txt){
+  try{ await navigator.clipboard.writeText(txt); toast("Copiado!"); haptic(18); }
+  catch(e){ const ta=$("dio-text"); ta.select(); ta.setSelectionRange(0,99999);
+    try{ document.execCommand("copy"); toast("Copiado!"); }catch(_){ toast("Selecione e copie manualmente."); } }
+}
+async function runDeckImport(){
+  const parsed=parseYDK($("dio-text").value);
+  const total=parsed.main.length+parsed.extra.length+parsed.side.length;
+  if(!total){ toast("Não encontrei nenhuma carta nesse texto."); return; }
+  let deckId=DIO_TARGET;
+  const btnBox=$("dio-acts"); btnBox.innerHTML=`<div class="spin" style="margin:6px auto"></div>`;
+  try{
+    if(deckId==="new"){
+      const name=$("new-deck").value.trim()||"Deck importado";
+      const bl=$("new-deck-bl").value||"tcg";
+      const ref=await addDoc(collection(db,"decks"),{ownerUid:CURRENT.uid,name,banlist:bl,public:true,main:[],extra:[],side:[],updatedAt:serverTimestamp()});
+      deckId=ref.id; $("new-deck").value="";
+      MYDECKS=MYDECKS.concat([{id:deckId,ownerUid:CURRENT.uid,name,banlist:bl,public:true,main:[],extra:[],side:[]}]);
+    }
+    const deck=MYDECKS.find(d=>d.id===deckId);
+    if(!deck){ toast("Deck não encontrado."); return; }
+    const found=await fetchCardsByIds([...parsed.main,...parsed.extra,...parsed.side]);
+    const out={main:[],extra:[],side:[]}, counts={}, notes=new Map(), missing=new Set();
+    const push=(wanted,rawId)=>{
+      const c=found[String(rawId)];
+      if(!c){ missing.add(String(rawId)); return; }
+      const maxCopies=Math.min(3, deckBanlistLimit(deck,c));
+      counts[c.id]=counts[c.id]||0;
+      if(counts[c.id]>=maxCopies){
+        notes.set(c.id, maxCopies===0?`<b>${esc(c.name)}</b> é proibida nesta banlist — não entrou.`
+                                     :`<b>${esc(c.name)}</b> limitada a ${maxCopies} cópia(s) nesta banlist.`);
+        return; }
+      const sec=deckSectionFor(c,wanted);
+      if(out[sec].length>=secCap(sec)){ notes.set("cap-"+sec,`${secLabel(sec)} atingiu o limite de ${secCap(sec)} — sobrou carta de fora.`); return; }
+      counts[c.id]++;
+      out[sec].push({id:c.id,name:c.name,type:c.type,small:c.small,full:c.full,banTcg:c.banTcg});
+    };
+    parsed.main.forEach(id=>push("main",id));
+    parsed.extra.forEach(id=>push("main",id));   // o Extra é separado pelo tipo da carta
+    parsed.side.forEach(id=>push("side",id));
+    await updateDoc(doc(db,"decks",deckId),{main:out.main,extra:out.extra,side:out.side,updatedAt:serverTimestamp()});
+    CUR_DECK=deckId; haptic([25,45,25]);
+    const lines=Array.from(notes.values());
+    if(missing.size) lines.push(`${missing.size} carta(s) não encontrada(s) na base (ids: ${Array.from(missing).slice(0,6).join(", ")}${missing.size>6?"…":""}).`);
+    if(lines.length){
+      $("dio-report").innerHTML=`<div style="color:var(--gold-soft);margin-bottom:6px">Importado: ${out.main.length} principal · ${out.extra.length} extra · ${out.side.length} side</div>`
+        +lines.map(l=>"· "+l).join("<br>");
+      $("dio-report").classList.remove("hidden");
+      $("dio-acts").innerHTML=`<button class="btn" id="dio-done">Entendi</button>`;
+      $("dio-done").onclick=()=>{ $("deck-io").classList.remove("show"); renderDecks(); };
+      toast("Deck importado com ajustes");
+    } else {
+      $("deck-io").classList.remove("show"); toast("Deck importado!");
+    }
+    renderDecks();
+  }catch(e){ toast(fbError(e)); }
+  finally{ if($("deck-io").classList.contains("show")&&!$("dio-report").innerHTML) openDeckIO("import",DIO_TARGET); }
+}
+$("btn-deck-export").onclick=()=>{ if(CUR_DECK) openDeckIO("export",CUR_DECK); };
+$("btn-deck-import").onclick=()=>{ if(CUR_DECK) openDeckIO("import",CUR_DECK); };
+$("btn-import-deck").onclick=()=>{ if(!CURRENT){ toast("Entre para criar decks."); return; } openDeckIO("import","new"); };
+document.addEventListener("click",ev=>{
+  const b=ev.target.closest("[data-act]"); if(!b) return;
+  const a=b.dataset.act;
+  if(a==="diocopy") copyText($("dio-text").value);
+  else if(a==="diodl"){ const d=MYDECKS.find(x=>x.id===DIO_TARGET); downloadText(((d&&d.name)||"deck").replace(/[^\w\-]+/g,"_")+".ydk",$("dio-text").value); }
+  else if(a==="diofile") $("dio-file").click();
+  else if(a==="dioimport") runDeckImport();
+});
 $("deck-name").addEventListener("change",async()=>{ if(!CUR_DECK) return; const nm=$("deck-name").value.trim()||"Deck";
   try{ await updateDoc(doc(db,"decks",CUR_DECK),{name:nm}); }catch(e){} });
 $("deck-back-list").onclick=()=>{ CUR_DECK=null; renderDecks(); };
