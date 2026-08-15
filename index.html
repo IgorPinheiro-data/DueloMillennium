@@ -338,9 +338,19 @@
   .prof-cover{position:relative;height:152px;border-radius:0 0 18px 18px;overflow:hidden;border:1px solid var(--line);border-top:none;
     background:radial-gradient(circle at 50% 130%,rgba(232,193,90,.22),rgba(0,0,0,0) 70%),linear-gradient(180deg,#241c12,#100c07)}
   .prof-cover img{width:100%;height:100%;object-fit:cover;display:block}
+  .prof-cover .cv-img{transform-origin:center;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
   .prof-cover .cv-glyph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--gold-deep);opacity:.25}
   .prof-cover .cv-glyph svg{width:74px;height:74px}
-  .prof-cover .cv-btn{position:absolute;right:10px;bottom:10px;z-index:2}
+  .prof-cover .cv-btn{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;gap:6px}
+  .prof-cover.editing{touch-action:none;cursor:grab;box-shadow:inset 0 0 0 2px var(--gold)}
+  .prof-cover.editing:active{cursor:grabbing}
+  .prof-cover .cv-hint{position:absolute;top:9px;left:50%;transform:translateX(-50%);z-index:3;pointer-events:none;
+    background:rgba(6,4,2,.78);color:var(--gold-soft);font-size:11px;padding:5px 11px;border-radius:999px;
+    border:1px solid var(--line2);display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .prof-cover .cv-hint svg{width:13px;height:13px}
+  .prof-cover .cv-tools{position:absolute;left:10px;right:10px;bottom:9px;z-index:3;display:flex;gap:8px;align-items:center;
+    background:rgba(6,4,2,.82);border:1px solid var(--line2);border-radius:12px;padding:7px 10px;backdrop-filter:blur(4px)}
+  .prof-cover .cv-tools input[type=range]{flex:1;min-width:50px}
   .prof-id{display:flex;align-items:flex-end;gap:14px;margin-top:-44px;padding:0 4px 12px;position:relative;z-index:2}
   .prof-id .avatar{box-shadow:0 6px 20px rgba(0,0,0,.65)}
   .prof-id .pi-txt{flex:1;min-width:0;padding-bottom:4px}
@@ -1034,6 +1044,7 @@ let DP_STATE=null;          // seleção de decks do duelo
 let DN_STATE=null;          // seleção de duelistas do novo duelo
 let DIO_MODE=null, DIO_TARGET=null;  // exportar/importar deck
 let deckBackfilled=false, photoShrunk=false;
+let COVER_EDIT=false, COVER_TMP=null, coverDrag=null;  // capa do perfil sendo posicionada
 let VIEW=sessionStorage.getItem("view")||"home";   // 'home' | 'champ'
 let ALL_DUELS=null, allDuelsLoading=false;         // histórico completo (estatísticas exatas)
 let STAT_IDX=null, duelSig="";
@@ -1920,6 +1931,17 @@ document.addEventListener("click", async ev=>{
   if(act==="viewdeck"){ openDeckView(b.dataset.id); return; }
   if(act==="pickavatar"){ $("prof-file").click(); return; }
   if(act==="pickcover"){ $("prof-cover-file").click(); return; }
+  if(act==="cvedit"){ if(!PROFILE_COVER) return; COVER_TMP={...PROFILE_COVER}; COVER_EDIT=true; renderProfile(); return; }
+  if(act==="cvcancel"){ COVER_EDIT=false; COVER_TMP=null; renderProfile(); return; }
+  if(act==="cvsave"){ saveCoverPos(); return; }
+  if(act==="cvdel"){
+    if(!CURRENT) return;
+    if(!await ask("Remover a capa do seu perfil?",{title:"Remover capa",ok:"Remover",danger:true})) return;
+    try{ await deleteDoc(doc(db,"covers",CURRENT.uid));
+      PROFILE_COVER=null; COVER_EDIT=false; COVER_TMP=null; renderProfile(); toast("Capa removida"); }
+    catch(e){ toast(fbError(e)); }
+    return;
+  }
   if(act==="profsave"){ saveProfileName(); return; }
   if(act==="goduel"){ flushLP(); ACTIVE_DUEL=b.dataset.id; lpLocalTs=0; openScreen("counter"); return; }
   if(act==="godquick"){ flushLP(); ACTIVE_DUEL=null; openScreen("counter"); return; }
@@ -2286,21 +2308,106 @@ async function loadDecksOf(uid){
     const s=await getDocs(q); return s.docs.map(d=>({id:d.id,...d.data()}));
   }catch(e){ console.error(e); return []; }
 }
+/* capa: {img, x, y, zoom} — x/y são a posição do enquadramento em % */
+const normCover=d=>(d&&d.img)?{img:d.img,
+  x:typeof d.x==="number"?d.x:50, y:typeof d.y==="number"?d.y:50,
+  zoom:typeof d.zoom==="number"?d.zoom:1}:null;
 async function openProfile(uid){
   const target=uid||(CURRENT&&CURRENT.uid); if(!target) return;
   const changed = PROFILE_UID!==target;
   PROFILE_UID=target;
-  if(changed){ PROFILE_DECKS=[]; PROFILE_COVER=null; PROFILE_LOADING=true; }
+  if(changed){ PROFILE_DECKS=[]; PROFILE_COVER=null; PROFILE_LOADING=true; COVER_EDIT=false; COVER_TMP=null; }
   openScreen("profile");
   if(changed){
     const [decks,cov]=await Promise.all([
       loadDecksOf(target),
-      getDoc(doc(db,"covers",target)).then(s=>s.exists()?(s.data().img||null):null).catch(()=>null)
+      getDoc(doc(db,"covers",target)).then(s=>s.exists()?normCover(s.data()):null).catch(()=>null)
     ]);
     if(PROFILE_UID!==target) return;
     PROFILE_DECKS=decks; PROFILE_COVER=cov; PROFILE_LOADING=false; renderProfile();
   }
 }
+/* ---------- capa: enviar, arrastar para posicionar e dar zoom ---------- */
+function loadImg(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; }); }
+async function shrinkCover(dataUrl){
+  const img=await loadImg(dataUrl);
+  const MAXW=1200, MAXH=900;
+  const k=Math.min(1,MAXW/img.width,MAXH/img.height);
+  const w=Math.max(1,Math.round(img.width*k)), h=Math.max(1,Math.round(img.height*k));
+  const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+  const c=cv.getContext("2d"); c.fillStyle="#0e0b06"; c.fillRect(0,0,w,h); c.drawImage(img,0,0,w,h);
+  let q=0.72, url=cv.toDataURL("image/jpeg",q);
+  while(url.length>320000 && q>0.38){ q-=0.08; url=cv.toDataURL("image/jpeg",q); }
+  return url;
+}
+function coverHTML(own){
+  const c=COVER_EDIT?COVER_TMP:PROFILE_COVER;
+  if(!c) return `<div class="cv-glyph">${IC.akhet}</div>`
+    +(own?`<div class="cv-btn"><button class="mini" data-act="pickcover">${IC.akhet} Adicionar capa</button></div>`:"");
+  let h=`<img class="cv-img" src="${c.img}" alt="" draggable="false"
+    style="object-position:${c.x}% ${c.y}%;transform:scale(${c.zoom})">`;
+  if(!own) return h;
+  if(COVER_EDIT){
+    h+=`<div class="cv-hint">${IC.akhet} Arraste para enquadrar</div>
+      <div class="cv-tools">
+        <span style="color:var(--gold-deep);line-height:0">${IC.eye}</span>
+        <input id="cv-zoom" type="range" min="1" max="2.5" step="0.01" value="${c.zoom}">
+        <button class="mini" data-act="cvcancel">Cancelar</button>
+        <button class="mini" data-act="cvsave" style="color:#8fd6a3;border-color:#2c5a38">Salvar</button>
+      </div>`;
+  } else {
+    h+=`<div class="cv-btn">
+      <button class="mini" data-act="cvedit">${IC.reed} Posicionar</button>
+      <button class="mini" data-act="pickcover">${IC.akhet} Trocar</button>
+      <button class="mini danger" data-act="cvdel">${IC.jar}</button></div>`;
+  }
+  return h;
+}
+function applyCoverStyle(){
+  const img=document.querySelector("#prof-cover .cv-img"); if(!img||!COVER_TMP) return;
+  img.style.objectPosition=`${COVER_TMP.x}% ${COVER_TMP.y}%`;
+  img.style.transform=`scale(${COVER_TMP.zoom})`;
+}
+async function saveCoverPos(){
+  if(!CURRENT||!COVER_TMP) return;
+  const c={...COVER_TMP};
+  try{ await setDoc(doc(db,"covers",CURRENT.uid),
+      {img:c.img,x:Math.round(c.x*10)/10,y:Math.round(c.y*10)/10,zoom:Math.round(c.zoom*100)/100,updatedAt:serverTimestamp()},{merge:true});
+    PROFILE_COVER=c; COVER_EDIT=false; COVER_TMP=null; haptic(22); toast("Capa salva"); renderProfile();
+  }catch(e){ toast(fbError(e)); }
+}
+/* arrastar direto na capa */
+(function(){
+  const pt=e=>e.touches?e.touches[0]:e;
+  const down=e=>{
+    if(!COVER_EDIT||!COVER_TMP) return;
+    const box=$("prof-cover"); if(!box||!box.contains(e.target)) return;
+    if(e.target.closest("[data-act]")||e.target.closest("input")) return;
+    const p=pt(e);
+    coverDrag={x:p.clientX,y:p.clientY,ox:COVER_TMP.x,oy:COVER_TMP.y,
+      w:box.clientWidth||1,h:box.clientHeight||1};
+    if(e.cancelable&&e.touches) e.preventDefault();
+  };
+  const move=e=>{
+    if(!coverDrag||!COVER_TMP) return;
+    const p=pt(e);
+    const cl=(v)=>Math.max(0,Math.min(100,v));
+    COVER_TMP.x=cl(coverDrag.ox-((p.clientX-coverDrag.x)/coverDrag.w)*100);
+    COVER_TMP.y=cl(coverDrag.oy-((p.clientY-coverDrag.y)/coverDrag.h)*100);
+    applyCoverStyle();
+    if(e.cancelable&&e.touches) e.preventDefault();
+  };
+  const up=()=>{ coverDrag=null; };
+  document.addEventListener("mousedown",down);
+  window.addEventListener("mousemove",move);
+  window.addEventListener("mouseup",up);
+  document.addEventListener("touchstart",down,{passive:false});
+  window.addEventListener("touchmove",move,{passive:false});
+  window.addEventListener("touchend",up);
+})();
+document.addEventListener("input",e=>{
+  if(e.target&&e.target.id==="cv-zoom"&&COVER_TMP){ COVER_TMP.zoom=parseFloat(e.target.value)||1; applyCoverStyle(); }
+});
 function renderProfile(){
   const uid=PROFILE_UID||(CURRENT&&CURRENT.uid); if(!uid) return;
   // não redesenha por cima de quem está digitando o nome
@@ -2311,8 +2418,8 @@ function renderProfile(){
   const member=MEMBERS.some(m=>m.id===uid);
   $("prof-head").textContent=own?"Meu perfil":"Perfil do duelista";
 
-  $("prof-cover").innerHTML=(PROFILE_COVER?`<img src="${PROFILE_COVER}" alt="">`:`<div class="cv-glyph">${IC.akhet}</div>`)
-    +(own?`<button class="mini cv-btn" data-act="pickcover">${IC.akhet} Capa</button>`:"");
+  $("prof-cover").innerHTML=coverHTML(own);
+  $("prof-cover").classList.toggle("editing", own&&COVER_EDIT);
 
   $("prof-id").innerHTML=`<img class="avatar lg" src="${(u&&u.photo)||AV_PH}" alt="">
     <div class="pi-txt"><div class="pi-name">${esc((u&&u.displayName)||(u&&u.email)||"Duelista")}</div>
@@ -2381,7 +2488,20 @@ async function saveProfileName(){
   catch(e){ showMsg("prof-msg",fbError(e),"err"); }
 }
 $("prof-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>openCrop(rd.result,"avatar"); rd.readAsDataURL(f); e.target.value=""; };
-$("prof-cover-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>openCrop(rd.result,"cover"); rd.readAsDataURL(f); e.target.value=""; };
+$("prof-cover-file").onchange=e=>{
+  const f=e.target.files[0]; if(!f||!CURRENT) return; e.target.value="";
+  const rd=new FileReader();
+  rd.onload=async()=>{
+    toast("Preparando a capa…");
+    try{
+      const img=await shrinkCover(String(rd.result));
+      // entra direto no modo de posicionar, para você enquadrar antes de salvar
+      COVER_TMP={img,x:50,y:50,zoom:1}; COVER_EDIT=true; renderProfile();
+      toast("Arraste na capa para enquadrar e toque em Salvar");
+    }catch(err){ toast("Não consegui ler essa imagem."); }
+  };
+  rd.readAsDataURL(f);
+};
 
 /* ---------- ver deck de outro duelista (somente leitura) ---------- */
 function openDeckView(deckId){
@@ -2482,14 +2602,10 @@ $("crop-zoom").oninput=()=>{ cropZoom=parseFloat($("crop-zoom").value); drawCrop
 $("crop-cancel").onclick=()=>$("crop-modal").classList.remove("show");
 $("crop-ok").onclick=async()=>{
   if(!CURRENT||!cropImg) return;
-  const cover=CROP_MODE==="cover";
-  const url=cover?cropOutput(900,306,false,0.72):cropOutput(AV_SIZE,AV_SIZE,true,0.8);
+  const url=cropOutput(AV_SIZE,AV_SIZE,true,0.8);   // a capa não usa este recorte: é posicionada na própria capa
   $("crop-modal").classList.remove("show");
-  try{
-    if(cover){ await setDoc(doc(db,"covers",CURRENT.uid),{img:url,updatedAt:serverTimestamp()},{merge:true});
-      PROFILE_COVER=url; toast("Capa atualizada"); }
-    else { await setDoc(doc(db,"users",CURRENT.uid),{photo:url},{merge:true}); toast("Foto atualizada"); }
-    haptic(25); renderProfile();
+  try{ await setDoc(doc(db,"users",CURRENT.uid),{photo:url},{merge:true});
+    haptic(25); toast("Foto atualizada"); renderProfile();
   }catch(e){ toast(fbError(e)); }
 };
 
