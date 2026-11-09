@@ -28,12 +28,13 @@
      e só ele.
      ============================================================ */
   :root{
-    /* superfícies — camadas de elevação */
-    --bg:#0a0907;
-    --s1:#141110;          /* cartão */
-    --s2:#1c1816;          /* topo do cartão / elevado */
-    --s3:#241e19;          /* controles */
-    --panel:#141110; --panel2:#1c1816; --bg2:#141110;   /* aliases antigos */
+    /* superfícies — lápis-lazúli é o CHÃO do app, não um detalhe.
+       Ouro lavrado sobre pedra azul: o colar wesekh. */
+    --bg:#080a10;
+    --s1:#111622;          /* cartão */
+    --s2:#19202f;          /* topo do cartão / elevado */
+    --s3:#212a3d;          /* controles */
+    --panel:#111622; --panel2:#19202f; --bg2:#111622;   /* aliases antigos */
 
     /* ouro */
     --gold:#e9c268; --gold-soft:#f8e6b0; --gold-deep:#b8873a; --bronze:#8a6a2f;
@@ -44,12 +45,16 @@
     --turq:#3cc3b4;
     --carn:#d9553f;
 
-    /* texto */
-    --text:#f4ece0; --muted:#a3957f; --faint:#6e6354;
+    /* texto — o principal fica creme (família do ouro),
+       o secundário fica cinza-azulado (família da pedra) */
+    --text:#f4ece0; --muted:#9aa3b8; --faint:#67708a;
 
-    /* semânticos */
-    --green:#49b97a; --red:#d9553f;
-    --win:#7ddfa2; --loss:#f0a494;
+    /* semânticos — o ouro é a moldura; as PEDRAS carregam o estado:
+       turquesa/faiança = vivo, em andamento, vitória
+       cornalina        = perigo, derrota
+       lápis-lazúli     = arquivado, secundário, o adversário */
+    --green:#2fb3a0; --red:#d9553f;
+    --win:#5fd8c6; --loss:#ec9078;
 
     /* traços */
     --line:rgba(233,194,104,.13);
@@ -76,9 +81,9 @@
     color:var(--text);font-size:15px;line-height:1.45;
     font-feature-settings:"tnum" 1;
     background:
-      radial-gradient(900px 480px at 50% -12%, rgba(233,194,104,.13) 0%, rgba(233,194,104,0) 62%),
-      radial-gradient(700px 420px at 100% 108%, rgba(30,63,135,.20) 0%, rgba(30,63,135,0) 60%),
-      linear-gradient(180deg,#0a0907 0%, #0d0b09 100%);
+      radial-gradient(900px 480px at 50% -12%, rgba(233,194,104,.15) 0%, rgba(233,194,104,0) 62%),
+      radial-gradient(680px 540px at 85% 78%, rgba(74,122,224,.22) 0%, rgba(74,122,224,0) 66%),
+      linear-gradient(180deg,#080a10 0%, #0c1120 100%);
     background-attachment:fixed;background-color:var(--bg);min-height:100dvh;
     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   }
@@ -103,7 +108,7 @@
   /* ---------- cabeçalho ---------- */
   header.app-head{position:sticky;top:0;z-index:20;margin:0 -16px 16px;
     padding:calc(12px + env(safe-area-inset-top)) 18px 13px;
-    background:linear-gradient(180deg, rgba(10,9,7,.95) 0%, rgba(10,9,7,.74) 100%);
+    background:linear-gradient(180deg, rgba(8,10,16,.95) 0%, rgba(8,10,16,.74) 100%);
     backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);
     display:flex;align-items:center;gap:13px}
   header.app-head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
@@ -261,7 +266,7 @@
   .empty b{color:var(--gold-soft)}
   .msg{padding:12px 14px;border-radius:var(--r-md);font-size:12.5px;margin:10px 0;line-height:1.5}
   .msg.err{background:rgba(217,85,63,.12);border:1px solid rgba(217,85,63,.32);color:#f3bdb1}
-  .msg.ok{background:rgba(73,185,122,.12);border:1px solid rgba(73,185,122,.3);color:#bfe8cf}
+  .msg.ok{background:rgba(60,195,180,.12);border:1px solid rgba(60,195,180,.32);color:#b6ece2}
   .msg.info{background:rgba(233,194,104,.08);border:1px solid var(--line2);color:var(--gold-soft)}
   .msg b{color:#fff}
   .msg.ok b,.msg.info b{color:var(--gold-soft)}
@@ -293,8 +298,9 @@
   .status-pill{display:inline-block;font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;
     padding:3px 9px;border-radius:var(--r-pill);border:1px solid var(--line2);
     color:var(--muted);font-weight:700}
-  .status-pill.ativo{color:#8ad9aa;border-color:rgba(73,185,122,.35);background:rgba(73,185,122,.1)}
-  .status-pill.encerrado{color:var(--gold);border-color:var(--line2);background:rgba(233,194,104,.09)}
+  /* em andamento = faiança viva; encerrado = o selo de ouro */
+  .status-pill.ativo{color:var(--win);border-color:rgba(60,195,180,.4);background:rgba(60,195,180,.12)}
+  .status-pill.encerrado{color:var(--gold);border-color:var(--line2);background:rgba(233,194,104,.1)}
 
   /* ---------- CAMPEÃO: a cartela ----------
      O nome do campeão entra num anel de corda com a barra de
@@ -335,7 +341,7 @@
     overflow:hidden;cursor:pointer;position:relative;box-shadow:0 6px 16px -10px rgba(0,0,0,.9);
     transition:transform .14s var(--ease)}
   .bl-card:active{transform:scale(.96)}
-  .bl-thumb{width:100%;aspect-ratio:.686;object-fit:cover;display:block;background:#0e0b06}
+  .bl-thumb{width:100%;aspect-ratio:.686;object-fit:cover;display:block;background:#0d1220}
   .bl-name{font-size:10.5px;line-height:1.25;padding:7px;color:var(--text);
     height:44px;overflow:hidden;font-weight:500}
   .bl-tag{position:absolute;top:6px;left:6px;font-size:8.5px;font-weight:700;padding:3px 7px;
@@ -347,7 +353,7 @@
   /* ---------- overlays: visor de carta e bottom sheets ---------- */
   .bl-modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;
     padding:24px;flex-direction:column;gap:14px;
-    background:rgba(6,4,2,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+    background:rgba(5,7,12,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
   .bl-modal.show{display:flex;animation:fadeIn .22s ease-out}
   .bl-modal img{max-width:90vw;max-height:72vh;border-radius:var(--r-md);
     box-shadow:0 24px 60px rgba(0,0,0,.8)}
@@ -404,7 +410,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
 
   /* ---------- avatar ---------- */
-  .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#0e0b06;
+  .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#0d1220;
     border:1.5px solid var(--gold-deep);flex:0 0 auto;display:inline-block}
   .avatar.lg{width:94px;height:94px;border-width:3px;box-shadow:0 10px 30px -10px rgba(0,0,0,.9)}
   .avatar.sm{width:29px;height:29px;border-width:1px}
@@ -419,7 +425,7 @@
   /* z-index 58: acima das telas em sobreposição (55), abaixo do menu (60) e dos modais (80) */
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:58;height:var(--tabh);
     padding:0 6px env(safe-area-inset-bottom);display:flex;align-items:stretch;
-    background:linear-gradient(180deg, rgba(14,12,9,.9), rgba(10,9,7,.98));
+    background:linear-gradient(180deg, rgba(12,16,24,.9), rgba(8,10,16,.98));
     backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);
     border-top:1px solid var(--line)}
   .tabbar::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;
@@ -429,7 +435,8 @@
     color:var(--faint);padding:8px 2px 6px;position:relative;
     transition:color .2s, transform .12s var(--ease)}
   .tb:active{transform:scale(.9)}
-  .tb-ic{line-height:0}
+  /* flex:0 0 auto — sem isso o círculo central encolhe para caber na barra e vira elipse */
+  .tb-ic{line-height:0;flex:0 0 auto}
   .tb-ic svg{width:22px;height:22px;display:block}
   .tb-l{font-size:9.5px;font-weight:700;letter-spacing:.4px}
   .tb.on{color:var(--gold)}
@@ -449,12 +456,12 @@
   .tb.hero.on::after{display:none}
 
   /* ---------- menu lateral ---------- */
-  #drawer-ov{position:fixed;inset:0;background:rgba(6,4,2,.66);z-index:60;opacity:0;
+  #drawer-ov{position:fixed;inset:0;background:rgba(5,7,12,.66);z-index:60;opacity:0;
     pointer-events:none;transition:opacity .28s;backdrop-filter:blur(3px)}
   #drawer-ov.show{opacity:1;pointer-events:auto}
   #drawer{position:fixed;top:0;right:0;height:100dvh;width:min(86vw,348px);z-index:61;
     transform:translateX(105%);transition:transform .34s var(--ease);
-    background:linear-gradient(190deg,#1f1810,#0c0a07 70%);
+    background:linear-gradient(190deg,#1b2436,#090c14 70%);
     border-left:1px solid var(--line2);box-shadow:-18px 0 50px rgba(0,0,0,.65);
     display:flex;flex-direction:column;
     padding:calc(16px + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom)}
@@ -485,12 +492,13 @@
     padding:0 0 calc(28px + var(--tabh));
     background:
       radial-gradient(800px 420px at 50% -8%, rgba(233,194,104,.11), rgba(0,0,0,0) 62%),
-      linear-gradient(180deg,#0a0907,#0d0b09)}
+      radial-gradient(620px 520px at 88% 76%, rgba(74,122,224,.15), rgba(74,122,224,0) 64%),
+      linear-gradient(180deg,#080a10,#0b0f18)}
   .screen.show{display:block;animation:screenIn .32s var(--ease)}
   @keyframes screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
   .screen-head{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;
     padding:calc(12px + env(safe-area-inset-top)) 16px 13px;
-    background:linear-gradient(180deg,rgba(10,9,7,.95),rgba(10,9,7,.74));
+    background:linear-gradient(180deg,rgba(8,10,16,.95),rgba(8,10,16,.74));
     backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3)}
   .screen-head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
     background:linear-gradient(90deg,transparent,var(--line2) 22%,var(--line2) 78%,transparent)}
@@ -501,12 +509,12 @@
   @keyframes paneIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
   /* ---------- recorte de imagem ---------- */
-  #crop-modal{position:fixed;inset:0;z-index:95;background:rgba(6,4,2,.94);display:none;
+  #crop-modal{position:fixed;inset:0;z-index:95;background:rgba(5,7,12,.94);display:none;
     flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:22px;
     backdrop-filter:blur(8px)}
   #crop-modal.show{display:flex}
   .crop-stage{width:260px;height:260px;border-radius:50%;overflow:hidden;position:relative;
-    touch-action:none;box-shadow:0 0 0 3px var(--gold-deep),0 0 0 2000px rgba(6,4,2,.74)}
+    touch-action:none;box-shadow:0 0 0 3px var(--gold-deep),0 0 0 2000px rgba(5,7,12,.74)}
   #crop-canvas{display:block;cursor:grab}
   .crop-ctrls{width:260px;max-width:90vw}
   .crop-stage.wide{width:300px;height:102px;border-radius:var(--r-md);max-width:88vw}
@@ -518,9 +526,10 @@
     background:linear-gradient(180deg,var(--s2),var(--s1));box-shadow:var(--shadow),var(--sheen)}
   .lp-panel::before{content:"";position:absolute;inset:0 0 auto 0;height:3px}
   .lp-panel.p1::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-  .lp-panel.p2::before{background:linear-gradient(90deg,transparent,var(--lapis),transparent)}
+  /* num chão de lápis o adversário precisa de outra pedra para se separar */
+  .lp-panel.p2::before{background:linear-gradient(90deg,transparent,var(--turq),transparent)}
   .lp-panel.p1{box-shadow:var(--shadow),var(--sheen),0 0 30px -22px var(--gold)}
-  .lp-panel.p2{box-shadow:var(--shadow),var(--sheen),0 0 30px -22px var(--lapis)}
+  .lp-panel.p2{box-shadow:var(--shadow),var(--sheen),0 0 30px -22px var(--turq)}
   /* .lp-name também veste o nome do deck no construtor, fora de um .lp-panel */
   input.lp-name{background:transparent;border:none;color:var(--gold-soft);
     font-family:'Cinzel',serif;padding:5px 2px;outline:none;border-radius:0}
@@ -530,7 +539,7 @@
     text-align:center;font-size:13.5px;padding:5px 2px;border-radius:0}
   .lp-panel .lp-name:focus{box-shadow:none;border-bottom-color:var(--gold)}
   .lp-av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-deep);
-    display:block;margin:0 auto 6px;background:#0e0b06;box-shadow:0 6px 16px -8px rgba(0,0,0,.9)}
+    display:block;margin:0 auto 6px;background:#0d1220;box-shadow:0 6px 16px -8px rgba(0,0,0,.9)}
   .lp-num{font-family:'Cinzel Decorative',serif;font-size:clamp(32px,10vw,50px);line-height:1;
     color:var(--gold-soft);margin:10px 0 14px;text-shadow:0 2px 20px rgba(0,0,0,.6)}
   .lp-num.hit{animation:hit .45s}
@@ -542,7 +551,7 @@
     background:rgba(233,194,104,.06);color:var(--gold);font-weight:700;font-size:17px;cursor:pointer;
     transition:transform .1s var(--ease), background .16s}
   .lp-b.minus{color:var(--loss);border-color:rgba(217,85,63,.3);background:rgba(217,85,63,.08)}
-  .lp-b.plus{color:var(--win);border-color:rgba(73,185,122,.3);background:rgba(73,185,122,.08)}
+  .lp-b.plus{color:var(--win);border-color:rgba(60,195,180,.3);background:rgba(60,195,180,.08)}
   .lp-b.half{color:var(--gold-soft)}
   .lp-b:active{transform:scale(.91)}
   #duel-banner{margin-bottom:14px;padding:14px 16px;border-radius:var(--r-lg);
@@ -598,14 +607,14 @@
     color:var(--muted);padding:3px 9px;border-radius:var(--r-pill);border:1px solid var(--line);
     background:rgba(0,0,0,.3)}
   .deck-sec h3 .cnt.bad{color:var(--loss);border-color:rgba(217,85,63,.3)}
-  .deck-sec h3 .cnt.ok{color:var(--win);border-color:rgba(73,185,122,.3)}
+  .deck-sec h3 .cnt.ok{color:var(--win);border-color:rgba(60,195,180,.3)}
   .dk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
   @media(min-width:520px){.dk-grid{grid-template-columns:repeat(6,1fr)}}
   .dk-card{position:relative;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--line);
     background:var(--s1);cursor:pointer;transition:transform .14s var(--ease)}
   .dk-card:active{transform:scale(.95)}
-  .dk-card img{width:100%;aspect-ratio:.686;object-fit:cover;display:block;background:#0e0b06}
-  .dk-card .qty{position:absolute;top:4px;right:4px;background:rgba(6,4,2,.88);color:var(--gold-soft);
+  .dk-card img{width:100%;aspect-ratio:.686;object-fit:cover;display:block;background:#0d1220}
+  .dk-card .qty{position:absolute;top:4px;right:4px;background:rgba(5,7,12,.88);color:var(--gold-soft);
     font-size:10.5px;font-weight:700;border-radius:var(--r-pill);padding:2px 7px;
     border:1px solid var(--gold-deep)}
   .dk-card .rm{position:absolute;bottom:0;left:0;right:0;background:rgba(150,38,24,.9);color:#fff;
@@ -623,11 +632,11 @@
   .valid-tag{font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:var(--r-pill);
     border:1px solid var(--line2);display:inline-flex;align-items:center;gap:6px}
   .valid-tag svg{width:14px;height:14px}
-  .valid-tag.ok{color:var(--win);border-color:rgba(73,185,122,.32);background:rgba(73,185,122,.1)}
+  .valid-tag.ok{color:var(--win);border-color:rgba(60,195,180,.32);background:rgba(60,195,180,.1)}
   .valid-tag.bad{color:var(--loss);border-color:rgba(217,85,63,.32);background:rgba(217,85,63,.1)}
 
   /* ---------- feedback de deck (visual + vibração) ---------- */
-  @keyframes dkAdd{0%{box-shadow:0 0 0 0 rgba(73,185,122,.85);transform:scale(1)}40%{transform:scale(1.07)}100%{box-shadow:0 0 0 12px rgba(73,185,122,0);transform:scale(1)}}
+  @keyframes dkAdd{0%{box-shadow:0 0 0 0 rgba(60,195,180,.85);transform:scale(1)}40%{transform:scale(1.07)}100%{box-shadow:0 0 0 12px rgba(60,195,180,0);transform:scale(1)}}
   @keyframes dkRm{0%{box-shadow:0 0 0 0 rgba(217,85,63,.85);transform:scale(1)}40%{transform:scale(.92)}100%{box-shadow:0 0 0 12px rgba(217,85,63,0);transform:scale(1)}}
   @keyframes dkNo{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}60%{transform:translateX(5px)}}
   .dk-card.fx-add,.bl-card.fx-add{animation:dkAdd .45s ease-out;border-color:var(--green)}
@@ -644,10 +653,10 @@
   .prof-cover{position:relative;height:168px;border-radius:0 0 var(--r-xl) var(--r-xl);
     overflow:hidden;border:1px solid var(--line);border-top:none;
     background:radial-gradient(ellipse 60% 100% at 50% 130%,rgba(233,194,104,.24),rgba(0,0,0,0) 72%),
-      linear-gradient(180deg,#241c12,#100c07)}
+      linear-gradient(180deg,#1a2334,#0c111b)}
   .prof-cover img{width:100%;height:100%;object-fit:cover;display:block}
   .prof-cover::after{content:"";position:absolute;inset:auto 0 0 0;height:62%;pointer-events:none;
-    background:linear-gradient(180deg,rgba(10,9,7,0),rgba(10,9,7,.72))}
+    background:linear-gradient(180deg,rgba(8,10,16,0),rgba(8,10,16,.72))}
   .prof-cover .cv-img{transform-origin:center;user-select:none;-webkit-user-select:none;
     -webkit-user-drag:none}
   .prof-cover .cv-glyph{position:absolute;inset:0;display:flex;align-items:center;
@@ -658,12 +667,12 @@
   .prof-cover.editing{touch-action:none;cursor:grab;box-shadow:inset 0 0 0 2px var(--gold);z-index:5}
   .prof-cover.editing:active{cursor:grabbing}
   .prof-cover .cv-hint{position:absolute;top:11px;left:50%;transform:translateX(-50%);z-index:3;
-    pointer-events:none;background:rgba(6,4,2,.82);color:var(--gold-soft);font-size:10.5px;
+    pointer-events:none;background:rgba(5,7,12,.82);color:var(--gold-soft);font-size:10.5px;
     font-weight:600;padding:6px 12px;border-radius:var(--r-pill);border:1px solid var(--line2);
     display:flex;align-items:center;gap:6px;white-space:nowrap;backdrop-filter:blur(4px)}
   .prof-cover .cv-hint svg{width:13px;height:13px}
   .prof-cover .cv-tools{position:absolute;left:11px;right:11px;bottom:10px;z-index:3;display:flex;
-    gap:9px;align-items:center;background:rgba(6,4,2,.84);border:1px solid var(--line2);
+    gap:9px;align-items:center;background:rgba(5,7,12,.84);border:1px solid var(--line2);
     border-radius:var(--r-md);padding:8px 11px;backdrop-filter:blur(6px)}
   .prof-cover .cv-tools input[type=range]{flex:1;min-width:50px}
   /* o bloco do avatar invade 46px da capa; sem pointer-events ele roubaria os cliques de lá */
@@ -688,7 +697,7 @@
     border:1px solid var(--line)}
   .bar i{display:block;height:100%;border-radius:99px;
     background:linear-gradient(90deg,var(--gold-deep),var(--win));
-    box-shadow:0 0 12px -2px rgba(73,185,122,.6)}
+    box-shadow:0 0 12px -2px rgba(60,195,180,.6)}
 
   /* ---------- duelos ---------- */
   .duel-row{display:flex;align-items:center;gap:9px;padding:14px 4px 10px}
@@ -2173,7 +2182,7 @@ function renderEnroll(){
   const enrolled=PLAYERS.some(p=>p.id===CURRENT.uid);
   if(enrolled){
     box.innerHTML=`<div style="display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap">
-      <div style="color:var(--green);font-weight:700;display:flex;align-items:center;gap:6px">${IC.ankh} Você está inscrito neste torneio</div>
+      <div style="color:var(--win);font-weight:700;display:flex;align-items:center;gap:6px">${IC.ankh} Você está inscrito neste torneio</div>
       <button class="mini danger" id="btn-unenroll">Sair do torneio</button></div>`;
     $("btn-unenroll").onclick=unenroll;
   } else if(isMember()||isAdmin()){
@@ -2481,7 +2490,7 @@ $("btn-add-access").onclick=async()=>{
 };
 
 /* ================= MENU LATERAL / PERFIL / CONTADOR / MÚSICA ================= */
-const AV_PH="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0e0b06"/><g fill="none" stroke="#c69b34" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 46 C 32 30, 64 30, 86 45"/><path d="M86 45 C 66 60, 32 62, 16 48"/><circle cx="50" cy="46" r="9" fill="#c69b34" stroke="none"/><path d="M42 58 L 42 72"/><path d="M42 72 C 42 78, 52 78, 56 72"/></g></svg>');
+const AV_PH="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d1220"/><g fill="none" stroke="#c69b34" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 46 C 32 30, 64 30, 86 45"/><path d="M86 45 C 66 60, 32 62, 16 48"/><circle cx="50" cy="46" r="9" fill="#c69b34" stroke="none"/><path d="M42 58 L 42 72"/><path d="M42 72 C 42 78, 52 78, 56 72"/></g></svg>');
 function myProfile(){ return CURRENT ? (USERS.find(u=>u.id===CURRENT.uid) || {id:CURRENT.uid,email:CURRENT.email}) : null; }
 function avatarHTML(u,cls){ const src=(u&&u.photo)||AV_PH; return `<img class="avatar ${cls||''}" src="${src}" alt="">`; }
 
@@ -2497,7 +2506,7 @@ function shrinkMyPhoto(){
     try{
       const cv=document.createElement("canvas"); cv.width=cv.height=AV_SIZE;
       const c=cv.getContext("2d");
-      c.fillStyle="#0e0b06"; c.fillRect(0,0,AV_SIZE,AV_SIZE);
+      c.fillStyle="#0d1220"; c.fillRect(0,0,AV_SIZE,AV_SIZE);
       c.save(); c.beginPath(); c.arc(AV_SIZE/2,AV_SIZE/2,AV_SIZE/2,0,Math.PI*2); c.closePath(); c.clip();
       const s=Math.max(AV_SIZE/img.width,AV_SIZE/img.height), w=img.width*s, h=img.height*s;
       c.drawImage(img,(AV_SIZE-w)/2,(AV_SIZE-h)/2,w,h); c.restore();
@@ -2705,7 +2714,7 @@ async function shrinkCover(dataUrl){
   const k=Math.min(1,MAXW/img.width,MAXH/img.height);
   const w=Math.max(1,Math.round(img.width*k)), h=Math.max(1,Math.round(img.height*k));
   const cv=document.createElement("canvas"); cv.width=w; cv.height=h;
-  const c=cv.getContext("2d"); c.fillStyle="#0e0b06"; c.fillRect(0,0,w,h); c.drawImage(img,0,0,w,h);
+  const c=cv.getContext("2d"); c.fillStyle="#0d1220"; c.fillRect(0,0,w,h); c.drawImage(img,0,0,w,h);
   let q=0.72, url=cv.toDataURL("image/jpeg",q);
   while(url.length>320000 && q>0.38){ q-=0.08; url=cv.toDataURL("image/jpeg",q); }
   return url;
@@ -2723,7 +2732,7 @@ function coverHTML(own){
         <span style="color:var(--gold-deep);line-height:0">${IC.eye}</span>
         <input id="cv-zoom" type="range" min="1" max="2.5" step="0.01" value="${c.zoom}">
         <button class="mini" data-act="cvcancel">Cancelar</button>
-        <button class="mini" data-act="cvsave" style="color:#8fd6a3;border-color:#2c5a38">Salvar</button>
+        <button class="mini" data-act="cvsave" style="color:var(--win);border-color:rgba(60,195,180,.4)">Salvar</button>
       </div>`;
   } else {
     h+=`<div class="cv-btn">
@@ -2813,7 +2822,7 @@ function renderProfile(){
       <div class="section-note" style="margin:0 0 6px">Últimos duelos</div>
       ${recent.map(d=>{ const win=d.winner===uid; const foe=d.aId===uid?d.bId:d.aId; const foeName=d.aId===uid?d.bName:d.aName;
         return `<div class="list-row" style="padding:8px 2px">
-          <span style="color:${win?'#8fd6a3':'#e79b8c'};line-height:0">${win?IC.feather:IC.ban}</span>
+          <span style="color:${win?'var(--win)':'var(--loss)'};line-height:0">${win?IC.feather:IC.ban}</span>
           <div class="grow"><div class="l1" style="font-size:13px">${win?'Vitória':'Derrota'} sobre ${esc(nameOfUid(foe)||foeName||'—')}</div>
           <div class="l2">${d.roundId?'rodada de campeonato':'duelo avulso'}</div></div></div>`; }).join("")}
     </div>`:""}
@@ -2954,7 +2963,7 @@ function cropOutput(outW,outH,circle,quality){
   const ctx=cv.getContext("2d"); const k=outW/CROP_W;
   const base=Math.max(CROP_W/cropImg.width,CROP_H/cropImg.height), s=base*cropZoom*k;
   const w=cropImg.width*s, h=cropImg.height*s;
-  ctx.fillStyle="#0e0b06"; ctx.fillRect(0,0,outW,outH);
+  ctx.fillStyle="#0d1220"; ctx.fillRect(0,0,outW,outH);
   if(circle){ ctx.save(); ctx.beginPath(); ctx.arc(outW/2,outH/2,outW/2,0,Math.PI*2); ctx.closePath(); ctx.clip(); }
   ctx.drawImage(cropImg,(outW-w)/2+cropX*k,(outH-h)/2+cropY*k,w,h);
   if(circle) ctx.restore();
