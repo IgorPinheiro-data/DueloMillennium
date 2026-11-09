@@ -435,6 +435,11 @@
     color:var(--faint);padding:6px 2px 7px;position:relative;
     transition:color .2s, transform .12s var(--ease)}
   .tb:active{transform:scale(.9)}
+  /* O anel de foco padrão (:focus-visible) é um retângulo de raio 4px desenhado
+     na caixa do botão — 80x77px em volta de um disco de 48px. Era a moldura
+     quadrada que aparecia em volta da bola. Aqui o foco veste o ícone. */
+  .tb:focus-visible{outline:none}
+  .tb:focus-visible .tb-ic{border-radius:9px;box-shadow:0 0 0 3px var(--gold)}
   /* flex:0 0 auto — sem isso o círculo central encolhe para caber na barra e vira elipse */
   .tb-ic{line-height:0;flex:0 0 auto}
   .tb-ic svg{width:22px;height:22px;display:block}
@@ -456,6 +461,10 @@
   .tb.hero.on .tb-ic{box-shadow:0 6px 20px -4px var(--gold-glow),
     inset 0 1px 0 rgba(255,255,255,.5), 0 0 0 3px rgba(233,194,104,.22)}
   .tb.hero.on::after{display:none}
+  /* no disco, o foco é um anel redondo colado na bola — nunca um retângulo */
+  .tb.hero:focus-visible .tb-ic{border-radius:50%;
+    box-shadow:0 5px 15px -5px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,.5),
+               0 0 0 3px var(--gold)}
 
   /* ---------- menu lateral ---------- */
   #drawer-ov{position:fixed;inset:0;background:rgba(5,7,12,.66);z-index:60;opacity:0;
