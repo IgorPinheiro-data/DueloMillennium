@@ -69,7 +69,7 @@
     --shadow-lift:0 28px 64px -22px rgba(0,0,0,.92), 0 3px 10px rgba(0,0,0,.45);
     --sheen:inset 0 1px 0 rgba(255,255,255,.06);
 
-    --tabh:calc(64px + env(safe-area-inset-bottom));
+    --tabh:calc(74px + env(safe-area-inset-bottom));
     --ease:cubic-bezier(.22,1,.36,1);
   }
 
@@ -432,27 +432,31 @@
     background:linear-gradient(90deg,transparent,var(--line2) 25%,var(--line2) 75%,transparent)}
   .tb{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;
     justify-content:center;gap:3px;background:transparent;border:none;cursor:pointer;
-    color:var(--faint);padding:8px 2px 6px;position:relative;
+    color:var(--faint);padding:6px 2px 7px;position:relative;
     transition:color .2s, transform .12s var(--ease)}
   .tb:active{transform:scale(.9)}
   /* flex:0 0 auto — sem isso o círculo central encolhe para caber na barra e vira elipse */
   .tb-ic{line-height:0;flex:0 0 auto}
   .tb-ic svg{width:22px;height:22px;display:block}
-  .tb-l{font-size:9.5px;font-weight:700;letter-spacing:.4px}
+  .tb-l{font-size:9.5px;font-weight:700;letter-spacing:.4px;line-height:1;
+    white-space:nowrap;flex:0 0 auto}
   .tb.on{color:var(--gold)}
   .tb.on::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
     width:22px;height:2.5px;border-radius:0 0 3px 3px;background:var(--gold);
     box-shadow:0 0 10px var(--gold-glow)}
-  /* ação central elevada: o verbo do app */
-  .tb.hero{flex:0 0 72px}
-  .tb.hero .tb-ic{width:54px;height:54px;margin-top:-22px;border-radius:50%;
+  /* Ação central: o verbo do app. O disco fica INTEIRO dentro da barra.
+     A versão anterior transbordava para fora de um elemento com
+     backdrop-filter — contexto de empilhamento próprio, render imprevisível
+     no Chrome do Android. Contido, é sólido em qualquer aparelho. */
+  .tb.hero{flex:0 0 78px}
+  .tb.hero .tb-ic{width:42px;height:42px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;color:#241804;
-    background:linear-gradient(170deg,var(--gold-soft),var(--gold) 52%,var(--gold-deep));
-    border:3px solid var(--bg);
-    box-shadow:0 10px 26px -8px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,.45)}
-  .tb.hero .tb-ic svg{width:25px;height:25px}
-  .tb.hero .tb-l{margin-top:-2px}
-  .tb.hero.on{color:var(--gold-soft)}
+    background:linear-gradient(170deg,var(--gold-soft),var(--gold) 50%,var(--gold-deep));
+    box-shadow:0 5px 15px -5px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,.5)}
+  .tb.hero .tb-ic svg{width:22px;height:22px}
+  .tb.hero .tb-l{color:var(--gold-soft)}
+  .tb.hero.on .tb-ic{box-shadow:0 6px 20px -4px var(--gold-glow),
+    inset 0 1px 0 rgba(255,255,255,.5), 0 0 0 3px rgba(233,194,104,.22)}
   .tb.hero.on::after{display:none}
 
   /* ---------- menu lateral ---------- */
