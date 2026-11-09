@@ -1998,9 +1998,9 @@ function myByeRound(){
   if(!PLAYERS.some(p=>p.id===CURRENT.uid)) return null;
   const playing=new Set(); (open.matches||[]).forEach(m=>{ playing.add(m.a); playing.add(m.b); });
   if(playing.has(CURRENT.uid)) return null;
-  /* so e BYE se ele estiver na lista de BYE da rodada; quem entrou depois do
-     pareamento simplesmente nao foi escalado, e isso nao vale ponto */
-  return (open.byes||[]).includes(CURRENT.uid)?open:null;
+  /* so e BYE se for rodada de suico E ele estiver na lista; quem entrou depois
+     do pareamento simplesmente nao foi escalado, e isso nao vale ponto */
+  return (isSwissRound(open)&&(open.byes||[]).includes(CURRENT.uid))?open:null;
 }
 function renderHome(){
   const body=$("home-body"); if(!body) return;
@@ -2062,7 +2062,8 @@ function renderHome(){
     ROUNDS.filter(r=>!r.closed).forEach(r=>(r.matches||[]).forEach((m,i)=>{
       if(m.winner) return;
       const st=matchState(r,i);
-      if(st==="acordo") agreed++; else if(st==="disputa") disputed++; else undec++;
+      if(st==="acordo"||st==="legado") agreed++;
+      else if(st==="disputa") disputed++; else undec++;
     }));
     if(agreed||disputed||undec){
       h+=sec(IC.seal,"Administração");
@@ -2288,6 +2289,7 @@ function roundBlockHTML(r){
     acordo:`<span class="m-chip ok">${IC.check} os dois reportaram · já pontua</span>`,
     disputa:`<span class="m-chip bad">${IC.alert} reportes diferentes · o admin decide</span>`,
     parcial:`<span class="m-chip wait">${IC.wait} aguardando o outro duelista</span>`,
+    legado:`<span class="m-chip wait">${IC.wait} contador indica um vencedor · falta o admin lançar</span>`,
     aberta:``
   };
   return `<div class="round-block"><div class="round-head">
@@ -2318,7 +2320,8 @@ function roundBlockHTML(r){
           <div class="rep-hint">${myRep?`Você reportou: <b>venceu ${esc(playerName(myRep))}</b> — toque de novo para desfazer.`:"Reporte o resultado você mesmo: assim que os dois apontarem o mesmo vencedor, ele já vale na classificação."}
             ${foeRep?`<br>${esc(playerName(foe))} reportou: <b>venceu ${esc(playerName(foeRep))}</b>.`:(myRep?`<br>${esc(playerName(foe))} ainda não reportou.`:"")}</div>`:""}
         ${canOpen?`<div style="padding:2px 14px 10px"><button class="btn ghost" style="padding:9px" data-act="duel" data-r="${r.id}" data-i="${idx}">${IC.swords} ${live?"Continuar duelo":"Abrir contador deste duelo"}</button></div>`:""}
-        ${(editable&&st==="acordo")?`<div style="padding:2px 14px 10px"><button class="btn" style="padding:9px" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${w}">${IC.seal} Gravar: venceu ${esc(playerName(w))}</button></div>`:""}
+        ${(()=>{ const sug=editable?suggestedWinner(r,idx):null;
+          return sug?`<div style="padding:2px 14px 10px"><button class="btn" style="padding:9px" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${sug}">${IC.seal} Gravar: venceu ${esc(playerName(sug))}</button></div>`:""; })()}
         ${(editable&&st==="disputa")?`<div class="rep-hint" style="color:#f0a494">${esc(playerName(m.a))} diz que venceu <b>${esc(playerName(rep.a))}</b> e ${esc(playerName(m.b))} diz que venceu <b>${esc(playerName(rep.b))}</b>. Decida abaixo.</div>`:""}
         ${editable?`<div class="win-btns">
             <button class="wbtn ${m.winner===m.a?'active':''}" data-act="win" data-r="${r.id}" data-i="${idx}" data-w="${m.a}">Venceu ${esc(playerName(m.a))}</button>
@@ -2327,10 +2330,14 @@ function roundBlockHTML(r){
           </div>`:(mine?"":`<div class="result-tag">${w?`Vencedor: <b>${esc(playerName(w))}</b>`:(closed?'Sem resultado':'Aguardando resultado')}</div>`)}
       </div>`;
     }).join("")}
-    ${(r.byes&&r.byes.length)?`<div class="result-tag" style="padding:11px 14px;border-top:1px dashed var(--line)">
-      <span class="m-chip bye">${IC.feather} BYE</span>
-      <b>${r.byes.map(id=>esc(playerName(id))).join(", ")}</b> não teve adversário nesta rodada e leva a vitória (3 pontos).
-      A rodada não entra no aproveitamento de desempate.</div>`:""}</div>`;
+    ${(r.byes&&r.byes.length)?(isSwissRound(r)
+      ? `<div class="result-tag" style="padding:11px 14px;border-top:1px dashed var(--line)">
+          <span class="m-chip bye">${IC.feather} BYE</span>
+          <b>${r.byes.map(id=>esc(playerName(id))).join(", ")}</b> não teve adversário nesta rodada e leva a vitória (3 pontos).
+          A rodada não entra no aproveitamento de desempate.</div>`
+      : `<div class="result-tag" style="padding:11px 14px;border-top:1px dashed var(--line)">
+          <span style="color:var(--gold-deep)">${IC.wait}</span> De folga nesta rodada (rodízio antigo, sem pontos):
+          <b>${r.byes.map(id=>esc(playerName(id))).join(", ")}</b></div>`):""}</div>`;
 }
 
 function renderCalendar(){
@@ -2855,6 +2862,8 @@ function swissRoundsFor(n){
 /* playoff: ate 8 inscritos nao tem; 9-32 Top 4; acima disso Top 8 */
 function topCutFor(n){ return n<=8?0:(n<=32?4:8); }
 
+/* rodada pareada pelo suico (as do rodizio antigo nao tem esse campo) */
+const isSwissRound=r=>!!(r&&r.kind==="swiss");
 const champKind=()=>{ const c=champData(); return (c&&c.kind==="torneio")?"torneio":"liga"; };
 const isTourney=()=>champKind()==="torneio";
 
@@ -2882,13 +2891,26 @@ function effectiveWinner(round,idx){
   const r=matchReports(round.id,idx);
   return (r.a&&r.a===r.b)?r.a:null;
 }
-/* aberta · parcial · acordo · disputa · confirmada */
+/* aberta · parcial · acordo · disputa · legado · confirmada */
 function matchState(round,idx){
   const m=(round.matches||[])[idx]; if(!m) return "aberta";
   if(m.winner) return "confirmada";
   const r=matchReports(round.id,idx);
   if(r.a&&r.b) return r.a===r.b?"acordo":"disputa";
-  return (r.a||r.b)?"parcial":"aberta";
+  if(r.a||r.b) return "parcial";
+  /* duelo encerrado pelo contador ANTES de existir reporte: o doc tem
+     vencedor mas nao diz quem apertou. Vale como indicacao para o admin,
+     nunca como resultado — e assim o fluxo antigo nao perde nada. */
+  const d=duelAny(round.id,idx);
+  if(d&&d.status==="encerrado"&&d.winner) return "legado";
+  return "aberta";
+}
+/* vencedor que o admin pode gravar com um toque */
+function suggestedWinner(round,idx){
+  const st=matchState(round,idx);
+  if(st==="acordo") return matchReports(round.id,idx).a;
+  if(st==="legado"){ const d=duelAny(round.id,idx); return (d&&d.winner)||null; }
+  return null;
 }
 async function reportMatch(roundId,idx,winnerUid){
   const round=ROUNDS.find(r=>r.id===roundId); if(!round) return;
@@ -2935,8 +2957,11 @@ function swissRecords(){
       if(W){ W.pts+=PTS_WIN; W.w++; W.mw++; W.mwPlayed++; if(L) W.beat.add(L.id); }
       if(L){ L.pts+=PTS_LOSS; L.l++; L.mwPlayed++; L.lossRounds.push(r.number||0); }
     });
-    /* BYE: vitoria no historico, fora da conta de aproveitamento */
-    (r.byes||[]).forEach(id=>{ const p=rec[id]; if(p){ p.byes++; p.pts+=PTS_WIN; p.w++; } });
+    /* BYE: vitoria no historico, fora da conta de aproveitamento.
+       So vale em rodada de SUICO. Nas rodadas antigas de rodizio o mesmo
+       campo "byes" queria dizer "de folga" e nao pontuava — contar aquilo
+       como vitoria agora inventaria pontos que ninguem ganhou. */
+    if(isSwissRound(r)) (r.byes||[]).forEach(id=>{ const p=rec[id]; if(p){ p.byes++; p.pts+=PTS_WIN; p.w++; } });
   });
   const all=Object.values(rec);
   all.forEach(p=>{ p.mwp = p.mwPlayed ? p.mw/p.mwPlayed : 0; });
@@ -3083,6 +3108,7 @@ $("btn-close-round").onclick=async()=>{
     if(m.winner) return;
     const st=matchState(open,i);
     if(st==="acordo"){ m.winner=matchReports(open.id,i).a; applied++; }
+    else if(st==="legado"){ m.winner=suggestedWinner(open,i); applied++; }
     else if(st==="disputa") disputed++;
     else undecided++;
   });
