@@ -660,6 +660,60 @@
   .riv-leg span{display:inline-flex;align-items:center;gap:6px}
   .riv-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:0 0 auto}
 
+  /* ---------- A MOLDURA DO FARAO ----------
+     A arte e um disco de 800x800 cujo vao NAO e centrado: o olho de
+     Horus come o topo e a gema come a base. O buraco foi medido no
+     canal alfa da imagem, com flood fill a partir do centro. O vao
+     e mais LARGO que alto, entao um circulo que coubesse nele por
+     inteiro deixaria duas falhas escuras nas laterais: a foto tem
+     de ser maior que o vao e sumir por baixo do ouro. Procurando o
+     circulo que cobre o vao inteiro sem aparecer fora da silhueta
+     da moldura, da centro em 50,12% / 53,75% da caixa e lado de
+     68,72% — e e dai que saem os numeros abaixo. O centro NAO e o
+     meio geometrico: o olho de Horus come o topo e a gema come a
+     base. --pf e o tamanho da CAIXA INTEIRA, que e o que o resto
+     do layout precisa saber. */
+  :root{ --pf-home:132px; --pf-prof:173px }
+  .pharaoh{position:relative;display:inline-block;flex:0 0 auto;line-height:0;
+    width:var(--pf);height:var(--pf)}
+  /* img.avatar (0,2,1) vence .avatar.lg (0,2,0) em qualquer ordem de arquivo */
+  .pharaoh > img.avatar{position:absolute;left:50.12%;top:53.75%;
+    width:68.72%;height:68.72%;transform:translate(-50%,-50%);
+    border:none;margin:0;box-shadow:none}
+  .pharaoh > .ph-frame{position:absolute;inset:0;width:100%;height:100%;
+    display:block;pointer-events:none;-webkit-user-select:none;user-select:none;
+    filter:drop-shadow(0 8px 20px rgba(0,0,0,.55))}
+  /* o cartaz da tela inicial */
+  .pharaoh-card{position:relative;overflow:hidden;text-align:center;cursor:pointer;
+    padding:16px 16px 20px;margin-bottom:12px;border-radius:var(--r-xl);
+    border:1px solid var(--gold-deep);
+    background:radial-gradient(ellipse 70% 100% at 50% 0%,rgba(233,194,104,.2),rgba(233,194,104,.02) 72%),var(--s1);
+    box-shadow:0 0 40px -16px var(--gold-glow),var(--sheen);
+    transition:transform .14s var(--ease)}
+  .pharaoh-card:active{transform:scale(.985)}
+  .pc-l{font-family:'Cinzel',serif;letter-spacing:3.4px;text-transform:uppercase;
+    color:var(--gold-deep);font-size:10px;font-weight:700;margin-top:8px}
+  .pc-n{font-family:'Cinzel Decorative',serif;color:var(--gold-soft);
+    font-size:21px;line-height:1.2;margin-top:5px;overflow-wrap:anywhere}
+  .pc-s{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+  .pc-s b{color:var(--gold-soft)}
+  /* o titulo, ao lado do nome e entre os titulos */
+  .badge-pharaoh{display:inline-flex;align-items:center;gap:5px;font-size:9px;
+    padding:3px 9px;border-radius:var(--r-pill);letter-spacing:1.1px;
+    text-transform:uppercase;font-weight:700;color:#241804;vertical-align:1px;
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold-deep));
+    box-shadow:0 2px 8px -2px var(--gold-glow)}
+  .badge-pharaoh svg{width:11px;height:11px}
+  .title-chip.pharaoh-chip{color:#241804;border-color:transparent;
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold))}
+  .title-chip.pharaoh-chip svg{color:#3a2a08}
+  /* a moldura e larga: o bloco do avatar sobe mais dentro da capa */
+  .prof-id.framed{margin-top:-74px}
+  @media(max-width:410px){
+    :root{ --pf-prof:146px }
+    .prof-id.framed{margin-top:-60px}
+  }
+
   /* ---------- perfil: decks principais, titulos, frase, completude ---------- */
   /* as tres cartas que representam o duelista */
   .top-decks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -1387,25 +1441,6 @@
     </div>
   </section>
 
-  <section id="tab-access" class="tabpane hidden">
-    <div class="card">
-      <h2><span class="glyph">𓂀</span> Criar acesso</h2>
-      <p class="section-note">Login para quem vai administrar/acompanhar. Novas contas entram como <b>Jogador</b> (só visualiza). Promova a Admin abaixo.</p>
-      <div id="access-msg"></div>
-      <label class="fld">E-mail</label>
-      <input id="acc-email" type="email" placeholder="jogador@email.com">
-      <label class="fld">Senha provisória (mín. 6)</label>
-      <input id="acc-pass" type="password" placeholder="••••••••">
-      <div style="height:12px"></div>
-      <button class="btn" id="btn-add-access">Criar acesso</button>
-    </div>
-    <div class="card">
-      <h2><span class="glyph">𓉻</span> Contas</h2>
-      <p class="section-note">Toque numa conta para alternar entre Admin e Jogador. Admin vale para todos os campeonatos.</p>
-      <div id="access-body"></div>
-    </div>
-  </section>
-
   <div class="foot">𓋹 Duelo Millennium · Campeonato de pontos corridos · Yu-Gi-Oh 𓋹</div>
 </div>
 
@@ -1475,6 +1510,9 @@
       <input id="troph-torneio" type="text" placeholder="https://… (sem link, usa a coroa)">
       <label class="fld">Troféu de temporada da Mesa</label>
       <input id="troph-temporada" type="text" placeholder="https://… (sem link, usa a coroa)">
+      <label class="fld">Moldura do faraó da temporada</label>
+      <input id="troph-moldura" type="text" placeholder="https://… (sem link, ninguém recebe moldura)">
+      <div class="section-note" style="margin:7px 0 0">Vai em volta da foto de quem venceu a <b>última temporada encerrada</b>, na tela inicial e no perfil. Troca de dono sozinha quando a temporada seguinte termina.</div>
       <div id="troph-msg"></div>
       <div style="height:12px"></div>
       <button class="btn" id="btn-troph-save">Salvar troféus</button>
@@ -1489,6 +1527,29 @@
       <button class="btn" id="btn-ttl-save">Salvar títulos</button>
       <div style="height:10px"></div>
       <button class="btn ghost" id="btn-ttl-reset">Voltar aos títulos padrão</button>
+    </div>
+  </div>
+</div>
+
+<!-- TELA CONTAS E ACESSOS (global: não depende de haver evento aberto) -->
+<div id="screen-access" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Contas e acessos</h1></div>
+  <div class="screen-body">
+    <div class="card">
+      <h2><span class="glyph">𓂀</span> Criar acesso</h2>
+      <p class="section-note">Login para quem vai administrar/acompanhar. Novas contas entram como <b>Jogador</b> (só visualiza). Promova a Admin abaixo.</p>
+      <div id="access-msg"></div>
+      <label class="fld">E-mail</label>
+      <input id="acc-email" type="email" placeholder="jogador@email.com">
+      <label class="fld">Senha provisória (mín. 6)</label>
+      <input id="acc-pass" type="password" placeholder="••••••••">
+      <div style="height:12px"></div>
+      <button class="btn" id="btn-add-access">Criar acesso</button>
+    </div>
+    <div class="card">
+      <h2><span class="glyph">𓉻</span> Contas</h2>
+      <p class="section-note">Toque numa conta para alternar entre Admin e Jogador. Admin vale para todos os campeonatos.</p>
+      <div id="access-body"></div>
     </div>
   </div>
 </div>
@@ -1928,6 +1989,7 @@ onSnapshot(configRef, snap=>{ CONFIG=snap.exists()?snap.data():null; CONFIG_LOAD
   if(ACTIVE_SCREEN==="profile") renderProfile();
   if(ACTIVE_SCREEN==="events") renderEvents();
   if(ACTIVE_SCREEN==="titles") renderTitles();
+  if(ACTIVE_SCREEN==="access") renderAccess();   /* a lista de admins vem daqui */
   if(ACTIVE_SCREEN==="mesa") renderMesa();   /* as temporadas moram no config */
 }, err=>{ console.error(err); CONFIG_LOADED=true; route(); });
 
@@ -1941,14 +2003,15 @@ onSnapshot(query(champsCol, orderBy("createdAt","asc")), snap=>{
 }, err=>console.error(err));
 
 onSnapshot(usersCol, snap=>{ USERS=snap.docs.map(d=>({id:d.id,...d.data()})); shrinkMyPhoto();
-  if(!$("app").classList.contains("hidden")&&ACTIVE_TAB==="access") renderAccess();
+  if(ACTIVE_SCREEN==="access") renderAccess();
   if(ACTIVE_SCREEN==="profile") renderProfile();
   if(ACTIVE_SCREEN==="stats") renderStats();
   if(ACTIVE_SCREEN==="dir") renderDirectory();
 }, err=>console.error(err));
 
 onSnapshot(collection(db,"members"), snap=>{ MEMBERS=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(!$("app").classList.contains("hidden")){ if(ACTIVE_TAB==="access") renderAccess(); if(ACTIVE_TAB==="players") renderPlayers(); }
+  if(ACTIVE_SCREEN==="access") renderAccess();
+  if(!$("app").classList.contains("hidden")&&ACTIVE_TAB==="players") renderPlayers();
   if(!$("select-screen").classList.contains("hidden")) renderHome();
   if(ACTIVE_SCREEN==="dir") renderDirectory();
 }, err=>console.error(err));
@@ -2076,7 +2139,8 @@ function applyRoleUI(){
         ? "Trava o torneio, coroa quem está em 1º na classificação e mantém todos os pontos. Dá para reabrir depois."
         : "Trava a liga, coroa quem está em 1º e mantém todos os pontos. Dá para reabrir depois.");
   }
-  if(!adm && ACTIVE_TAB==="access") switchTab("rank");
+  /* perdeu o cargo de admin com a tela aberta: ela se fecha sozinha */
+  if(!adm && ACTIVE_SCREEN==="access") closeScreen();
 }
 
 /* ---------- seções do campeonato (navegação pelo menu lateral) ---------- */
@@ -2136,7 +2200,6 @@ function renderTab(){
   if(ACTIVE_TAB==="rank") renderRank();
   else if(ACTIVE_TAB==="rounds") renderCalendar();
   else if(ACTIVE_TAB==="players") renderPlayers();
-  else if(ACTIVE_TAB==="access") renderAccess();
   else if(ACTIVE_TAB==="banlist") renderBanlist();
 }
 function renderAll(){
@@ -2341,7 +2404,22 @@ function renderHome(){
   if(fechados.length)
     h+=`<button class="btn ghost" data-nav="events" style="margin-bottom:12px">${IC.crown} Ver ${fechados.length} evento${fechados.length===1?'':'s'} encerrado${fechados.length===1?'':'s'}</button>`;
 
-  /* 7 — A Mesa: a liga que não termina, com a temporada em curso */
+  /* 7 — O Faraó da Mesa: quem venceu a última temporada reina na atual */
+  const farao=reigningPharaoh();
+  if(farao){
+    const agora=openSeason();
+    h+=sec(IC.crown,"O Faraó da Mesa");
+    h+=`<div class="pharaoh-card" data-act="profile" data-id="${esc(farao.uid)}">
+      ${pharaohAvatar(farao.uid,"var(--pf-home)")}
+      <div class="pc-l">Faraó da Mesa</div>
+      <div class="pc-n">${esc(farao.name)}</div>
+      <div class="pc-s">venceu ${esc(farao.season.name||"a última temporada")}${
+        agora?` e reina em <b>${esc(agora.name||"a temporada atual")}</b>`
+             :` e reina até a próxima terminar`}</div>
+    </div>`;
+  }
+
+  /* 8 — A Mesa: a liga que não termina, com a temporada em curso */
   const sTemp=openSeason();
   if(sTemp){
     const top=seasonTable(sTemp).slice(0,3);
@@ -2365,7 +2443,7 @@ function renderHome(){
       <button class="btn ghost" data-nav="mesa">${IC.sun} Abrir a primeira temporada</button></div>`;
   }
 
-  /* 8 — atalhos */
+  /* 9 — atalhos */
   h+=sec(IC.ankh,"Atalhos");
   h+=`<div class="qa-grid">
     <button class="qa" data-nav="duels">${ICONS.duels}Duelos</button>
@@ -2423,6 +2501,34 @@ $("btn-add-champ").onclick=async()=>{
    As imagens dos troféus ficam em meta/config, para o admin trocar.
    ============================================================ */
 const TROPHY_LIGA_PADRAO="https://i.postimg.cc/g08Yh2Sq/Trofeu-Dourado-do-Olho-Sagrado.png";
+/* ---------- O FARAO DA MESA ----------
+   Quem venceu a ULTIMA temporada encerrada reina na temporada
+   seguinte: leva o titulo e a moldura ate que outra temporada feche,
+   e ai os dois trocam de dono sozinhos. Durante a primeira temporada
+   ninguem e farao, porque ninguem venceu nada ainda. */
+const MOLDURA_FARAO_PADRAO="https://i.postimg.cc/vZqnbNyK/Moldura-Egipcia-Dourada-Majestosa.png";
+/* undefined = o admin nunca mexeu, entao vale a arte padrao;
+   null/"" = ele apagou o link de proposito, e ninguem recebe moldura */
+const frameURL=()=>{ const c=CONFIG||{};
+  return c.framePharaoh===undefined ? MOLDURA_FARAO_PADRAO : (c.framePharaoh||""); };
+function reigningPharaoh(){
+  /* a temporada encerrada mais recente QUE TEVE CAMPEAO. Uma temporada
+     que fecha sem ninguem (nenhum duelo decidido) nao destrona o farao
+     anterior — seria estranho a coroa sumir porque a mesa ficou parada. */
+  const s=closedSeasons().find(x=>x&&x.champion&&x.champion.uid);
+  if(!s) return null;
+  return {uid:s.champion.uid,
+          name:s.champion.name||nameOfUid(s.champion.uid), season:s};
+}
+const isPharaoh=uid=>{ const p=reigningPharaoh(); return !!(uid&&p&&p.uid===uid); };
+/* a foto encaixada no vao. box = o tamanho da CAIXA inteira */
+function pharaohAvatar(uid,box){
+  const u=userOf(uid)||{}, f=frameURL();
+  if(!f) return `<img class="avatar lg" src="${esc(u.photo||AV_PH)}" alt="">`;
+  return `<span class="pharaoh" style="--pf:${esc(box)}">
+    <img class="avatar" src="${esc(u.photo||AV_PH)}" alt="">
+    <img class="ph-frame" src="${esc(f)}" alt="" loading="lazy"></span>`;
+}
 const trophyURL=kind=>{
   const c=CONFIG||{};
   if(kind==="torneio")   return c.trophyEvent||"";
@@ -3624,7 +3730,6 @@ function renderDrawer(){
   if(inView){
     nav+=`<div class="drawer-sep"></div>`;
     nav+=item('rank','Classificação')+item('rounds','Calendário')+item('players','Jogadores')+item('banlist','Banlist');
-    if(adm) nav+=item('access','Acessos');
   }
   nav+=`<div class="drawer-sep"></div>`;
   nav+=item('events','Eventos');
@@ -3638,6 +3743,8 @@ function renderDrawer(){
   if(authed) nav+=item('history','Meu histórico');
   if(authed) nav+=item('profile','Perfil');
   if(adm) nav+=item('titles','Títulos e troféus');
+  /* contas sao globais: o menu mostra Acessos com ou sem evento aberto */
+  if(adm) nav+=item('access','Acessos');
   nav+=`<div class="drawer-sep"></div>`;
   if(inChamp) nav+=item('switch','Trocar campeonato');
   if(authed) nav+=item('logout','Sair','danger'); else nav+=item('login','Entrar');
@@ -3669,12 +3776,13 @@ document.addEventListener("click", ev=>{
   const it=ev.target.closest("[data-nav]"); if(!it) return;
   const nav=it.dataset.nav; closeDrawer();
   if(nav==="home"){ goHome(); }
-  else if(["rank","rounds","players","banlist","access"].includes(nav)){
+  else if(["rank","rounds","players","banlist"].includes(nav)){
     closeScreen(); if(CURRENT_CHAMP){ setView("champ"); route(); switchTab(nav); } else toast("Escolha um campeonato primeiro."); }
   else if(nav==="dir"){ openScreen("dir"); }
   else if(nav==="events"){ openScreen("events"); }
   else if(nav==="mesa"){ openScreen("mesa"); }
   else if(nav==="titles"){ if(isAdmin()) openScreen("titles"); }
+  else if(nav==="access"){ if(isAdmin()) openScreen("access"); }
   else if(nav==="duels"){ openScreen("duels"); }
   else if(nav==="counter"){ ACTIVE_DUEL=null; openScreen("counter"); }
   else if(nav==="stats"){ openScreen("stats"); }
@@ -3700,6 +3808,7 @@ function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.class
   if(name==="events") renderEvents();
   if(name==="mesa") renderMesa();
   if(name==="titles"){ TITLE_EDIT=null; renderTitles(); }
+  if(name==="access") renderAccess();
   els("#screen-duels .admin-only").forEach(n=>n.classList.toggle("hidden",!isAdmin()));
   renderTabbar();
 }
@@ -3835,9 +3944,15 @@ function renderProfile(){
   $("prof-cover").innerHTML=coverHTML(own);
   $("prof-cover").classList.toggle("editing", own&&COVER_EDIT);
 
-  $("prof-id").innerHTML=`<img class="avatar lg" src="${(u&&u.photo)||AV_PH}" alt="">
+  /* o titulo vale mesmo sem arte de moldura configurada; so a classe
+     que empurra o bloco para cima depende da imagem existir */
+  const farao=isPharaoh(uid), comMoldura=farao&&!!frameURL();
+  $("prof-id").className="prof-id"+(comMoldura?" framed":"");
+  $("prof-id").innerHTML=`${farao
+      ? pharaohAvatar(uid,"var(--pf-prof)")
+      : `<img class="avatar lg" src="${(u&&u.photo)||AV_PH}" alt="">`}
     <div class="pi-txt"><div class="pi-name">${esc((u&&u.displayName)||(u&&u.email)||"Duelista")}</div>
-      <div class="pi-sub"><span class="badge-role ${adm?'adm':''}">${adm?'Admin':(member?'Duelista':'Visitante')}</span></div></div>
+      <div class="pi-sub">${farao?`<span class="badge-pharaoh">${IC.crown} Faraó da Mesa</span> `:""}<span class="badge-role ${adm?'adm':''}">${adm?'Admin':(member?'Duelista':'Visitante')}</span></div></div>
     ${own?`<button class="mini" data-act="pickavatar">${IC.eye} Foto</button>`:""}`;
 
   if(own) refreshTopDecks();
@@ -3906,8 +4021,9 @@ function renderProfile(){
   const titles=titlesOf(uid,PROFILE_DECKS.length);
   const got=titles.filter(x=>x.ok);
   html+=`<div class="card"><h2>${IC.crown} Títulos</h2>
+    ${farao?`<p class="section-note" style="margin:-4px 0 11px">Reina como <b style="color:var(--gold-soft)">Faraó da Mesa</b> por ter vencido ${esc(reigningPharaoh().season.name||"a última temporada")}. O título passa adiante quando a temporada atual terminar.</p>`:""}
     <p class="section-note">${got.length} de ${titles.length} conquistados${own?" — os apagados mostram o que falta.":"."}</p>
-    <div class="titles">${titles.filter(x=>x.ok||own).map(x=>
+    <div class="titles">${farao?`<span class="title-chip pharaoh-chip">${IC.crown}Faraó da Mesa</span>`:""}${titles.filter(x=>x.ok||own).map(x=>
       `<span class="title-chip ${x.ok?'':'locked'}">${x.icon}${esc(x.label)}${x.ok?'':` <i>· ${esc(x.falta)}</i>`}</span>`).join("")}</div>
     ${(!got.length&&!own)?`<div class="section-note" style="margin:10px 0 0">Nenhum título ainda.</div>`:""}
   </div>`;
@@ -4078,10 +4194,16 @@ function renderTitles(){
   if(tt&&document.activeElement!==tt) tt.value=c.trophyEvent||"";
   const ts=$("troph-temporada");
   if(ts&&document.activeElement!==ts) ts.value=c.trophySeason||"";
+  const tm=$("troph-moldura");
+  if(tm&&document.activeElement!==tm) tm.value=frameURL();
+  const fr=frameURL(), eu=myProfile()||{};
   $("troph-prev").innerHTML=
      `<span class="pv">${trophyHTML("liga","lg")} Liga</span>`
     +`<span class="pv">${trophyHTML("torneio","lg")} Torneio</span>`
-    +`<span class="pv">${trophyHTML("temporada","lg")} Temporada</span>`;
+    +`<span class="pv">${trophyHTML("temporada","lg")} Temporada</span>`
+    +(fr?`<span class="pv"><span class="pharaoh" style="--pf:76px">
+        <img class="avatar" src="${esc(eu.photo||AV_PH)}" alt="">
+        <img class="ph-frame" src="${esc(fr)}" alt=""></span> Moldura</span>`:"");
 
   if(!TITLE_EDIT) TITLE_EDIT=titleDefs().map(d=>({...d}));
   const ruleOpts=cur=>Object.keys(TITLE_RULES).map(k=>
@@ -4162,10 +4284,12 @@ $("btn-troph-save").onclick=async()=>{
   if(!isAdmin()) return; showMsg("troph-msg","");
   const l=$("troph-liga").value.trim(), e2=$("troph-torneio").value.trim();
   const s2=$("troph-temporada").value.trim();
+  const m2=$("troph-moldura").value.trim();
   const bad=u=>u&&!/^https?:\/\//i.test(u);
-  if(bad(l)||bad(e2)||bad(s2)){ showMsg("troph-msg","O link tem de começar com http:// ou https://","err"); return; }
+  if(bad(l)||bad(e2)||bad(s2)||bad(m2)){ showMsg("troph-msg","O link tem de começar com http:// ou https://","err"); return; }
   const b=$("btn-troph-save"); b.disabled=true;
-  try{ await updateDoc(configRef,{trophyLeague:l||null,trophyEvent:e2||null,trophySeason:s2||null});
+  try{ await updateDoc(configRef,{trophyLeague:l||null,trophyEvent:e2||null,
+      trophySeason:s2||null,framePharaoh:m2||null});
     showMsg("troph-msg","Troféus salvos.","ok"); haptic(20); toast("Troféus salvos"); }
   catch(err){ showMsg("troph-msg",fbError(err),"err"); }
   finally{ b.disabled=false; }
@@ -5211,8 +5335,12 @@ const SEASON_PTS_WIN=3;
 function seasonList(){ const c=CONFIG||{}; return Array.isArray(c.seasons)?c.seasons.filter(Boolean):[]; }
 function openSeason(){ return seasonList().find(s=>!s.end)||null; }
 function closedSeasons(){
-  return seasonList().filter(s=>s.end).slice()
-    .sort((a,b)=>String(b.end).localeCompare(String(a.end)));
+  /* a mais recente primeiro. Duas temporadas fechadas no MESMO dia
+     empatam na data, e e o farao que depende desta ordem — entao a
+     posicao na lista desempata: quem foi criada depois vem antes. */
+  return seasonList().map((s,i)=>({s,i})).filter(o=>o.s.end)
+    .sort((a,b)=>String(b.s.end).localeCompare(String(a.s.end))||b.i-a.i)
+    .map(o=>o.s);
 }
 /* a janela da temporada e em dias inteiros, no fuso de quem olha */
 const dayStartTs=iso=>{ const p=String(iso||"").split("-");
