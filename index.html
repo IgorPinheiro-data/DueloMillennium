@@ -288,13 +288,16 @@
     border-radius:var(--r-lg);padding:15px 16px;margin-bottom:11px;
     box-shadow:var(--shadow),var(--sheen);transition:transform .14s var(--ease)}
   .champ-card:active{transform:scale(.985)}
-  .champ-card .cc-eye{width:34px;height:34px;color:var(--gold);flex:0 0 auto;opacity:.9}
-  .champ-card .cc-body{flex:1;min-width:0}
-  .champ-card .cc-name{font-family:'Cinzel',serif;font-weight:700;color:var(--gold-soft);
-    font-size:16.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .champ-card .cc-meta{font-size:11.5px;color:var(--muted);margin-top:3px;
+  /* as pecas cc-* servem ao cartao da home E ao cartao da tela de Eventos */
+  .champ-card .cc-eye,.ev-card .cc-eye{width:32px;height:32px;color:var(--gold);
+    flex:0 0 auto;opacity:.9}
+  .champ-card .cc-body,.ev-card .cc-body{flex:1;min-width:0}
+  .champ-card .cc-name,.ev-card .cc-name{font-family:'Cinzel',serif;font-weight:700;
+    color:var(--gold-soft);font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .champ-card .cc-meta,.ev-card .cc-meta{font-size:11.5px;color:var(--muted);margin-top:4px;
     display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  .champ-card .cc-arrow{color:var(--gold-deep);font-size:20px;flex:0 0 auto;opacity:.75}
+  .champ-card .cc-arrow,.ev-card .cc-arrow{color:var(--gold-deep);font-size:20px;
+    flex:0 0 auto;opacity:.75}
   .status-pill{display:inline-block;font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;
     padding:3px 9px;border-radius:var(--r-pill);border:1px solid var(--line2);
     color:var(--muted);font-weight:700}
@@ -449,22 +452,31 @@
   .tb.on::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
     width:22px;height:2.5px;border-radius:0 0 3px 3px;background:var(--gold);
     box-shadow:0 0 10px var(--gold-glow)}
-  /* Ação central: o verbo do app. Sem rótulo — o disco de ouro com as espadas
-     cruzadas já diz o que faz, e sem texto ele cabe inteiro dentro da barra,
-     sem transbordar nem brigar por altura com os outros quatro itens. */
-  .tb.hero{flex:0 0 76px;padding:4px 2px 5px}
-  .tb.hero .tb-ic{width:48px;height:48px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;color:#241804;
-    background:linear-gradient(170deg,var(--gold-soft),var(--gold) 50%,var(--gold-deep));
-    box-shadow:0 5px 15px -5px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,.5)}
-  .tb.hero .tb-ic svg{width:25px;height:25px}
-  .tb.hero.on .tb-ic{box-shadow:0 6px 20px -4px var(--gold-glow),
-    inset 0 1px 0 rgba(255,255,255,.5), 0 0 0 3px rgba(233,194,104,.22)}
-  .tb.hero.on::after{display:none}
-  /* no disco, o foco é um anel redondo colado na bola — nunca um retângulo */
-  .tb.hero:focus-visible .tb-ic{border-radius:50%;
-    box-shadow:0 5px 15px -5px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,.5),
-               0 0 0 3px var(--gold)}
+  /* Ação central: SÓ a esfera de ouro com as espadas.
+     A classe é .core e NÃO .hero de propósito: .hero é o cartão de destaque
+     da home e, com a mesma especificidade de .tb mas declarado depois no
+     arquivo, vencia o empate e pintava borda, raio de 26px e fundo em volta
+     da esfera — era essa a moldura retangular que não saía. O brilho radial é o que a faz ler como
+     esfera e não como disco chapado; quando ativa ela ACENDE em vez de
+     ganhar um contorno, que era o que aparecia como borda indesejada. */
+  .tb.core{flex:0 0 72px;padding:0;gap:0;justify-content:center}
+  .tb.core .tb-ic{width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:#2a1c05;
+    background:radial-gradient(circle at 36% 28%,
+      #fff3cf 0%, var(--gold-soft) 22%, var(--gold) 52%, var(--gold-deep) 100%);
+    box-shadow:0 7px 18px -6px var(--gold-glow),
+               inset 0 1px 0 rgba(255,255,255,.6),
+               inset 0 -3px 7px rgba(92,62,12,.38);
+    transition:box-shadow .22s, transform .14s var(--ease)}
+  .tb.core .tb-ic svg{width:27px;height:27px;stroke-width:2}
+  /* ativa = a esfera acende. Nunca um anel em volta. */
+  .tb.core.on .tb-ic{box-shadow:0 9px 26px -6px var(--gold-glow),
+    inset 0 1px 0 rgba(255,255,255,.7), inset 0 -3px 7px rgba(92,62,12,.32),
+    0 0 24px -5px var(--gold-glow)}
+  .tb.core.on::after{display:none}
+  /* o foco do teclado veste a própria esfera */
+  .tb.core:focus-visible .tb-ic{box-shadow:0 0 0 3px var(--gold),
+    0 7px 18px -6px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,.6)}
 
   /* ============================================================
      GRAFICOS
@@ -565,6 +577,60 @@
   }
   .ch-note{font-size:11px;color:var(--faint);line-height:1.6;margin-top:10px;
     border-top:1px solid var(--hair);padding-top:9px}
+
+  /* ---------- administração de títulos ---------- */
+  .ttl-row{border:1px solid var(--line);border-radius:var(--r-md);padding:11px 12px;
+    margin-bottom:10px;background:rgba(0,0,0,.26)}
+  .ttl-row.off{opacity:.48}
+  .ttl-head{display:flex;align-items:center;gap:9px}
+  .ttl-ic{flex:0 0 auto;width:40px;height:40px;border-radius:var(--r-sm);cursor:pointer;padding:0;
+    border:1px solid var(--line2);background:rgba(233,194,104,.08);color:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .12s var(--ease)}
+  .ttl-ic:active{transform:scale(.9)}
+  .ttl-ic svg{width:20px;height:20px}
+  .ttl-head input{flex:1;min-width:0;padding:10px 11px !important;font-size:14px !important}
+  .ttl-rule{display:flex;gap:8px;margin-top:9px;align-items:center;flex-wrap:wrap}
+  .ttl-rule select{flex:1 1 112px;min-width:0}
+  .ttl-rule input{flex:0 0 58px;min-width:0;text-align:center}
+  .ttl-rule .mini{flex:0 0 auto;padding:9px 10px}
+  .ttl-rule select,.ttl-rule input{padding:9px 10px !important;font-size:13.5px !important}
+  .ttl-hint{font-size:11px;color:var(--faint);margin-top:8px;line-height:1.5}
+  .ttl-hint b{color:var(--muted)}
+  .troph-prev{display:flex;align-items:center;gap:14px;margin:0 0 6px;flex-wrap:wrap}
+  .troph-prev .pv{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--muted)}
+
+  /* ---------- eventos encerrados e trofeus ---------- */
+  .ev-card{position:relative;display:block;width:100%;text-align:left;cursor:pointer;
+    background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--line);
+    border-radius:var(--r-lg);padding:14px 15px;margin-bottom:11px;
+    box-shadow:var(--shadow),var(--sheen);transition:transform .14s var(--ease)}
+  .ev-card:active{transform:scale(.985)}
+  .ev-top{display:flex;align-items:center;gap:10px}
+  .ev-top .cc-name{flex:1;min-width:0}
+  .ev-champ{display:flex;align-items:center;gap:11px;margin-top:11px;padding-top:11px;
+    border-top:1px solid var(--hair)}
+  .ev-champ-t{flex:1;min-width:0}
+  .ev-champ-l{font-size:9px;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--gold-deep);font-weight:700}
+  .ev-champ-n{font-family:'Cinzel',serif;color:var(--gold-soft);font-size:15px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ev-acts{display:flex;gap:8px;margin-top:11px}
+  /* o trofeu e uma imagem que o admin troca; sem imagem cai na coroa */
+  .trophy{width:30px;height:30px;object-fit:contain;flex:0 0 auto;display:block;
+    filter:drop-shadow(0 3px 9px var(--gold-glow))}
+  .trophy.lg{width:48px;height:48px}
+  span.trophy{display:flex;align-items:center;justify-content:center;color:var(--gold)}
+  span.trophy svg{width:100%;height:100%}
+  /* conquistas no perfil */
+  .troph-row{display:flex;gap:11px;flex-wrap:wrap}
+  .troph{display:flex;align-items:center;gap:12px;padding:13px 15px;flex:1;min-width:142px;
+    border-radius:var(--r-lg);border:1px solid var(--line2);
+    background:radial-gradient(ellipse 80% 120% at 20% 0%,rgba(233,194,104,.14),rgba(233,194,104,.04))}
+  .troph-n{font-family:'Cinzel Decorative',serif;font-size:25px;color:var(--gold-soft);line-height:1}
+  .troph-l{font-size:9.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);
+    font-weight:700;margin-top:5px}
+  .ev-sep{flex:0 0 auto;width:1px;align-self:stretch;background:var(--line);margin:4px 3px}
 
   /* ---------- perfil: decks principais, titulos, frase, completude ---------- */
   /* as tres cartas que representam o duelista */
@@ -746,41 +812,102 @@
   .crop-ctrls{width:260px;max-width:90vw}
   .crop-stage.wide{width:300px;height:102px;border-radius:var(--r-md);max-width:88vw}
 
-  /* ---------- contador de pontos de vida ---------- */
-  .lp-wrap{display:flex;gap:11px}
-  .lp-panel{flex:1;min-width:0;position:relative;padding:18px 10px 16px;margin:0;
-    border-radius:var(--r-xl);border:1px solid var(--line);overflow:hidden;text-align:center;
-    background:linear-gradient(180deg,var(--s2),var(--s1));box-shadow:var(--shadow),var(--sheen)}
-  .lp-panel::before{content:"";position:absolute;inset:0 0 auto 0;height:3px}
-  .lp-panel.p1::before{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+  /* ============================================================
+     CONTADOR — a arena do Reino dos Duelistas
+     Duas plataformas de pedra encaradas, separadas pela espinha do
+     campo. O número não flutua mais sobre o cartão: ele fica DENTRO
+     de um mostrador embutido e aceso, como o painel da arena. Abaixo,
+     a barra de vida, que é quem avisa o perigo — ouro, âmbar,
+     vermelho — porque ler "1200" não dá o susto que ver a barra no
+     fim dá. A luz no alto diz de quem é o lado.
+     ============================================================ */
+  .lp-wrap{display:flex;gap:7px;align-items:stretch}
+  .lp-panel{flex:1;min-width:0;position:relative;padding:13px 9px 12px;margin:0;
+    border-radius:var(--r-lg) var(--r-lg) 7px 7px;
+    border:1px solid var(--line);overflow:hidden;text-align:center;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 34%),
+      repeating-linear-gradient(90deg,transparent 0 15px,rgba(255,255,255,.016) 15px 16px),
+      linear-gradient(180deg,var(--s3) 0%,var(--s2) 44%,#0a0e17 100%);
+    box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.08)}
+  /* a luz no alto da plataforma identifica o lado */
+  .lp-panel::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;z-index:2}
+  /* a base da plataforma some na sombra, como pedra apoiada no chão */
+  .lp-panel::after{content:"";position:absolute;inset:auto 0 0 0;height:34%;pointer-events:none;
+    background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(0,0,0,.55),transparent 72%)}
+  .lp-panel.p1::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    box-shadow:0 0 14px -1px var(--gold-glow)}
   /* num chão de lápis o adversário precisa de outra pedra para se separar */
-  .lp-panel.p2::before{background:linear-gradient(90deg,transparent,var(--turq),transparent)}
-  .lp-panel.p1{box-shadow:var(--shadow),var(--sheen),0 0 30px -22px var(--gold)}
-  .lp-panel.p2{box-shadow:var(--shadow),var(--sheen),0 0 30px -22px var(--turq)}
+  .lp-panel.p2::before{background:linear-gradient(90deg,transparent,var(--turq),transparent);
+    box-shadow:0 0 14px -1px rgba(60,195,180,.4)}
+  .lp-panel.p1{box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.08),0 0 34px -24px var(--gold)}
+  .lp-panel.p2{box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.08),0 0 34px -24px var(--turq)}
+  .lp-panel>*{position:relative;z-index:1}
   /* .lp-name também veste o nome do deck no construtor, fora de um .lp-panel */
   input.lp-name{background:transparent;border:none;color:var(--gold-soft);
     font-family:'Cinzel',serif;padding:5px 2px;outline:none;border-radius:0}
   input.lp-name:focus{box-shadow:none;border-bottom-color:var(--gold)}
-  .lp-panel .lp-name{width:100%;margin:0 auto 2px;background:transparent;border:none;
-    border-bottom:1px dashed var(--line2);color:var(--gold-soft);font-family:'Cinzel',serif;
-    text-align:center;font-size:13.5px;padding:5px 2px;border-radius:0}
-  .lp-panel .lp-name:focus{box-shadow:none;border-bottom-color:var(--gold)}
-  .lp-av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-deep);
-    display:block;margin:0 auto 6px;background:#0d1220;box-shadow:0 6px 16px -8px rgba(0,0,0,.9)}
-  .lp-num{font-family:'Cinzel Decorative',serif;font-size:clamp(32px,10vw,50px);line-height:1;
-    color:var(--gold-soft);margin:10px 0 14px;text-shadow:0 2px 20px rgba(0,0,0,.6)}
+  .lp-panel .lp-name{width:100%;margin:0 auto;background:transparent;border:none;
+    color:var(--gold-soft);font-family:'Cinzel',serif;letter-spacing:.3px;
+    text-align:center;font-size:12.5px;padding:3px 2px;border-radius:0;
+    text-overflow:ellipsis}
+  .lp-panel .lp-name:focus{box-shadow:none;border-bottom:1px dashed var(--gold)}
+  .lp-av{width:42px;height:42px;border-radius:50%;object-fit:cover;
+    border:2px solid var(--gold-deep);display:block;margin:0 auto 5px;background:#0d1220;
+    box-shadow:0 5px 14px -7px rgba(0,0,0,.95), 0 0 0 3px rgba(0,0,0,.45)}
+  /* mostrador embutido: o número fica DENTRO do painel, não solto em cima */
+  .lp-read{position:relative;margin:9px 0 0;padding:10px 3px 11px;border-radius:var(--r-md);
+    border:1px solid var(--line);overflow:hidden;
+    background:linear-gradient(180deg,rgba(0,0,0,.66),rgba(0,0,0,.4));
+    box-shadow:inset 0 2px 11px rgba(0,0,0,.9), inset 0 0 0 1px rgba(255,255,255,.028)}
+  /* varredura de vidro no mostrador */
+  .lp-read::before{content:"";position:absolute;inset:0 0 56% 0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.055),transparent)}
+  .lp-num{font-family:'Cinzel Decorative',serif;font-size:clamp(27px,9.2vw,44px);line-height:1;
+    color:var(--gold-soft);margin:0;position:relative;
+    text-shadow:0 0 18px rgba(233,194,104,.5), 0 2px 3px rgba(0,0,0,.95)}
   .lp-num.hit{animation:hit .45s}
-  @keyframes hit{0%{color:#ef6a52;transform:scale(1.14)}100%{color:var(--gold-soft);transform:scale(1)}}
+  @keyframes hit{0%{color:#ef6a52;transform:scale(1.14);text-shadow:0 0 26px rgba(231,98,75,.9)}
+                 100%{color:var(--gold-soft);transform:scale(1)}}
   .lp-num.heal{animation:heal .45s}
-  @keyframes heal{0%{color:#6fd693;transform:scale(1.14)}100%{color:var(--gold-soft);transform:scale(1)}}
-  .lp-row{display:flex;gap:7px;justify-content:center}
-  .lp-b{flex:1;min-width:0;padding:14px 4px;border-radius:var(--r-md);border:1px solid var(--line2);
-    background:rgba(233,194,104,.06);color:var(--gold);font-weight:700;font-size:17px;cursor:pointer;
-    transition:transform .1s var(--ease), background .16s}
-  .lp-b.minus{color:var(--loss);border-color:rgba(217,85,63,.3);background:rgba(217,85,63,.08)}
-  .lp-b.plus{color:var(--win);border-color:rgba(60,195,180,.3);background:rgba(60,195,180,.08)}
+  @keyframes heal{0%{color:#6fd693;transform:scale(1.14);text-shadow:0 0 26px rgba(95,216,198,.9)}
+                  100%{color:var(--gold-soft);transform:scale(1)}}
+  /* barra de vida: é ela que dá o susto, não o número */
+  .lp-bar{height:7px;border-radius:99px;margin:9px 1px 11px;overflow:hidden;
+    background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.05);
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.9)}
+  .lp-bar i{display:block;height:100%;width:100%;border-radius:99px;
+    background:linear-gradient(90deg,var(--gold-deep),var(--gold));
+    box-shadow:0 0 10px -2px var(--gold-glow);
+    transition:width .42s var(--ease), background .42s, box-shadow .42s}
+  .lp-bar.warn i{background:linear-gradient(90deg,#9c6522,#eda24a);
+    box-shadow:0 0 11px -2px rgba(237,162,74,.55)}
+  .lp-bar.danger i{background:linear-gradient(90deg,#8e2b19,#e7624b);
+    box-shadow:0 0 13px -2px rgba(231,98,75,.7)}
+  /* a espinha do campo entre as duas plataformas */
+  .lp-spine{flex:0 0 18px;position:relative;display:flex;align-items:center;justify-content:center}
+  .lp-spine::before{content:"";position:absolute;top:8%;bottom:8%;width:1px;
+    background:linear-gradient(180deg,transparent,var(--line2) 22%,var(--line2) 78%,transparent)}
+  .lp-vs{position:relative;width:20px;height:20px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--bg);border:1px solid var(--gold-deep);
+    font-family:'Cinzel',serif;font-size:7.5px;font-weight:700;color:var(--gold);
+    letter-spacing:.4px;box-shadow:0 0 12px -3px var(--gold-glow)}
+  /* controles: teclas de console, que afundam ao tocar */
+  .lp-row{display:flex;gap:5px;justify-content:center}
+  .lp-b{flex:1;min-width:0;padding:13px 2px;border-radius:var(--r-sm);
+    border:1px solid var(--line2);color:var(--gold);font-weight:800;font-size:17px;
+    cursor:pointer;line-height:1;
+    background:linear-gradient(180deg,rgba(233,194,104,.13),rgba(233,194,104,.03));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+    transition:transform .1s var(--ease), box-shadow .14s, filter .14s}
+  .lp-b.minus{color:#f0a494;border-color:rgba(217,85,63,.36);
+    background:linear-gradient(180deg,rgba(217,85,63,.18),rgba(217,85,63,.05))}
+  .lp-b.plus{color:var(--win);border-color:rgba(60,195,180,.36);
+    background:linear-gradient(180deg,rgba(60,195,180,.18),rgba(60,195,180,.05))}
   .lp-b.half{color:var(--gold-soft)}
-  .lp-b:active{transform:scale(.91)}
+  .lp-b:active{transform:translateY(1px) scale(.96);filter:brightness(1.25);
+    box-shadow:inset 0 3px 8px rgba(0,0,0,.55)}
   #duel-banner{margin-bottom:14px;padding:14px 16px;border-radius:var(--r-lg);
     border:1px solid var(--gold-deep);text-align:center;font-family:'Cinzel',serif;
     color:var(--gold-soft);font-size:13.5px;
@@ -808,18 +935,6 @@
   .coin.flip{animation:flip .8s ease-in-out}
   @keyframes flip{0%{transform:rotateY(0)}100%{transform:rotateY(1800deg)}}
   .coin-res{font-family:'Cinzel',serif;color:var(--gold-soft);min-width:72px;font-size:15px}
-  .music-bar{display:flex;flex-direction:column;gap:11px;margin-top:16px;padding:16px;
-    border-radius:var(--r-xl);border:1px solid var(--line);background:rgba(0,0,0,.26);
-    box-shadow:var(--sheen)}
-  .music-bar>div:first-child{font-family:'Cinzel',serif;color:var(--gold-soft);font-size:13.5px;
-    display:flex;align-items:center;gap:8px}
-  .music-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
-  .music-row select,.music-row input[type=range]{flex:1;min-width:120px}
-  .track-row{display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px solid var(--hair)}
-  .track-row:last-child{border-bottom:none}
-  .track-row .tn{flex:1;min-width:0;font-size:12.5px;color:var(--text);
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:7px}
-
   /* ---------- detalhe de carta / construtor de deck ---------- */
   .card-detail{max-width:92vw;text-align:left}
   .cd-meta{color:var(--muted);font-size:12.5px;margin:7px 0}
@@ -1304,6 +1419,45 @@
   </div>
 </div>
 
+<!-- TELA ADMIN: TÍTULOS E TROFÉUS -->
+<div id="screen-titles" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Títulos e troféus</h1></div>
+  <div class="screen-body">
+    <div class="card">
+      <h2><span class="glyph">𓋹</span> Troféus</h2>
+      <p class="section-note">A imagem que aparece no perfil de quem vence e ao lado dos eventos concluídos. Cole o link direto da imagem — <b>.png com fundo transparente</b> fica melhor.</p>
+      <div id="troph-prev" class="troph-prev"></div>
+      <label class="fld">Troféu de liga</label>
+      <input id="troph-liga" type="text" placeholder="https://…">
+      <label class="fld">Troféu de torneio</label>
+      <input id="troph-torneio" type="text" placeholder="https://… (sem link, usa a coroa)">
+      <div id="troph-msg"></div>
+      <div style="height:12px"></div>
+      <button class="btn" id="btn-troph-save">Salvar troféus</button>
+    </div>
+    <div class="card">
+      <h2><span class="glyph">𓆃</span> Títulos</h2>
+      <p class="section-note">Cada título é conquistado sozinho quando o duelista bate a meta. Toque no ícone para trocá-lo. As alterações só valem depois de <b>Salvar</b>.</p>
+      <div id="ttl-msg"></div>
+      <div id="ttl-list"></div>
+      <button class="btn ghost" id="btn-ttl-new">+ Novo título</button>
+      <div style="height:10px"></div>
+      <button class="btn" id="btn-ttl-save">Salvar títulos</button>
+      <div style="height:10px"></div>
+      <button class="btn ghost" id="btn-ttl-reset">Voltar aos títulos padrão</button>
+    </div>
+  </div>
+</div>
+
+<!-- TELA EVENTOS (ligas e torneios, em aberto e concluídos) -->
+<div id="screen-events" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Eventos</h1></div>
+  <div class="screen-body">
+    <div id="ev-filter" class="duel-chips"></div>
+    <div id="ev-body"></div>
+  </div>
+</div>
+
 <!-- TELA DUELISTAS (diretório) -->
 <div id="screen-dir" class="screen">
   <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Duelistas</h1></div>
@@ -1408,7 +1562,7 @@
 
 <!-- TELA CONTADOR DE DUELO -->
 <div id="screen-counter" class="screen">
-  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Contador de Duelo</h1>
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Arena de Duelo</h1>
     <button class="icon-btn" id="lp-reset"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 108-8"/><path d="M4 4v5h5"/></svg> 8000</button></div>
   <div class="screen-body">
     <div id="duel-chips" class="duel-chips"></div>
@@ -1417,27 +1571,30 @@
       <div class="lp-panel p1">
         <img class="lp-av hidden" id="lp1-av" alt="">
         <input class="lp-name" id="lp1-name" value="Jogador 1">
-        <div class="lp-num" id="lp1-num">8000</div>
+        <div class="lp-read"><div class="lp-num" id="lp1-num">8000</div></div>
+        <div class="lp-bar" id="lp1-bar-box"><i id="lp1-bar"></i></div>
         <div class="lp-row">
-          <button class="lp-b minus" data-lp="1" data-op="minus">−</button>
-          <button class="lp-b half" data-lp="1" data-op="half">½</button>
-          <button class="lp-b plus" data-lp="1" data-op="plus">＋</button>
+          <button class="lp-b minus" data-lp="1" data-op="minus" aria-label="tirar pontos">−</button>
+          <button class="lp-b half" data-lp="1" data-op="half" aria-label="metade">½</button>
+          <button class="lp-b plus" data-lp="1" data-op="plus" aria-label="dar pontos">＋</button>
         </div>
       </div>
+      <div class="lp-spine"><span class="lp-vs">VS</span></div>
       <div class="lp-panel p2">
         <img class="lp-av hidden" id="lp2-av" alt="">
         <input class="lp-name" id="lp2-name" value="Jogador 2">
-        <div class="lp-num" id="lp2-num">8000</div>
+        <div class="lp-read"><div class="lp-num" id="lp2-num">8000</div></div>
+        <div class="lp-bar" id="lp2-bar-box"><i id="lp2-bar"></i></div>
         <div class="lp-row">
-          <button class="lp-b minus" data-lp="2" data-op="minus">−</button>
-          <button class="lp-b half" data-lp="2" data-op="half">½</button>
-          <button class="lp-b plus" data-lp="2" data-op="plus">＋</button>
+          <button class="lp-b minus" data-lp="2" data-op="minus" aria-label="tirar pontos">−</button>
+          <button class="lp-b half" data-lp="2" data-op="half" aria-label="metade">½</button>
+          <button class="lp-b plus" data-lp="2" data-op="plus" aria-label="dar pontos">＋</button>
         </div>
       </div>
     </div>
 
     <div class="card" style="padding:14px 16px;margin-top:12px">
-      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-deep);text-align:center;margin-bottom:8px">Valor por toque (+/−)</div>
+      <div style="font-size:10px;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold-deep);text-align:center;margin-bottom:9px;font-family:'Cinzel',serif;font-weight:700">Dano por toque</div>
       <div class="step-bar">
         <button class="step-chip" data-step="100">100</button>
         <button class="step-chip active" data-step="500">500</button>
@@ -1448,31 +1605,6 @@
         <div class="coin" id="coin">CARA<br>ou<br>COROA</div>
         <div class="coin-res" id="coin-res">toque na moeda</div>
       </div>
-    </div>
-
-    <div class="music-bar">
-      <div style="font-family:'Cinzel',serif;color:var(--gold-soft);font-size:14px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="18" r="2.4"/><circle cx="17" cy="16" r="2.4"/><path d="M9.4 18V6l10-2v12"/><path d="M9.4 9l10-2"/></svg> Música</div>
-      <div class="music-row">
-        <select id="music-sel" class="search"></select>
-        <button class="mini" id="music-play" style="min-width:44px">▶</button>
-      </div>
-      <div class="music-row">
-        <span style="font-size:12px;color:var(--muted)">Volume</span>
-        <input id="music-vol" type="range" min="0" max="1" step="0.05" value="0.6">
-      </div>
-      <div class="music-row">
-        <button class="mini" id="music-local"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="18" r="2.4"/><circle cx="17" cy="16" r="2.4"/><path d="M9.4 18V6l10-2v12"/><path d="M9.4 9l10-2"/></svg> Tocar arquivo do aparelho</button>
-        <input id="music-file" type="file" accept="audio/*" class="hidden">
-      </div>
-      <div class="admin-only" id="music-add-wrap" style="border-top:1px solid var(--line);padding-top:10px">
-        <div class="music-row" id="music-add-row">
-          <input class="search" id="music-name" type="text" placeholder="Nome" style="flex:1;min-width:90px">
-          <input class="search" id="music-url" type="text" placeholder="Link .mp3" style="flex:2;min-width:120px">
-          <button class="mini" id="music-add">Adicionar</button>
-        </div>
-        <div id="music-list" style="margin-top:8px"></div>
-      </div>
-      <audio id="bgm" loop></audio>
     </div>
   </div>
 </div>
@@ -1655,7 +1787,6 @@ let PLAYERS=[], ROUNDS=[], DAYS=[], CURRENT_DAY=null;
 let ACTIVE_TAB="rank";
 let OFFICIAL=null, OFFICIAL_LOADING=false, OFFICIAL_ERR=false;
 let BANLISTS=[];            // listas personalizadas (globais)
-let TRACKS=[];              // músicas (globais)
 let ACTIVE_SCREEN=null;     // 'counter' | 'profile' | 'cards' | 'decks' | ...
 let MYDECKS=[], unsubDecks=null, CUR_DECK=null, deckAddTarget="main";
 let DECK_ADD=[], DECK_ADD_LOADING=false, deckAddTimer=null, cardsTimer=null, CARDS_RES=[];
@@ -1738,13 +1869,19 @@ const isLocked=()=>{ const c=champData(); return !!(c&&c.status==="encerrado"); 
 const canEdit=()=>isAdmin()&&!isLocked();
 
 /* ---------- listeners: config, champs, users ---------- */
-onSnapshot(configRef, snap=>{ CONFIG=snap.exists()?snap.data():null; CONFIG_LOADED=true; route(); renderAll(); },
-  err=>{ console.error(err); CONFIG_LOADED=true; route(); });
+onSnapshot(configRef, snap=>{ CONFIG=snap.exists()?snap.data():null; CONFIG_LOADED=true; route(); renderAll();
+  /* títulos e troféus moram aqui: as telas abertas precisam refletir a troca */
+  if(ACTIVE_SCREEN==="profile") renderProfile();
+  if(ACTIVE_SCREEN==="events") renderEvents();
+  if(ACTIVE_SCREEN==="titles") renderTitles();
+}, err=>{ console.error(err); CONFIG_LOADED=true; route(); });
 
 onSnapshot(query(champsCol, orderBy("createdAt","asc")), snap=>{
   CHAMPS=snap.docs.map(d=>({id:d.id,...d.data()}));
   if(CURRENT_CHAMP && subscribedChamp!==CURRENT_CHAMP && CHAMPS.find(c=>c.id===CURRENT_CHAMP)) subscribeChamp(CURRENT_CHAMP);
   route(); renderSelector(); renderAll();
+  if(ACTIVE_SCREEN==="events") renderEvents();
+  if(ACTIVE_SCREEN==="profile") renderProfile();   /* troféus vêm dos eventos */
 }, err=>console.error(err));
 
 onSnapshot(usersCol, snap=>{ USERS=snap.docs.map(d=>({id:d.id,...d.data()})); shrinkMyPhoto();
@@ -1763,11 +1900,6 @@ onSnapshot(collection(db,"members"), snap=>{ MEMBERS=snap.docs.map(d=>({id:d.id,
 onSnapshot(query(collection(db,"banlists"),orderBy("createdAt","asc")), snap=>{
   BANLISTS=snap.docs.map(d=>({id:d.id,...d.data()}));
   if(ACTIVE_TAB==="banlist" && !$("app").classList.contains("hidden")) renderBanlist();
-}, err=>console.error(err));
-
-onSnapshot(query(collection(db,"tracks"),orderBy("createdAt","asc")), snap=>{
-  TRACKS=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(ACTIVE_SCREEN==="counter") renderMusicSel();
 }, err=>console.error(err));
 
 onSnapshot(query(collection(db,"duels"),orderBy("createdAt","desc"),limit(400)), snap=>{
@@ -2133,15 +2265,24 @@ function renderHome(){
       ${adm?`<button class="mini danger" data-act="delchamp" data-id="${c.id}">Excluir</button>`:``}
       <span class="cc-arrow">›</span></div>`;
   };
-  if(!CHAMPS.length){
+  /* a home mostra só o que está EM ABERTO; o resto mora na tela de Eventos */
+  const abertos=CHAMPS.filter(c=>c.status!=="encerrado");
+  const fechados=CHAMPS.filter(c=>c.status==="encerrado");
+  if(!abertos.length){
     h+=sec(IC.crown,"Eventos");
-    h+=`<div class="card"><div class="empty" style="padding:16px"><span class="big">𓉔</span>Nenhum evento ainda.<br>${adm?'Crie uma liga ou um torneio do dia abaixo.':'Aguarde o administrador criar um.'}</div></div>`;
+    h+=`<div class="card"><div class="empty" style="padding:16px"><span class="big">𓉔</span>${
+      CHAMPS.length
+        ? `Nenhum evento em aberto no momento.${adm?'<br>Crie uma liga ou um torneio do dia abaixo.':''}`
+        : `Nenhum evento ainda.<br>${adm?'Crie uma liga ou um torneio do dia abaixo.':'Aguarde o administrador criar um.'}`
+    }</div></div>`;
   } else {
-    const torn=CHAMPS.filter(c=>c.kind==="torneio"), ligas=CHAMPS.filter(c=>c.kind!=="torneio");
+    const torn=abertos.filter(c=>c.kind==="torneio"), ligas=abertos.filter(c=>c.kind!=="torneio");
     if(torn.length){ h+=sec(IC.swords,"Torneios do dia");
       h+=torn.slice().sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))).map(champCard).join(""); }
     if(ligas.length){ h+=sec(IC.crown,"Ligas"); h+=ligas.map(champCard).join(""); }
   }
+  if(fechados.length)
+    h+=`<button class="btn ghost" data-nav="events" style="margin-bottom:12px">${IC.crown} Ver ${fechados.length} evento${fechados.length===1?'':'s'} encerrado${fechados.length===1?'':'s'}</button>`;
 
   /* 7 — atalhos */
   h+=sec(IC.ankh,"Atalhos");
@@ -2192,13 +2333,41 @@ $("btn-add-champ").onclick=async()=>{
   }catch(e){ showMsg("champ-msg",fbError(e),"err"); } finally{ b.disabled=false; }
 };
 
+/* ============================================================
+   CAMPEÕES E TROFÉUS
+   Quando o admin encerra, o campeão é GRAVADO no documento do evento
+   (champion:{uid,name,photo}). Assim o troféu no perfil e a foto na
+   lista de eventos não dependem de recalcular a classificação toda
+   hora — e não mudam sozinhos se alguém mexer num resultado antigo.
+   As imagens dos troféus ficam em meta/config, para o admin trocar.
+   ============================================================ */
+const TROPHY_LIGA_PADRAO="https://i.postimg.cc/g08Yh2Sq/Trofeu-Dourado-do-Olho-Sagrado.png";
+const trophyURL=kind=>{
+  const c=CONFIG||{};
+  return kind==="torneio" ? (c.trophyEvent||"") : (c.trophyLeague||TROPHY_LIGA_PADRAO);
+};
+/* sem imagem configurada, usa a coroa — nunca quebra */
+function trophyHTML(kind,cls){
+  const u=trophyURL(kind);
+  return u ? `<img class="trophy ${cls||''}" src="${esc(u)}" alt="" loading="lazy">`
+           : `<span class="trophy ${cls||''}">${IC.crown}</span>`;
+}
+/* quantas ligas e quantos torneios este duelista venceu */
+function trophiesOf(uid){
+  let liga=0, torneio=0;
+  CHAMPS.forEach(c=>{ if(c&&c.champion&&c.champion.uid===uid){
+    if(c.kind==="torneio") torneio++; else liga++; } });
+  return {liga,torneio,total:liga+torneio};
+}
+
 /* ---------- champion banner ---------- */
 function renderChampionBanner(){
   const slot=$("champion-slot"); if(!slot) return;
   const c=champData();
   if(c && c.status==="encerrado"){
+    /* o nome gravado manda; a classificação só entra se ele não existir */
     const rows=computeStandings();
-    const champ=rows.length?rows[0].name:"\u2014";
+    const champ=(c.champion&&c.champion.name)||(rows.length?rows[0].name:"\u2014");
     slot.innerHTML=`<div class="champion"><div class="crown" style="color:var(--gold)">${IC.crown}</div>
       <div class="lbl">Campeão</div><div class="who">${esc(champ)}</div></div>`;
   } else slot.innerHTML="";
@@ -2689,8 +2858,6 @@ document.addEventListener("click", async ev=>{
   if(act==="deckremove"){ ev.stopPropagation(); removeFromDeck(b.dataset.sec,b.dataset.id,b,ev); return; }
   if(act==="opendeck"){ openDeck(b.dataset.id); return; }
   if(act==="setcover"){ setDeckCover(b.dataset.id); return; }
-  if(act==="deltrack"){ if(!isAdmin()) return; if(!await ask("Remover esta música da lista?",{title:"Remover música",ok:"Remover",danger:true})) return;
-    try{ await deleteDoc(doc(db,"tracks",b.dataset.id)); toast("Música removida"); }catch(e){ toast(fbError(e)); } return; }
 
   /* --- perfil / duelos / estatísticas (funcionam fora de um campeonato) --- */
   if(act==="resetpass"){
@@ -2743,6 +2910,14 @@ document.addEventListener("click", async ev=>{
     DP_STATE[side]=k?{id:k.id,name:k.name||"Deck"}:null; haptic(12); renderDeckPicker(); return; }
   if(act==="dnpick"){ if(!DN_STATE) return; DN_STATE[b.dataset.side]=b.dataset.id; haptic(12); renderDuelNew(); return; }
   if(act==="histscope"){ HIST_SCOPE=b.dataset.k; renderDuels(); return; }
+  if(act==="evstatus"){ EV_STATUS=b.dataset.k; renderEvents(); return; }
+  if(act==="evkind"){ EV_KIND=b.dataset.k; renderEvents(); return; }
+  if(act==="ttlicon"){ if(!TITLE_EDIT) return; const d=TITLE_EDIT[+b.dataset.i]; if(!d) return;
+    const k=TITLE_ICONS.indexOf(d.icon); d.icon=TITLE_ICONS[(k+1)%TITLE_ICONS.length];
+    haptic(10); renderTitles(); return; }
+  if(act==="ttltoggle"){ if(!TITLE_EDIT) return; const d=TITLE_EDIT[+b.dataset.i]; if(!d) return;
+    d.on=(d.on===false); haptic(12); renderTitles(); return; }
+  if(act==="ttldel"){ if(!TITLE_EDIT) return; TITLE_EDIT.splice(+b.dataset.i,1); haptic(16); renderTitles(); return; }
   if(act==="statscope"){ STATS_SCOPE=b.dataset.k; renderStats(); return; }
   if(act==="stattable"){ STATS_TABLE=!STATS_TABLE; renderStats(); return; }
   if(act==="deldruel"){ ev.stopPropagation();
@@ -3123,13 +3298,25 @@ $("btn-close-round").onclick=async()=>{
 };
 $("btn-finish-champ").onclick=async()=>{
   if(!isAdmin()) return;
-  if(isLocked()){ if(!await ask("Reabrir o campeonato?\n\nVocê volta a poder editar rodadas e resultados.",{title:"Reabrir campeonato",ok:"Reabrir"})) return;
-    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"ativo"}); toast("Campeonato reaberto"); }catch(e){ toast(fbError(e)); } return; }
+  const kTour=isTourney(), lbl=kTour?"torneio":"liga";
+  if(isLocked()){
+    if(!await ask(`Reabrir ${kTour?"o":"a"} ${lbl}?\n\nVocê volta a poder editar rodadas e resultados. O troféu sai do perfil do campeão até você encerrar de novo.`,
+      {title:"Reabrir "+lbl,ok:"Reabrir"})) return;
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"ativo",champion:null});
+      toast(kTour?"Torneio reaberto":"Liga reaberta"); }catch(e){ toast(fbError(e)); }
+    return; }
   const rows=computeStandings();
-  const champ=rows.length&&rows[0].pts>0?rows[0].name:"(sem partidas decididas)";
-  if(!await ask(`Encerrar o evento e coroar o campeão?\n\nCampeão atual: <b>${esc(champ)}</b>\n\nOs pontos são mantidos e a edição fica travada — dá para reabrir depois.`,
-    {icon:IC.crown,title:"Encerrar campeonato",ok:"Encerrar"})) return;
-  try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"encerrado"}); toast("Campeonato encerrado!"); switchTab("rank"); }catch(e){ toast(fbError(e)); }
+  const win=(rows.length&&rows[0].pts>0)?rows[0]:null;
+  const champ=win?win.name:"(sem partidas decididas)";
+  if(!await ask(`Encerrar ${kTour?"o":"a"} ${lbl} e coroar o campeão?\n\nCampeão: <b>${esc(champ)}</b>\n\n${win?`Ele ganha um troféu de ${lbl} no perfil. `:""}Os pontos são mantidos, a edição trava e o evento sai da tela inicial para a lista de <b>Eventos</b>. Dá para reabrir depois.`,
+    {icon:IC.crown,title:"Encerrar "+lbl,ok:"Encerrar"})) return;
+  try{
+    /* grava quem venceu junto com o fechamento: e o que alimenta o trofeu */
+    await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"encerrado",
+      champion: win?{uid:win.id,name:win.name,photo:playerPhoto(win.id).photo||null}:null,
+      championAt: serverTimestamp()});
+    toast(win?`${win.name} é o campeão! 𓋹`:"Evento encerrado"); switchTab("rank");
+  }catch(e){ toast(fbError(e)); }
 };
 
 /* ---------- access: criar conta ---------- */
@@ -3200,6 +3387,10 @@ const ICONS={
   duels:SVG+'<rect x="2.8" y="5" width="18.4" height="14" rx="2.4"/><path d="M12 5v14"/><path d="M6.2 12h3.6"/><path d="M14.2 12h3.6"/></svg>',
   /* pirâmide com o olho — início */
   home:SVG+'<path d="M12 3.2 21 20.4H3z"/><path d="M6.6 13.6h10.8"/><path d="M9 16.9s1.2-1.7 3-1.7 3 1.7 3 1.7-1.2 1.7-3 1.7-3-1.7-3-1.7z"/></svg>',
+  /* medalha — administração de títulos */
+  titles:SVG+'<circle cx="12" cy="9" r="5.2"/><path d="M9 13.7 7.3 20.7 12 18l4.7 2.7-1.7-7"/></svg>',
+  /* estandarte — a lista de eventos (ligas e torneios) */
+  events:SVG+'<path d="M6 3.4v17.2"/><path d="M6 4.8h11.8l-2.3 3.5 2.3 3.5H6z"/></svg>',
   /* lista de pessoas — diretório (os dois bonecos já são "Jogadores") */
   dir:SVG+'<circle cx="6.4" cy="7.6" r="2.7"/><path d="M11.4 7.6h8.4"/><circle cx="6.4" cy="16.4" r="2.7"/><path d="M11.4 16.4h8.4"/></svg>',
   /* barras — estatísticas */
@@ -3225,7 +3416,6 @@ const IC={
   /* confirmação: o ankh é bonito, mas quem confere um deck procura um visto */
   check:iSVG('<path d="M4.8 12.6 9.6 17.4 19.2 7.4"/>'),
   wait:iSVG('<path d="M7 3.2h10M7 20.8h10"/><path d="M8 3.2c0 4.8 8 4.8 8 8.8s-8 4-8 8.8"/><path d="M16 3.2c0 4.8-8 4.8-8 8.8s8 4 8 8.8"/>'),
-  music:iSVG('<circle cx="7" cy="18" r="2.4"/><circle cx="17" cy="16" r="2.4"/><path d="M9.4 18V6l10-2v12"/><path d="M9.4 9l10-2"/>'),
   scroll:iSVG('<path d="M7 4h10a2 2 0 012 2v12.5a1.5 1.5 0 01-3 0V6"/><path d="M6 4a2 2 0 00-2 2v1.5h4"/><path d="M8 6v11a1.5 1.5 0 001.5 1.5H16"/><path d="M8.5 10h6M8.5 13h6"/>'),
   /* mesmo desenho de ICONS.decks: deck é sempre cartas empilhadas */
   chest:iSVG('<rect x="8.4" y="3.4" width="11.2" height="15.2" rx="2"/><path d="M15.6 21.2H6.4A2.4 2.4 0 014 18.8V7.2"/>'),
@@ -3249,8 +3439,6 @@ const IC={
   /* pirâmide de alerta */
   alert:iSVG('<path d="M12 3.4 21.2 20.4H2.8z"/><path d="M12 9.6v4.2"/><circle cx="12" cy="16.8" r=".95" fill="currentColor" stroke="none"/>'),
   plus:iSVG('<path d="M12 5v14M5 12h14"/>'),
-  play:iSVG('<path d="M8 5.4v13.2L18 12z"/>'),
-  pause:iSVG('<path d="M9.2 5v14M14.8 5v14"/>'),
   unseal:iSVG('<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.2 10.5V8a3.8 3.8 0 017.6 0"/><circle cx="12" cy="15" r="1.3" fill="currentColor" stroke="none"/>'),
   /* dois khopesh cruzados — desafio */
   challenge:iSVG('<path d="M3.6 4.2c4.6 1.4 7.4 4.6 8.4 8.6"/><path d="M20.4 4.2c-4.6 1.4-7.4 4.6-8.4 8.6"/><path d="M12 12.8v7.4"/><path d="M9 20.2h6"/><path d="M4.8 16.4 8 13.6M19.2 16.4 16 13.6"/>')
@@ -3272,6 +3460,7 @@ function renderDrawer(){
     if(adm) nav+=item('access','Acessos');
   }
   nav+=`<div class="drawer-sep"></div>`;
+  nav+=item('events','Eventos');
   nav+=item('duels','Duelos');
   nav+=item('counter','Contador de Duelo');
   nav+=item('stats','Estatísticas');
@@ -3280,6 +3469,7 @@ function renderDrawer(){
   if(authed) nav+=item('decks','Meus Decks');
   if(authed) nav+=item('history','Meu histórico');
   if(authed) nav+=item('profile','Perfil');
+  if(adm) nav+=item('titles','Títulos e troféus');
   nav+=`<div class="drawer-sep"></div>`;
   if(inChamp) nav+=item('switch','Trocar campeonato');
   if(authed) nav+=item('logout','Sair','danger'); else nav+=item('login','Entrar');
@@ -3298,8 +3488,8 @@ function renderTabbar(){
              counter:scr==="counter", duels:scr==="duels" };
   /* o hero mostra só o ícone: o rótulo cabia mal e o desenho já é inequívoco.
      aria-label mantém o nome para quem usa leitor de tela. */
-  const tb=(nav,label,ic,hero)=>`<button class="tb ${hero?'hero':''} ${on[nav]?'on':''}" data-nav="${nav}" aria-label="${label}"${on[nav]?' aria-current="page"':''}>
-      <span class="tb-ic">${ic}</span>${hero?'':`<span class="tb-l">${label}</span>`}</button>`;
+  const tb=(nav,label,ic,core)=>`<button class="tb ${core?'core':''} ${on[nav]?'on':''}" data-nav="${nav}" aria-label="${label}"${on[nav]?' aria-current="page"':''}>
+      <span class="tb-ic">${ic}</span>${core?'':`<span class="tb-l">${label}</span>`}</button>`;
   bar.innerHTML = tb("home","Início",ICONS.home)
     + tb("rank","Torneio",ICONS.rank)
     + tb("counter","Duelar",ICONS.counter,true)
@@ -3314,6 +3504,8 @@ document.addEventListener("click", ev=>{
   else if(["rank","rounds","players","banlist","access"].includes(nav)){
     closeScreen(); if(CURRENT_CHAMP){ setView("champ"); route(); switchTab(nav); } else toast("Escolha um campeonato primeiro."); }
   else if(nav==="dir"){ openScreen("dir"); }
+  else if(nav==="events"){ openScreen("events"); }
+  else if(nav==="titles"){ if(isAdmin()) openScreen("titles"); }
   else if(nav==="duels"){ openScreen("duels"); }
   else if(nav==="counter"){ ACTIVE_DUEL=null; openScreen("counter"); }
   else if(nav==="stats"){ openScreen("stats"); }
@@ -3336,6 +3528,8 @@ function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.class
   if(name==="duels") renderDuels();
   if(name==="stats") renderStats();
   if(name==="dir") renderDirectory();
+  if(name==="events") renderEvents();
+  if(name==="titles"){ TITLE_EDIT=null; renderTitles(); }
   els("#screen-duels .admin-only").forEach(n=>n.classList.toggle("hidden",!isAdmin()));
   renderTabbar();
 }
@@ -3486,6 +3680,21 @@ function renderProfile(){
   /* ---------- 1. frase de duelo ---------- */
   if(u&&u.motto) html+=`<div class="motto">“${esc(u.motto)}”</div>`;
 
+  /* ---------- 1b. troféus de campeão ---------- */
+  const tro=trophiesOf(uid);
+  if(tro.total){
+    html+=`<div class="card"><h2>${IC.crown} Conquistas</h2>
+      <p class="section-note">${own?"Troféus que você levantou.":"Troféus que este duelista levantou."}</p>
+      <div class="troph-row">
+        ${tro.liga?`<div class="troph">${trophyHTML("liga","lg")}
+          <div><div class="troph-n">${tro.liga}</div>
+            <div class="troph-l">Liga${tro.liga>1?'s':''}</div></div></div>`:""}
+        ${tro.torneio?`<div class="troph">${trophyHTML("torneio","lg")}
+          <div><div class="troph-n">${tro.torneio}</div>
+            <div class="troph-l">Torneio${tro.torneio>1?'s':''}</div></div></div>`:""}
+      </div></div>`;
+  }
+
   /* ---------- 2. o cartaz: os 3 decks principais ---------- */
   html+=`<div class="card"><h2>${IC.chest} Decks principais</h2>
     <p class="section-note">${own
@@ -3597,23 +3806,146 @@ async function saveProfileName(){
    (que podem ser privados) */
 const topDecksOf=u=>Array.isArray(u&&u.topDecks)?u.topDecks.filter(Boolean).slice(0,3):[];
 
-/* titulos: so dependem do que ja esta carregado */
+/* ============================================================
+   TÍTULOS — a lista mora em meta/config, que só o admin escreve.
+   Cada título é uma REGRA: um critério da lista abaixo + um número.
+   Se o admin nunca mexeu, vale a lista padrão, então nada quebra.
+   ============================================================ */
+const TITLE_RULES={
+  duels:  {label:"Duelos disputados",            unit:"duelos"},
+  wins:   {label:"Vitórias",                     unit:"vitórias"},
+  streak: {label:"Maior sequência de vitórias",  unit:"vitórias seguidas"},
+  pct:    {label:"Aproveitamento (%)",           unit:"%"},
+  decks:  {label:"Decks montados",               unit:"decks"},
+  liga:   {label:"Ligas vencidas",               unit:"ligas"},
+  torneio:{label:"Torneios vencidos",            unit:"torneios"},
+};
+/* ícones oferecidos ao admin (chaves de IC) */
+const TITLE_ICONS=["crown","swords","feather","seal","sun","maat","chest","scarab",
+                   "eye","ankh","obelisk","challenge","check","scroll","harp"];
+const TITLES_PADRAO=[
+  {id:"t1",label:"Primeiro Duelo",icon:"swords", rule:"duels", min:1,   on:true},
+  {id:"t2",label:"Duelista",      icon:"feather",rule:"duels", min:10,  on:true},
+  {id:"t3",label:"Veterano",      icon:"seal",   rule:"duels", min:50,  on:true},
+  {id:"t4",label:"Lenda",         icon:"crown",  rule:"duels", min:100, on:true},
+  {id:"t5",label:"Invicto",       icon:"sun",    rule:"streak",min:5,   on:true},
+  {id:"t6",label:"Faraó",         icon:"maat",   rule:"pct",   min:70, min2:10, on:true},
+  {id:"t7",label:"Colecionador",  icon:"chest",  rule:"decks", min:3,   on:true},
+];
+function titleDefs(){
+  const c=CONFIG||{};
+  return (Array.isArray(c.titles)&&c.titles.length) ? c.titles : TITLES_PADRAO;
+}
+/* avalia a lista configurada para um duelista */
 function titlesOf(uid,deckCount){
   const st=statsOf(uid,"all");
   const tl=myTimeline(uid,"all");
-  const str=streakOf(tl);
   const best=(()=>{ let b=0,c=0; tl.forEach(e=>{ c=e.win?c+1:0; if(c>b) b=c; }); return b; })();
-  const mk=(ok,icon,label,falta)=>({ok,icon,label,falta});
-  return [
-    mk(st.t>=1,   IC.swords,  "Primeiro Duelo",  "dispute 1 duelo"),
-    mk(st.t>=10,  IC.feather, "Duelista",        `faltam ${Math.max(0,10-st.t)} duelos`),
-    mk(st.t>=50,  IC.seal,    "Veterano",        `faltam ${Math.max(0,50-st.t)} duelos`),
-    mk(st.t>=100, IC.crown,   "Lenda",           `faltam ${Math.max(0,100-st.t)} duelos`),
-    mk(best>=5,   IC.sun,     "Invicto",         `maior sequência: ${best}/5`),
-    mk(st.t>=10&&st.pct>=70, IC.maat, "Faraó",   st.t<10?"precisa de 10 duelos":`aproveitamento ${st.pct}%/70%`),
-    mk(deckCount>=3, IC.chest,"Colecionador",    `faltam ${Math.max(0,3-deckCount)} decks`),
-  ];
+  const tro=trophiesOf(uid);
+  const val={duels:st.t, wins:st.w, streak:best, pct:st.pct,
+             decks:deckCount||0, liga:tro.liga, torneio:tro.torneio};
+  return titleDefs().filter(d=>d&&d.on!==false).map(d=>{
+    const need=Number(d.min)||0;
+    const have=Number(val[d.rule])||0;
+    let ok, falta;
+    if(d.rule==="pct"){
+      /* aproveitamento sem um mínimo de duelos daria título a quem venceu 1 */
+      const m2=Number(d.min2)||10;
+      ok = st.t>=m2 && st.pct>=need;
+      falta = st.t<m2 ? `precisa de ${m2} duelos` : `aproveitamento ${st.pct}%/${need}%`;
+    } else {
+      ok = have>=need;
+      const u=(TITLE_RULES[d.rule]||{}).unit||"";
+      falta = `faltam ${Math.max(0,need-have)} ${u}`.trim();
+    }
+    return {ok, icon:IC[d.icon]||IC.crown, label:d.label||"Título", falta};
+  });
 }
+
+/* ---------- tela do admin: títulos e troféus ---------- */
+let TITLE_EDIT=null;
+function renderTitles(){
+  if(!isAdmin()){ $("ttl-list").innerHTML=`<div class="empty">Somente administradores.</div>`; return; }
+  const c=CONFIG||{};
+  const tl=$("troph-liga"), tt=$("troph-torneio");
+  if(tl&&document.activeElement!==tl) tl.value=c.trophyLeague||TROPHY_LIGA_PADRAO;
+  if(tt&&document.activeElement!==tt) tt.value=c.trophyEvent||"";
+  $("troph-prev").innerHTML=
+     `<span class="pv">${trophyHTML("liga","lg")} Liga</span>`
+    +`<span class="pv">${trophyHTML("torneio","lg")} Torneio</span>`;
+
+  if(!TITLE_EDIT) TITLE_EDIT=titleDefs().map(d=>({...d}));
+  const ruleOpts=cur=>Object.keys(TITLE_RULES).map(k=>
+    `<option value="${k}" ${cur===k?'selected':''}>${esc(TITLE_RULES[k].label)}</option>`).join("");
+  $("ttl-list").innerHTML=TITLE_EDIT.map((d,i)=>{
+    const u=(TITLE_RULES[d.rule]||{}).unit||"";
+    return `<div class="ttl-row ${d.on===false?'off':''}">
+      <div class="ttl-head">
+        <button class="ttl-ic" data-act="ttlicon" data-i="${i}" title="trocar o ícone">${IC[d.icon]||IC.crown}</button>
+        <input type="text" data-ttl="label" data-i="${i}" value="${esc(d.label||"")}" placeholder="Nome do título">
+        <button class="mini ${d.on===false?'':'danger'}" data-act="ttltoggle" data-i="${i}">${d.on===false?"Ligar":"Desligar"}</button>
+      </div>
+      <div class="ttl-rule">
+        <select class="search" data-ttl="rule" data-i="${i}">${ruleOpts(d.rule)}</select>
+        <input class="search" type="number" inputmode="numeric" min="0" data-ttl="min" data-i="${i}" value="${Number(d.min)||0}">
+        ${d.rule==="pct"?`<input class="search" type="number" inputmode="numeric" min="1" data-ttl="min2" data-i="${i}" value="${Number(d.min2)||10}" title="mínimo de duelos">`:""}
+        <button class="mini danger" data-act="ttldel" data-i="${i}">${IC.jar}</button>
+      </div>
+      <div class="ttl-hint">Conquistado com <b>${Number(d.min)||0} ${esc(u)}</b>${d.rule==="pct"?` e no mínimo <b>${Number(d.min2)||10} duelos</b>`:""}.</div>
+    </div>`;
+  }).join("")||`<div class="empty" style="padding:16px">Nenhum título. Toque em <b>Novo título</b>.</div>`;
+}
+/* os campos escrevem direto na lista em edição */
+document.addEventListener("input",e=>{
+  const el=e.target; if(!el||!el.dataset||!el.dataset.ttl||!TITLE_EDIT) return;
+  const i=+el.dataset.i, k=el.dataset.ttl; if(!TITLE_EDIT[i]) return;
+  TITLE_EDIT[i][k] = (k==="min"||k==="min2") ? (parseInt(el.value,10)||0) : el.value;
+});
+document.addEventListener("change",e=>{
+  const el=e.target; if(!el||!el.dataset||el.dataset.ttl!=="rule"||!TITLE_EDIT) return;
+  const i=+el.dataset.i; if(!TITLE_EDIT[i]) return;
+  TITLE_EDIT[i].rule=el.value; renderTitles();   /* a dica e o campo extra mudam */
+});
+$("btn-ttl-new").onclick=()=>{
+  if(!TITLE_EDIT) TITLE_EDIT=[];
+  TITLE_EDIT.push({id:"t"+Date.now().toString(36),label:"Novo título",
+    icon:"crown",rule:"duels",min:10,on:true});
+  renderTitles(); haptic(14);
+};
+$("btn-ttl-save").onclick=async()=>{
+  if(!isAdmin()||!TITLE_EDIT) return; showMsg("ttl-msg","");
+  const clean=TITLE_EDIT.map(d=>({id:String(d.id||("t"+Math.random().toString(36).slice(2))),
+    label:String(d.label||"Título").slice(0,40),
+    icon:TITLE_ICONS.includes(d.icon)?d.icon:"crown",
+    rule:TITLE_RULES[d.rule]?d.rule:"duels",
+    min:Math.max(0,Number(d.min)||0),
+    ...(d.rule==="pct"?{min2:Math.max(1,Number(d.min2)||10)}:{}),
+    on:d.on!==false}));
+  const b=$("btn-ttl-save"); b.disabled=true;
+  try{ await updateDoc(configRef,{titles:clean});
+    showMsg("ttl-msg",`${clean.length} título(s) salvos. Já valem para todo mundo.`,"ok");
+    haptic(22); toast("Títulos salvos 𓂀"); }
+  catch(e){ showMsg("ttl-msg",fbError(e),"err"); }
+  finally{ b.disabled=false; }
+};
+$("btn-ttl-reset").onclick=async()=>{
+  if(!isAdmin()) return;
+  if(!await ask("Voltar aos 7 títulos padrão?\n\nQualquer título que você criou ou alterou é perdido.",
+    {title:"Títulos padrão",ok:"Voltar ao padrão",danger:true})) return;
+  TITLE_EDIT=TITLES_PADRAO.map(d=>({...d}));
+  renderTitles(); showMsg("ttl-msg","Lista padrão carregada — toque em Salvar para valer.","info");
+};
+$("btn-troph-save").onclick=async()=>{
+  if(!isAdmin()) return; showMsg("troph-msg","");
+  const l=$("troph-liga").value.trim(), e2=$("troph-torneio").value.trim();
+  const bad=u=>u&&!/^https?:\/\//i.test(u);
+  if(bad(l)||bad(e2)){ showMsg("troph-msg","O link tem de começar com http:// ou https://","err"); return; }
+  const b=$("btn-troph-save"); b.disabled=true;
+  try{ await updateDoc(configRef,{trophyLeague:l||null,trophyEvent:e2||null});
+    showMsg("troph-msg","Troféus salvos.","ok"); haptic(20); toast("Troféus salvos"); }
+  catch(err){ showMsg("troph-msg",fbError(err),"err"); }
+  finally{ b.disabled=false; }
+};
 /* completude: cada item que falta e um convite para editar */
 function profileTodo(u,deckCount){
   const nm=(u&&u.displayName)||"";
@@ -3879,10 +4211,20 @@ function initCounter(){
     LP=[8000,8000]; banner.classList.add("hidden");
     setPanelPlain(1,"Jogador 1"); setPanelPlain(2,"Jogador 2");
   }
-  renderDuelChips(); renderLP(); renderMusicSel();
-  const ar=$("music-add-wrap"); if(ar) ar.classList.toggle("hidden",!isAdmin());
+  renderDuelChips(); renderLP();
 }
-function renderLP(){ $("lp1-num").textContent=LP[0]; $("lp2-num").textContent=LP[1]; }
+/* 8000 e a referencia da barra: e com o que todo duelo comeca */
+const LP_FULL=8000;
+function renderLP(){
+  $("lp1-num").textContent=LP[0]; $("lp2-num").textContent=LP[1];
+  for(const n of [1,2]){
+    const pct=Math.max(0,Math.min(100,(LP[n-1]/LP_FULL)*100));
+    const bar=$("lp"+n+"-bar"), box=$("lp"+n+"-bar-box");
+    if(bar) bar.style.width=pct+"%";
+    if(box){ box.classList.toggle("warn", pct<=50&&pct>25);
+             box.classList.toggle("danger", pct<=25); }
+  }
+}
 function animateLP(pl,cls){ const el=$("lp"+pl+"-num"); el.classList.remove("hit","heal"); void el.offsetWidth; el.classList.add(cls); }
 function lpApply(pl,op){
   const d=activeDuel();
@@ -3940,6 +4282,60 @@ async function answerInvite(id,accept){
     await updateDoc(doc(db,"duels",id),{status:"ativo",lpA:8000,lpB:8000});
     ACTIVE_DUEL=id; lpLocalTs=0; LP=[8000,8000]; haptic([25,45,25]); openScreen("counter"); openDeckPicker(id);
   }catch(e){ toast(fbError(e)); }
+}
+
+/* ---------- tela de eventos: em aberto x concluídos ---------- */
+let EV_STATUS="aberto";   // aberto | concluido
+let EV_KIND="todos";      // todos | liga | torneio
+function renderEvents(){
+  const adm=isAdmin();
+  const nAb=CHAMPS.filter(c=>c.status!=="encerrado").length;
+  const nFe=CHAMPS.length-nAb;
+  $("ev-filter").innerHTML=
+    `<button class="dchip ${EV_STATUS==="aberto"?'active':''}" data-act="evstatus" data-k="aberto">Em aberto · ${nAb}</button>`
+    +`<button class="dchip ${EV_STATUS==="concluido"?'active':''}" data-act="evstatus" data-k="concluido">Concluídos · ${nFe}</button>`
+    +`<span class="ev-sep"></span>`
+    +[["todos","Todos"],["liga","Ligas"],["torneio","Torneios"]].map(([k,l])=>
+      `<button class="dchip ${EV_KIND===k?'active':''}" data-act="evkind" data-k="${k}">${l}</button>`).join("");
+
+  const done=EV_STATUS==="concluido";
+  let list=CHAMPS.filter(c=>((c.status==="encerrado")===done));
+  if(EV_KIND!=="todos") list=list.filter(c=>(c.kind==="torneio"?"torneio":"liga")===EV_KIND);
+  /* mais recente primeiro: torneio pela data, liga pela data final */
+  list=list.slice().sort((a,b)=>String(b.date||b.endDate||"").localeCompare(String(a.date||a.endDate||"")));
+
+  const card=c=>{
+    const kd=(c.kind==="torneio")?"torneio":"liga";
+    const fin=c.status==="encerrado";
+    const ch=c.champion||null;
+    const when=kd==="torneio"?(c.date?fmtBR(c.date):"sem data")
+                             :(c.endDate?"até "+fmtBR(c.endDate):"pontos corridos");
+    return `<div class="ev-card">
+      <div class="ev-top" data-act="openchamp" data-id="${c.id}">
+        <svg class="cc-eye"><use href="#wdjat"/></svg>
+        <div class="cc-body" style="flex:1;min-width:0">
+          <div class="cc-name">${esc(c.name)}</div>
+          <div class="cc-meta"><span class="kind-pill ${kd}">${kd==="torneio"?"Torneio":"Liga"}</span>
+            <span>${esc(when)}</span>${fin?'':`<span class="status-pill ativo">Em andamento</span>`}</div>
+        </div>
+        <span class="cc-arrow">›</span>
+      </div>
+      ${fin?(ch
+        ? `<div class="ev-champ" data-act="profile" data-id="${esc(ch.uid)}">
+             ${trophyHTML(kd)}
+             <img class="avatar sm" src="${esc(ch.photo||AV_PH)}" alt="">
+             <div class="ev-champ-t"><div class="ev-champ-l">Campeão</div>
+               <div class="ev-champ-n">${esc(ch.name)}</div></div>
+             <span class="cc-arrow">›</span></div>`
+        : `<div class="ev-champ"><span class="ev-champ-l">encerrado sem campeão registrado</span></div>`):""}
+      ${adm?`<div class="ev-acts"><button class="mini danger" data-act="delchamp" data-id="${c.id}">${IC.jar} Excluir</button></div>`:``}
+    </div>`;
+  };
+
+  $("ev-body").innerHTML=list.length
+    ? list.map(card).join("")
+    : `<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.crown}</span>
+        Nenhum evento ${done?"concluído":"em aberto"}${EV_KIND!=="todos"?` do tipo ${EV_KIND}`:""}.</div>`;
 }
 
 /* ---------- diretório de duelistas ---------- */
@@ -4510,32 +4906,6 @@ $("lp-reset").onclick=()=>{ LP=[8000,8000]; renderLP(); $("coin-res").textConten
   const d=activeDuel(); if(d&&canDuel(d)){ lpLocalTs=Date.now(); queueLP(); } };
 $("coin").onclick=()=>{ if(coinBusy) return; coinBusy=true; const coin=$("coin"); coin.classList.remove("flip"); void coin.offsetWidth; coin.classList.add("flip");
   const res=Math.random()<0.5?"CARA":"COROA"; $("coin-res").textContent="girando…"; setTimeout(()=>{ $("coin-res").textContent=res; coinBusy=false; },800); };
-
-/* ---------- música ---------- */
-function renderMusicSel(){ const sel=$("music-sel"); if(sel){ const cur=sel.value;
-  sel.innerHTML=`<option value="">— escolher música —</option>`+TRACKS.map(t=>`<option value="${esc(t.url)}">${esc(t.name)}</option>`).join("");
-  if(cur) sel.value=cur; } renderMusicList(); }
-function renderMusicList(){ const box=$("music-list"); if(!box) return;
-  if(!isAdmin()){ box.innerHTML=""; return; }
-  box.innerHTML=TRACKS.length
-    ? TRACKS.map(t=>`<div class="track-row"><span class="tn">${IC.music} ${esc(t.name)}</span><button class="mini danger" data-act="deltrack" data-id="${t.id}">Remover</button></div>`).join("")
-    : `<div class="section-note" style="margin:6px 0 0">Nenhuma música adicionada ainda.</div>`;
-}
-const musicIcon=playing=>{ const b=$("music-play"); if(b) b.innerHTML=playing?IC.pause:IC.play; };
-$("music-play").onclick=()=>{ const a=$("bgm"); if(!a.paused){ a.pause(); musicIcon(false); return; }
-  const url=$("music-sel").value; if(!url){ toast("Escolha uma música ou toque um arquivo."); return; }
-  if(a.src!==url) a.src=url; a.volume=parseFloat($("music-vol").value);
-  a.play().then(()=>musicIcon(true)).catch(()=>toast("Não consegui tocar esse link.")); };
-musicIcon(false);
-$("music-vol").oninput=()=>{ $("bgm").volume=parseFloat($("music-vol").value); };
-$("music-local").onclick=()=>$("music-file").click();
-$("music-file").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const a=$("bgm"); a.src=URL.createObjectURL(f); a.volume=parseFloat($("music-vol").value);
-  a.play().then(()=>musicIcon(true)).catch(()=>{}); e.target.value=""; };
-$("music-add").onclick=async()=>{ if(!isAdmin()){ toast("Só o admin adiciona músicas."); return; }
-  const name=$("music-name").value.trim(), url=$("music-url").value.trim();
-  if(!name||!url){ toast("Preencha nome e link."); return; }
-  try{ await addDoc(collection(db,"tracks"),{name,url,createdAt:serverTimestamp()}); $("music-name").value=""; $("music-url").value=""; toast("Música adicionada"); }
-  catch(e){ toast(fbError(e)); } };
 
 /* ================= LISTA DE CARDS + DECKS (API YGOPRODeck) ================= */
 function mapCard(c){
