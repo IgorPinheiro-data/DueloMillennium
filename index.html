@@ -632,6 +632,34 @@
     font-weight:700;margin-top:5px}
   .ev-sep{flex:0 0 auto;width:1px;align-self:stretch;background:var(--line);margin:4px 3px}
 
+  /* ---------- A Mesa: temporada, historico e rivalidades ---------- */
+  /* a seta do cartao de evento tambem e usada dentro de um .card aqui */
+  .card .cc-arrow{color:var(--gold-deep);font-size:20px;flex:0 0 auto;opacity:.75}
+  .trophy.xs{width:15px;height:15px;filter:none}
+  .lg-sub{display:flex;align-items:center;gap:9px;margin-top:4px;font-size:10.5px;
+    color:var(--faint);font-weight:500}
+  .lg-sub span{display:inline-flex;align-items:center;gap:4px}
+  /* um confronto por linha: os dois nomes, o placar e a divisao */
+  .riv{padding:13px 0;border-bottom:1px solid var(--hair)}
+  .riv:last-child{border-bottom:none;padding-bottom:4px}
+  .riv-top{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .riv-who{display:inline-flex;align-items:center;gap:7px;flex:1;min-width:0;
+    font-size:13px;font-weight:600;cursor:pointer;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap}
+  .riv-who.r{flex-direction:row-reverse}
+  .riv-sc{flex:0 0 auto;font-family:'Cinzel',serif;font-size:16px;color:var(--gold-soft);
+    font-variant-numeric:tabular-nums}
+  .riv-sc i{color:var(--faint);font-style:normal;margin:0 3px}
+  .riv-bar{display:flex;height:6px;gap:2px}
+  .riv-bar i,.riv-bar u{display:block;height:100%;text-decoration:none;border-radius:3px}
+  .riv-bar i{background:var(--gold)}
+  .riv-bar u{background:var(--lapis)}
+  .riv-note{font-size:10.5px;color:var(--faint);margin-top:7px}
+  .riv-leg{display:flex;gap:15px;flex-wrap:wrap;font-size:11px;color:var(--muted);
+    margin:-2px 0 13px}
+  .riv-leg span{display:inline-flex;align-items:center;gap:6px}
+  .riv-leg i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:0 0 auto}
+
   /* ---------- perfil: decks principais, titulos, frase, completude ---------- */
   /* as tres cartas que representam o duelista */
   .top-decks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -1118,6 +1146,20 @@
     font-weight:600;font-size:11.5px;cursor:pointer;text-align:center;line-height:1.25;
     box-shadow:var(--shadow),var(--sheen);transition:transform .14s var(--ease)}
   .qa svg{width:22px;height:22px;color:var(--gold-deep)}
+  /* ---------- A Mesa na home: a temporada em uma olhada ---------- */
+  .mh-head{display:flex;align-items:center;gap:10px}
+  .mh-head>div{flex:1;min-width:0}
+  .mh-l{font-family:'Cinzel',serif;color:var(--gold-soft);font-size:15px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mh-s{font-size:10.5px;color:var(--muted);margin-top:3px}
+  .mh-rows{margin-top:12px;border-top:1px solid var(--hair)}
+  .mh-row{display:flex;align-items:center;gap:9px;padding:9px 0;
+    border-bottom:1px solid var(--hair)}
+  .mh-row:last-child{border-bottom:none;padding-bottom:2px}
+  .mh-n{flex:1;min-width:0;font-size:13.5px;font-weight:600;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mh-p{flex:0 0 auto;font-family:'Cinzel',serif;font-size:17px;color:var(--gold-soft);
+    font-variant-numeric:tabular-nums}
   .qa:active{transform:scale(.95)}
   .mini-live{display:flex;align-items:center;gap:10px;padding:11px 4px;cursor:pointer;
     border-bottom:1px solid var(--hair)}
@@ -1431,13 +1473,15 @@
       <input id="troph-liga" type="text" placeholder="https://…">
       <label class="fld">Troféu de torneio</label>
       <input id="troph-torneio" type="text" placeholder="https://… (sem link, usa a coroa)">
+      <label class="fld">Troféu de temporada da Mesa</label>
+      <input id="troph-temporada" type="text" placeholder="https://… (sem link, usa a coroa)">
       <div id="troph-msg"></div>
       <div style="height:12px"></div>
       <button class="btn" id="btn-troph-save">Salvar troféus</button>
     </div>
     <div class="card">
       <h2><span class="glyph">𓆃</span> Títulos</h2>
-      <p class="section-note">Cada título é conquistado sozinho quando o duelista bate a meta. Toque no ícone para trocá-lo. As alterações só valem depois de <b>Salvar</b>.</p>
+      <p class="section-note">Cada título é conquistado sozinho quando o duelista bate a meta. Toque no ícone para trocá-lo e no <b>&ge;</b> para virar a regra em <b>&le;</b> — é assim que se faz título de zoeira (&ldquo;no máximo 30% de aproveitamento&rdquo;, &ldquo;nenhuma vitória sobre o Igor&rdquo;). As alterações só valem depois de <b>Salvar</b>.</p>
       <div id="ttl-msg"></div>
       <div id="ttl-list"></div>
       <button class="btn ghost" id="btn-ttl-new">+ Novo título</button>
@@ -1455,6 +1499,15 @@
   <div class="screen-body">
     <div id="ev-filter" class="duel-chips"></div>
     <div id="ev-body"></div>
+  </div>
+</div>
+
+<!-- TELA A MESA (liga perpétua, histórico geral, rivalidades) -->
+<div id="screen-mesa" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>A Mesa</h1></div>
+  <div class="screen-body">
+    <div id="mesa-filter" class="duel-chips"></div>
+    <div id="mesa-body"></div>
   </div>
 </div>
 
@@ -1810,6 +1863,7 @@ let VIEW=sessionStorage.getItem("view")||"home";   // 'home' | 'champ'
 let ALL_DUELS=null, allDuelsLoading=false;         // histórico completo (estatísticas exatas)
 let STAT_IDX=null, duelSig="", DUEL_EPOCH=0;
 let DIR_TERM="";
+let MESA_TAB="temporada";   // temporada | historico | rivais | campeoes
 
 /* ---------- confirmar / digitar no tema do app ---------- */
 let askResolve=null;
@@ -1874,6 +1928,7 @@ onSnapshot(configRef, snap=>{ CONFIG=snap.exists()?snap.data():null; CONFIG_LOAD
   if(ACTIVE_SCREEN==="profile") renderProfile();
   if(ACTIVE_SCREEN==="events") renderEvents();
   if(ACTIVE_SCREEN==="titles") renderTitles();
+  if(ACTIVE_SCREEN==="mesa") renderMesa();   /* as temporadas moram no config */
 }, err=>{ console.error(err); CONFIG_LOADED=true; route(); });
 
 onSnapshot(query(champsCol, orderBy("createdAt","asc")), snap=>{
@@ -1881,6 +1936,7 @@ onSnapshot(query(champsCol, orderBy("createdAt","asc")), snap=>{
   if(CURRENT_CHAMP && subscribedChamp!==CURRENT_CHAMP && CHAMPS.find(c=>c.id===CURRENT_CHAMP)) subscribeChamp(CURRENT_CHAMP);
   route(); renderSelector(); renderAll();
   if(ACTIVE_SCREEN==="events") renderEvents();
+  if(ACTIVE_SCREEN==="mesa") renderMesa();
   if(ACTIVE_SCREEN==="profile") renderProfile();   /* troféus vêm dos eventos */
 }, err=>console.error(err));
 
@@ -1913,6 +1969,7 @@ onSnapshot(query(collection(db,"duels"),orderBy("createdAt","desc"),limit(400)),
   if(!structural){ refreshLiveNumbers(); return; }
   if(ACTIVE_SCREEN==="duels") renderDuels();
   if(ACTIVE_SCREEN==="stats") renderStats();
+  if(ACTIVE_SCREEN==="mesa") renderMesa();
   if(ACTIVE_SCREEN==="profile") renderProfile();
   if(!$("select-screen").classList.contains("hidden")) renderHome();
   /* reporte muda classificacao, rodada e home: redesenha a aba aberta */
@@ -2284,7 +2341,31 @@ function renderHome(){
   if(fechados.length)
     h+=`<button class="btn ghost" data-nav="events" style="margin-bottom:12px">${IC.crown} Ver ${fechados.length} evento${fechados.length===1?'':'s'} encerrado${fechados.length===1?'':'s'}</button>`;
 
-  /* 7 — atalhos */
+  /* 7 — A Mesa: a liga que não termina, com a temporada em curso */
+  const sTemp=openSeason();
+  if(sTemp){
+    const top=seasonTable(sTemp).slice(0,3);
+    h+=sec(IC.obelisk,"A Mesa");
+    h+=`<div class="card" data-nav="mesa" style="cursor:pointer">
+      <div class="mh-head"><div>
+        <div class="mh-l">${esc(sTemp.name||"Temporada")}</div>
+        <div class="mh-s">${top.length
+          ?"todo duelo registrado pontua aqui"
+          :"nenhum duelo decidido ainda nesta temporada"}</div>
+      </div><span class="cc-arrow">›</span></div>
+      ${top.length?`<div class="mh-rows">${top.map((r,i)=>`<div class="mh-row">
+          ${medalCell(i)}${mesaAvatar(r.id)}
+          <span class="mh-n">${mesaName(r.id)}</span>
+          <span class="mh-p">${r.pts}</span></div>`).join("")}</div>`:""}
+    </div>`;
+  } else if(adm){
+    h+=sec(IC.obelisk,"A Mesa");
+    h+=`<div class="card"><div class="empty" style="padding:16px"><span class="big">𓊽</span>
+      A Mesa é a liga que não termina: todo duelo registrado pontua,<br>sem precisar criar evento.</div>
+      <button class="btn ghost" data-nav="mesa">${IC.sun} Abrir a primeira temporada</button></div>`;
+  }
+
+  /* 8 — atalhos */
   h+=sec(IC.ankh,"Atalhos");
   h+=`<div class="qa-grid">
     <button class="qa" data-nav="duels">${ICONS.duels}Duelos</button>
@@ -2344,7 +2425,9 @@ $("btn-add-champ").onclick=async()=>{
 const TROPHY_LIGA_PADRAO="https://i.postimg.cc/g08Yh2Sq/Trofeu-Dourado-do-Olho-Sagrado.png";
 const trophyURL=kind=>{
   const c=CONFIG||{};
-  return kind==="torneio" ? (c.trophyEvent||"") : (c.trophyLeague||TROPHY_LIGA_PADRAO);
+  if(kind==="torneio")   return c.trophyEvent||"";
+  if(kind==="temporada") return c.trophySeason||"";
+  return c.trophyLeague||TROPHY_LIGA_PADRAO;
 };
 /* sem imagem configurada, usa a coroa — nunca quebra */
 function trophyHTML(kind,cls){
@@ -2354,10 +2437,12 @@ function trophyHTML(kind,cls){
 }
 /* quantas ligas e quantos torneios este duelista venceu */
 function trophiesOf(uid){
-  let liga=0, torneio=0;
+  let liga=0, torneio=0, temporada=0;
   CHAMPS.forEach(c=>{ if(c&&c.champion&&c.champion.uid===uid){
     if(c.kind==="torneio") torneio++; else liga++; } });
-  return {liga,torneio,total:liga+torneio};
+  /* as temporadas da Mesa ficam em meta/config, nao em /championships */
+  closedSeasons().forEach(s=>{ if(s&&s.champion&&s.champion.uid===uid) temporada++; });
+  return {liga,torneio,temporada,total:liga+torneio+temporada};
 }
 
 /* ---------- champion banner ---------- */
@@ -2827,6 +2912,78 @@ document.addEventListener("click", async ev=>{
   const act=b.dataset.act;
 
   if(act==="openchamp"){ selectChamp(b.dataset.id); return; }
+
+  /* ---------- A Mesa: temporadas ---------- */
+  if(act==="mesatab"){ MESA_TAB=b.dataset.k; haptic(10); renderMesa(); return; }
+  if(act==="seasonnew"){
+    if(!isAdmin()) return;
+    if(openSeason()){ toast("Já existe uma temporada aberta."); return; }
+    const name=await askText("A temporada começa hoje e só termina quando você encerrar. Todo duelo registrado a partir de hoje pontua nela.",
+      "Temporada "+(closedSeasons().length+1),{title:"Abrir temporada",icon:IC.sun,ok:"Abrir"});
+    if(!name) return;
+    const list=seasonList().map(x=>({...x}));
+    list.push({id:"s"+Date.now().toString(36),name:String(name).slice(0,40),
+      start:todayISO(),end:null,champion:null});
+    try{ await updateDoc(configRef,{seasons:list}); toast("Temporada aberta 𓇳"); haptic(22); }
+    catch(e){ toast(fbError(e)); }
+    return; }
+  if(act==="seasonrename"){
+    if(!isAdmin()) return;
+    const s=openSeason(); if(!s) return;
+    const name=await askText("Como esta temporada se chama?",s.name||"",
+      {title:"Renomear temporada",icon:IC.feather,ok:"Salvar"});
+    if(!name) return;
+    const list=seasonList().map(x=>x.id===s.id?{...x,name:String(name).slice(0,40)}:{...x});
+    try{ await updateDoc(configRef,{seasons:list}); toast("Temporada renomeada"); }
+    catch(e){ showMsg("mesa-msg",fbError(e),"err"); }
+    return; }
+  if(act==="seasonstart"){
+    if(!isAdmin()) return;
+    const s=openSeason(); if(!s) return;
+    const v=await askText("A partir de que dia os duelos contam nesta temporada? Use o formato AAAA-MM-DD.",
+      s.start||todayISO(),{title:"Início da temporada",icon:IC.akhet,ok:"Salvar"});
+    if(!v) return;
+    const iso=String(v).trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)){ toast("Data inválida — use AAAA-MM-DD."); return; }
+    const list=seasonList().map(x=>x.id===s.id?{...x,start:iso}:{...x});
+    try{ await updateDoc(configRef,{seasons:list}); toast("Início atualizado"); }
+    catch(e){ showMsg("mesa-msg",fbError(e),"err"); }
+    return; }
+  if(act==="seasonclose"){
+    if(!isAdmin()) return;
+    const s=openSeason(); if(!s) return;
+    await ensureAllDuels();
+    const rows=seasonTable(s);
+    const win=(rows.length&&rows[0].pts>0)?rows[0]:null;
+    if(!await ask(`Encerrar <b>${esc(s.name||"a temporada")}</b>?\n\nCampeão: <b>${esc(win?win.name:"(nenhum duelo decidido)")}</b>\n\n${win?"Ele ganha um troféu de temporada no perfil. ":""}A tabela congela como está e a próxima temporada pode ser aberta em seguida.`,
+      {icon:IC.crown,title:"Encerrar temporada",ok:"Encerrar"})) return;
+    const list=seasonList().map(x=>x.id===s.id
+      ? {...x,end:todayISO(),champion:win?{uid:win.id,name:win.name}:null}
+      : {...x});
+    try{ await updateDoc(configRef,{seasons:list});
+      toast(win?`${win.name} venceu a temporada! 𓋹`:"Temporada encerrada"); haptic(26); }
+    catch(e){ showMsg("mesa-msg",fbError(e),"err"); }
+    return; }
+
+  if(act==="champdeck"){
+    ev.stopPropagation();
+    const c=CHAMPS.find(x=>x.id===b.dataset.id);
+    if(!c||!c.championDeck){ toast("Nenhum deck guardado para este evento."); return; }
+    const quem=(c.champion&&c.champion.name)||"o campeão";
+    showDeckDialog(unpackDeck(c.championDeck),
+      `Deck de <b style="color:var(--gold-soft)">${esc(quem)}</b> em ${esc(c.name)}, como estava no dia`);
+    return; }
+  if(act==="savechampdeck"){
+    ev.stopPropagation();
+    if(!isAdmin()) return;
+    const c=CHAMPS.find(x=>x.id===b.dataset.id);
+    if(!c||!c.champion||!c.champion.uid){ toast("Este evento não tem campeão registrado."); return; }
+    b.disabled=true; b.textContent="Guardando…";
+    try{ const r=await saveChampionDeck(c.id,c.champion.uid);
+      toast(r.ok?`Deck guardado: ${r.name}`:r.msg); haptic(r.ok?22:10); }
+    catch(e){ toast(fbError(e)); }
+    finally{ renderEvents(); }
+    return; }
   if(act==="delchamp"){
     ev.stopPropagation();
     if(!isAdmin()) return;
@@ -2917,6 +3074,8 @@ document.addEventListener("click", async ev=>{
     haptic(10); renderTitles(); return; }
   if(act==="ttltoggle"){ if(!TITLE_EDIT) return; const d=TITLE_EDIT[+b.dataset.i]; if(!d) return;
     d.on=(d.on===false); haptic(12); renderTitles(); return; }
+  if(act==="ttlcmp"){ if(!TITLE_EDIT) return; const d=TITLE_EDIT[+b.dataset.i]; if(!d) return;
+    d.cmp=(d.cmp==="max")?"min":"max"; haptic(12); renderTitles(); return; }
   if(act==="ttldel"){ if(!TITLE_EDIT) return; TITLE_EDIT.splice(+b.dataset.i,1); haptic(16); renderTitles(); return; }
   if(act==="statscope"){ STATS_SCOPE=b.dataset.k; renderStats(); return; }
   if(act==="stattable"){ STATS_TABLE=!STATS_TABLE; renderStats(); return; }
@@ -3302,7 +3461,8 @@ $("btn-finish-champ").onclick=async()=>{
   if(isLocked()){
     if(!await ask(`Reabrir ${kTour?"o":"a"} ${lbl}?\n\nVocê volta a poder editar rodadas e resultados. O troféu sai do perfil do campeão até você encerrar de novo.`,
       {title:"Reabrir "+lbl,ok:"Reabrir"})) return;
-    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"ativo",champion:null});
+    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),
+        {status:"ativo",champion:null,championDeck:null,championDeckAt:null});
       toast(kTour?"Torneio reaberto":"Liga reaberta"); }catch(e){ toast(fbError(e)); }
     return; }
   const rows=computeStandings();
@@ -3315,7 +3475,12 @@ $("btn-finish-champ").onclick=async()=>{
     await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"encerrado",
       champion: win?{uid:win.id,name:win.name,photo:playerPhoto(win.id).photo||null}:null,
       championAt: serverTimestamp()});
-    toast(win?`${win.name} é o campeão! 𓋹`:"Evento encerrado"); switchTab("rank");
+    /* guarda o deck que mais venceu junto com a coroa; se nao der, o admin
+       tem um botao na tela de Eventos para tentar de novo */
+    let extra="";
+    if(win){ try{ const r=await saveChampionDeck(CURRENT_CHAMP,win.id);
+      extra = r.ok ? " · deck guardado" : ""; }catch(_){} }
+    toast(win?`${win.name} é o campeão! 𓋹${extra}`:"Evento encerrado"); switchTab("rank");
   }catch(e){ toast(fbError(e)); }
 };
 
@@ -3399,6 +3564,8 @@ const ICONS={
   switch:SVG+'<path d="M4 9h12l-3.5-3.5"/><path d="M20 15H8l3.5 3.5"/></svg>',
   logout:SVG+'<path d="M13 4H7a1 1 0 00-1 1v14a1 1 0 001 1h6"/><path d="M13 12h8"/><path d="M18 8.5 21.5 12 18 15.5"/></svg>',
   login:SVG+'<path d="M11 4h6a1 1 0 011 1v14a1 1 0 01-1 1h-6"/><path d="M11 12H3"/><path d="M6 8.5 2.5 12 6 15.5"/></svg>',
+  /* mesa redonda com pé — a liga que não termina */
+  mesa:SVG+'<ellipse cx="12" cy="7.6" rx="7.7" ry="3.3"/><path d="M4.3 7.6v2.1c0 1.8 3.5 3.3 7.7 3.3s7.7-1.5 7.7-3.3V7.6"/><path d="M12 13v7.2"/><path d="M8.3 20.2h7.4"/></svg>',
   more:SVG+'<circle cx="5.5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>'
 };
 const iSVG=(p,extra)=>`<svg class="ic${extra?' '+extra:''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -3461,6 +3628,7 @@ function renderDrawer(){
   }
   nav+=`<div class="drawer-sep"></div>`;
   nav+=item('events','Eventos');
+  nav+=item('mesa','A Mesa');
   nav+=item('duels','Duelos');
   nav+=item('counter','Contador de Duelo');
   nav+=item('stats','Estatísticas');
@@ -3505,6 +3673,7 @@ document.addEventListener("click", ev=>{
     closeScreen(); if(CURRENT_CHAMP){ setView("champ"); route(); switchTab(nav); } else toast("Escolha um campeonato primeiro."); }
   else if(nav==="dir"){ openScreen("dir"); }
   else if(nav==="events"){ openScreen("events"); }
+  else if(nav==="mesa"){ openScreen("mesa"); }
   else if(nav==="titles"){ if(isAdmin()) openScreen("titles"); }
   else if(nav==="duels"){ openScreen("duels"); }
   else if(nav==="counter"){ ACTIVE_DUEL=null; openScreen("counter"); }
@@ -3529,6 +3698,7 @@ function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.class
   if(name==="stats") renderStats();
   if(name==="dir") renderDirectory();
   if(name==="events") renderEvents();
+  if(name==="mesa") renderMesa();
   if(name==="titles"){ TITLE_EDIT=null; renderTitles(); }
   els("#screen-duels .admin-only").forEach(n=>n.classList.toggle("hidden",!isAdmin()));
   renderTabbar();
@@ -3692,6 +3862,9 @@ function renderProfile(){
         ${tro.torneio?`<div class="troph">${trophyHTML("torneio","lg")}
           <div><div class="troph-n">${tro.torneio}</div>
             <div class="troph-l">Torneio${tro.torneio>1?'s':''}</div></div></div>`:""}
+        ${tro.temporada?`<div class="troph">${trophyHTML("temporada","lg")}
+          <div><div class="troph-n">${tro.temporada}</div>
+            <div class="troph-l">Temporada${tro.temporada>1?'s':''}</div></div></div>`:""}
       </div></div>`;
   }
 
@@ -3812,17 +3985,23 @@ const topDecksOf=u=>Array.isArray(u&&u.topDecks)?u.topDecks.filter(Boolean).slic
    Se o admin nunca mexeu, vale a lista padrão, então nada quebra.
    ============================================================ */
 const TITLE_RULES={
-  duels:  {label:"Duelos disputados",            unit:"duelos"},
-  wins:   {label:"Vitórias",                     unit:"vitórias"},
-  streak: {label:"Maior sequência de vitórias",  unit:"vitórias seguidas"},
-  pct:    {label:"Aproveitamento (%)",           unit:"%"},
-  decks:  {label:"Decks montados",               unit:"decks"},
-  liga:   {label:"Ligas vencidas",               unit:"ligas"},
-  torneio:{label:"Torneios vencidos",            unit:"torneios"},
+  duels:     {label:"Duelos disputados",            unit:"duelos"},
+  wins:      {label:"Vitórias",                     unit:"vitórias"},
+  losses:    {label:"Derrotas",                     unit:"derrotas"},
+  streak:    {label:"Maior sequência de vitórias",  unit:"vitórias seguidas"},
+  lossStreak:{label:"Maior sequência de derrotas",  unit:"derrotas seguidas"},
+  pct:       {label:"Aproveitamento (%)",           unit:"%", guard:true},
+  decks:     {label:"Decks montados",               unit:"decks"},
+  events:    {label:"Eventos disputados",           unit:"eventos"},
+  liga:      {label:"Ligas vencidas",               unit:"ligas"},
+  torneio:   {label:"Torneios vencidos",            unit:"torneios"},
+  temporada: {label:"Temporadas vencidas",          unit:"temporadas"},
+  vsWins:    {label:"Vitórias sobre um duelista",   unit:"vitórias", who:true, guard:true},
 };
 /* ícones oferecidos ao admin (chaves de IC) */
 const TITLE_ICONS=["crown","swords","feather","seal","sun","maat","chest","scarab",
-                   "eye","ankh","obelisk","challenge","check","scroll","harp"];
+                   "eye","ankh","obelisk","challenge","check","scroll","harp",
+                   "ban","alert","reed","akhet","jar","wait","person","x"];
 const TITLES_PADRAO=[
   {id:"t1",label:"Primeiro Duelo",icon:"swords", rule:"duels", min:1,   on:true},
   {id:"t2",label:"Duelista",      icon:"feather",rule:"duels", min:10,  on:true},
@@ -3831,32 +4010,59 @@ const TITLES_PADRAO=[
   {id:"t5",label:"Invicto",       icon:"sun",    rule:"streak",min:5,   on:true},
   {id:"t6",label:"Faraó",         icon:"maat",   rule:"pct",   min:70, min2:10, on:true},
   {id:"t7",label:"Colecionador",  icon:"chest",  rule:"decks", min:3,   on:true},
+  /* títulos de zoeira: a mesa é de amigos, e perder também rende história */
+  {id:"t8",label:"Saco de Pancada",icon:"ban",   rule:"losses",    min:25, on:true},
+  {id:"t9",label:"Maré Ruim",      icon:"alert", rule:"lossStreak",min:5,  on:true},
+  {id:"t10",label:"Eterno Aprendiz",icon:"reed", rule:"pct", cmp:"max", min:30, min2:20, on:true},
 ];
 function titleDefs(){
   const c=CONFIG||{};
   return (Array.isArray(c.titles)&&c.titles.length) ? c.titles : TITLES_PADRAO;
 }
+/* um título pode pedir "pelo menos" (cmp padrão) ou "no máximo" (cmp:"max").
+   Todo título de "no máximo" exige um mínimo de duelos — senão quem acabou
+   de entrar, com zero de tudo, ganharia o título de cara. */
+const titleNeedsGuard=d=>d&&(d.cmp==="max"||(TITLE_RULES[d.rule]||{}).guard);
+const titleGuard=d=>Math.max(1,Number(d&&d.min2)||10);
 /* avalia a lista configurada para um duelista */
 function titlesOf(uid,deckCount){
   const st=statsOf(uid,"all");
   const tl=myTimeline(uid,"all");
-  const best=(()=>{ let b=0,c=0; tl.forEach(e=>{ c=e.win?c+1:0; if(c>b) b=c; }); return b; })();
+  /* maior sequência de vitórias (win=true) ou de derrotas (win=false) */
+  const run=w=>{ let b=0,c=0; tl.forEach(e=>{ c=(e.win===w)?c+1:0; if(c>b) b=c; }); return b; };
   const tro=trophiesOf(uid);
-  const val={duels:st.t, wins:st.w, streak:best, pct:st.pct,
-             decks:deckCount||0, liga:tro.liga, torneio:tro.torneio};
+  const evs=new Set(); tl.forEach(e=>{ if(e.champId) evs.add(e.champId); });
+  const val={duels:st.t, wins:st.w, losses:st.l, streak:run(true), lossStreak:run(false),
+             pct:st.pct, decks:deckCount||0, events:evs.size,
+             liga:tro.liga, torneio:tro.torneio, temporada:tro.temporada};
   return titleDefs().filter(d=>d&&d.on!==false).map(d=>{
-    const need=Number(d.min)||0;
-    const have=Number(val[d.rule])||0;
+    const need=Number(d.min)||0, max=d.cmp==="max";
+    const u=(TITLE_RULES[d.rule]||{}).unit||"";
+    const hit=have=>max?have<=need:have>=need;
     let ok, falta;
-    if(d.rule==="pct"){
-      /* aproveitamento sem um mínimo de duelos daria título a quem venceu 1 */
-      const m2=Number(d.min2)||10;
-      ok = st.t>=m2 && st.pct>=need;
-      falta = st.t<m2 ? `precisa de ${m2} duelos` : `aproveitamento ${st.pct}%/${need}%`;
+    if(d.rule==="vsWins"){
+      /* "nunca venceu o X": só vale depois de terem se enfrentado */
+      const who=d.who||"", m2=titleGuard(d);
+      const duels=tl.filter(e=>e.foe===who), have=duels.filter(e=>e.win).length;
+      const nm=who?(nameOfUid(who)||"").split(" ")[0]:"alguém";
+      ok = !!who && duels.length>=m2 && hit(have);
+      falta = !who ? "nenhum duelista escolhido"
+            : duels.length<m2 ? `precisa de ${m2} duelo(s) contra ${nm}`
+            : max ? `${have} vitória(s) sobre ${nm} — o limite é ${need}`
+                  : `faltam ${Math.max(0,need-have)} vitória(s) sobre ${nm}`;
+    } else if(d.rule==="pct"){
+      const m2=titleGuard(d);
+      ok = st.t>=m2 && hit(st.pct);
+      falta = st.t<m2 ? `precisa de ${m2} duelos`
+            : max ? `aproveitamento ${st.pct}% — o limite é ${need}%`
+                  : `aproveitamento ${st.pct}%/${need}%`;
     } else {
-      ok = have>=need;
-      const u=(TITLE_RULES[d.rule]||{}).unit||"";
-      falta = `faltam ${Math.max(0,need-have)} ${u}`.trim();
+      const have=Number(val[d.rule])||0;
+      const m2=titleGuard(d);
+      ok = (max ? st.t>=m2 : true) && hit(have);
+      falta = (max && st.t<m2) ? `precisa de ${m2} duelos`
+            : max ? `${have} ${u} — o limite é ${need}`.trim()
+                  : `faltam ${Math.max(0,need-have)} ${u}`.trim();
     }
     return {ok, icon:IC[d.icon]||IC.crown, label:d.label||"Título", falta};
   });
@@ -3870,15 +4076,26 @@ function renderTitles(){
   const tl=$("troph-liga"), tt=$("troph-torneio");
   if(tl&&document.activeElement!==tl) tl.value=c.trophyLeague||TROPHY_LIGA_PADRAO;
   if(tt&&document.activeElement!==tt) tt.value=c.trophyEvent||"";
+  const ts=$("troph-temporada");
+  if(ts&&document.activeElement!==ts) ts.value=c.trophySeason||"";
   $("troph-prev").innerHTML=
      `<span class="pv">${trophyHTML("liga","lg")} Liga</span>`
-    +`<span class="pv">${trophyHTML("torneio","lg")} Torneio</span>`;
+    +`<span class="pv">${trophyHTML("torneio","lg")} Torneio</span>`
+    +`<span class="pv">${trophyHTML("temporada","lg")} Temporada</span>`;
 
   if(!TITLE_EDIT) TITLE_EDIT=titleDefs().map(d=>({...d}));
   const ruleOpts=cur=>Object.keys(TITLE_RULES).map(k=>
     `<option value="${k}" ${cur===k?'selected':''}>${esc(TITLE_RULES[k].label)}</option>`).join("");
+  /* lista de duelistas para a regra "vitórias sobre um duelista" */
+  const whoOpts=cur=>`<option value="">— escolha o duelista —</option>`
+    +USERS.slice().map(u=>({id:u.id,nm:nameOfUid(u.id)}))
+      .sort((a,b)=>a.nm.localeCompare(b.nm))
+      .map(u=>`<option value="${esc(u.id)}" ${cur===u.id?'selected':''}>${esc(u.nm)}</option>`).join("");
   $("ttl-list").innerHTML=TITLE_EDIT.map((d,i)=>{
     const u=(TITLE_RULES[d.rule]||{}).unit||"";
+    const max=d.cmp==="max", guard=titleNeedsGuard(d), m2=titleGuard(d);
+    const wantsWho=!!(TITLE_RULES[d.rule]||{}).who;
+    const nm=wantsWho?(d.who?(nameOfUid(d.who)||"").split(" ")[0]:"ninguém"):"";
     return `<div class="ttl-row ${d.on===false?'off':''}">
       <div class="ttl-head">
         <button class="ttl-ic" data-act="ttlicon" data-i="${i}" title="trocar o ícone">${IC[d.icon]||IC.crown}</button>
@@ -3887,11 +4104,14 @@ function renderTitles(){
       </div>
       <div class="ttl-rule">
         <select class="search" data-ttl="rule" data-i="${i}">${ruleOpts(d.rule)}</select>
+        <button class="mini" data-act="ttlcmp" data-i="${i}" title="pelo menos / no máximo">${max?"&le;":"&ge;"}</button>
         <input class="search" type="number" inputmode="numeric" min="0" data-ttl="min" data-i="${i}" value="${Number(d.min)||0}">
-        ${d.rule==="pct"?`<input class="search" type="number" inputmode="numeric" min="1" data-ttl="min2" data-i="${i}" value="${Number(d.min2)||10}" title="mínimo de duelos">`:""}
+        ${guard?`<input class="search" type="number" inputmode="numeric" min="1" data-ttl="min2" data-i="${i}" value="${m2}" title="mínimo de duelos">`:""}
         <button class="mini danger" data-act="ttldel" data-i="${i}">${IC.jar}</button>
       </div>
-      <div class="ttl-hint">Conquistado com <b>${Number(d.min)||0} ${esc(u)}</b>${d.rule==="pct"?` e no mínimo <b>${Number(d.min2)||10} duelos</b>`:""}.</div>
+      ${wantsWho?`<div class="ttl-rule" style="margin-top:8px">
+        <select class="search" data-ttl="who" data-i="${i}" style="flex:1">${whoOpts(d.who||"")}</select></div>`:""}
+      <div class="ttl-hint">Conquistado com <b>${max?"no máximo":"pelo menos"} ${Number(d.min)||0} ${esc(u)}</b>${wantsWho?` sobre <b>${esc(nm)}</b>`:""}${guard?`, e no mínimo <b>${m2} duelo${m2>1?'s':''}</b>`:""}.</div>
     </div>`;
   }).join("")||`<div class="empty" style="padding:16px">Nenhum título. Toque em <b>Novo título</b>.</div>`;
 }
@@ -3902,9 +4122,10 @@ document.addEventListener("input",e=>{
   TITLE_EDIT[i][k] = (k==="min"||k==="min2") ? (parseInt(el.value,10)||0) : el.value;
 });
 document.addEventListener("change",e=>{
-  const el=e.target; if(!el||!el.dataset||el.dataset.ttl!=="rule"||!TITLE_EDIT) return;
+  const el=e.target; if(!el||!el.dataset||!TITLE_EDIT) return;
   const i=+el.dataset.i; if(!TITLE_EDIT[i]) return;
-  TITLE_EDIT[i].rule=el.value; renderTitles();   /* a dica e o campo extra mudam */
+  if(el.dataset.ttl==="rule"){ TITLE_EDIT[i].rule=el.value; renderTitles(); return; }
+  if(el.dataset.ttl==="who"){ TITLE_EDIT[i].who=el.value; renderTitles(); }
 });
 $("btn-ttl-new").onclick=()=>{
   if(!TITLE_EDIT) TITLE_EDIT=[];
@@ -3918,8 +4139,10 @@ $("btn-ttl-save").onclick=async()=>{
     label:String(d.label||"Título").slice(0,40),
     icon:TITLE_ICONS.includes(d.icon)?d.icon:"crown",
     rule:TITLE_RULES[d.rule]?d.rule:"duels",
+    cmp:d.cmp==="max"?"max":"min",
     min:Math.max(0,Number(d.min)||0),
-    ...(d.rule==="pct"?{min2:Math.max(1,Number(d.min2)||10)}:{}),
+    ...(titleNeedsGuard(d)?{min2:titleGuard(d)}:{}),
+    ...((TITLE_RULES[d.rule]||{}).who?{who:String(d.who||"")}:{}),
     on:d.on!==false}));
   const b=$("btn-ttl-save"); b.disabled=true;
   try{ await updateDoc(configRef,{titles:clean});
@@ -3930,7 +4153,7 @@ $("btn-ttl-save").onclick=async()=>{
 };
 $("btn-ttl-reset").onclick=async()=>{
   if(!isAdmin()) return;
-  if(!await ask("Voltar aos 7 títulos padrão?\n\nQualquer título que você criou ou alterou é perdido.",
+  if(!await ask("Voltar aos "+TITLES_PADRAO.length+" títulos padrão?\n\nQualquer título que você criou ou alterou é perdido.",
     {title:"Títulos padrão",ok:"Voltar ao padrão",danger:true})) return;
   TITLE_EDIT=TITLES_PADRAO.map(d=>({...d}));
   renderTitles(); showMsg("ttl-msg","Lista padrão carregada — toque em Salvar para valer.","info");
@@ -3938,10 +4161,11 @@ $("btn-ttl-reset").onclick=async()=>{
 $("btn-troph-save").onclick=async()=>{
   if(!isAdmin()) return; showMsg("troph-msg","");
   const l=$("troph-liga").value.trim(), e2=$("troph-torneio").value.trim();
+  const s2=$("troph-temporada").value.trim();
   const bad=u=>u&&!/^https?:\/\//i.test(u);
-  if(bad(l)||bad(e2)){ showMsg("troph-msg","O link tem de começar com http:// ou https://","err"); return; }
+  if(bad(l)||bad(e2)||bad(s2)){ showMsg("troph-msg","O link tem de começar com http:// ou https://","err"); return; }
   const b=$("btn-troph-save"); b.disabled=true;
-  try{ await updateDoc(configRef,{trophyLeague:l||null,trophyEvent:e2||null});
+  try{ await updateDoc(configRef,{trophyLeague:l||null,trophyEvent:e2||null,trophySeason:s2||null});
     showMsg("troph-msg","Troféus salvos.","ok"); haptic(20); toast("Troféus salvos"); }
   catch(err){ showMsg("troph-msg",fbError(err),"err"); }
   finally{ b.disabled=false; }
@@ -4053,9 +4277,12 @@ $("prof-cover-file").onchange=e=>{
   rd.readAsDataURL(f);
 };
 
-/* ---------- ver deck de outro duelista (somente leitura) ---------- */
+/* ---------- ver deck em modo leitura (de outro duelista ou de um snapshot) ---------- */
 function openDeckView(deckId){
-  const d=PROFILE_DECKS.find(x=>x.id===deckId); if(!d) return;
+  const d=PROFILE_DECKS.find(x=>x.id===deckId); if(d) showDeckDialog(d);
+}
+function showDeckDialog(d,nota){
+  if(!d) return;
   $("dv-icon").innerHTML=IC.chest; $("dv-title").textContent=d.name||"Deck";
   const blName=(d.banlist||"tcg")==="tcg"?"TCG (oficial)":((BANLISTS.find(b=>b.id===d.banlist)||{}).name||"?");
   const sec=(label,arr)=>{
@@ -4067,7 +4294,7 @@ function openDeckView(deckId){
         :`<div class="section-note" style="grid-column:1/-1;margin:0">vazio</div>`}</div></div>`;
   };
   (d.main||[]).concat(d.extra||[],d.side||[]).forEach(c=>{ if(!CARD_CACHE[c.id]) CARD_CACHE[c.id]={...c,desc:"",type:c.type||"",banTcg:c.banTcg||""}; });
-  $("dv-body").innerHTML=`<div class="section-note" style="margin:-4px 0 10px">Banlist: <b style="color:var(--gold-soft)">${esc(blName)}</b></div>`
+  $("dv-body").innerHTML=`<div class="section-note" style="margin:-4px 0 10px">${nota?nota+"<br>":""}Banlist: <b style="color:var(--gold-soft)">${esc(blName)}</b></div>`
     +sec("Deck Principal",d.main)+sec("Extra Deck",d.extra)+sec("Side Deck",d.side);
   $("deck-view").classList.add("show");
 }
@@ -4284,6 +4511,61 @@ async function answerInvite(id,accept){
   }catch(e){ toast(fbError(e)); }
 }
 
+/* ============================================================
+   DECK DO CAMPEAO — a lista como ela estava no dia da coroacao.
+   Nao e policiamento, e memoria: daqui a dois anos da para abrir
+   a Copa e ver o deck exato que ganhou.
+   O snapshot fica no proprio doc do evento, em forma compacta
+   (carta unica + quantidade) para nao engordar a lista que o app
+   le a cada abertura. Carta repetida vira um registro com q:3.
+   ============================================================ */
+function packDeck(deck){
+  const pk=arr=>{
+    const m=new Map();
+    (arr||[]).forEach(c=>{ if(!c||!c.id) return;
+      const o=m.get(c.id);
+      if(o) o.q++;
+      else m.set(c.id,{id:String(c.id),name:c.name||"",small:c.small||"",type:c.type||"",q:1}); });
+    return Array.from(m.values());
+  };
+  return {id:deck.id,name:deck.name||"Deck",banlist:deck.banlist||"tcg",
+          main:pk(deck.main),extra:pk(deck.extra),side:pk(deck.side)};
+}
+function unpackDeck(snap){
+  const ex=arr=>{ const out=[];
+    (arr||[]).forEach(c=>{ const n=Math.max(1,Number(c.q)||1); for(let i=0;i<n;i++) out.push(c); });
+    return out; };
+  return {id:snap.id,name:snap.name,banlist:snap.banlist,
+          main:ex(snap.main),extra:ex(snap.extra),side:ex(snap.side)};
+}
+/* qual deck esta pessoa mais usou NESTE evento */
+function favDeckId(uid,champId){
+  const n={};
+  duelUniverse().forEach(d=>{
+    if(d.champId!==champId) return;
+    const dk = d.aId===uid ? d.aDeck : (d.bId===uid ? d.bDeck : null);
+    if(dk&&dk.id) n[dk.id]=(n[dk.id]||0)+1;
+  });
+  const best=Object.keys(n).sort((a,b)=>n[b]-n[a])[0];
+  return best||null;
+}
+/* grava o snapshot. Devolve o motivo quando nao da — o admin merece
+   saber que o deck existe mas esta privado, em vez de um erro mudo. */
+async function saveChampionDeck(champId,uid){
+  if(!isAdmin()) return {ok:false,msg:"só o administrador guarda o deck do campeão"};
+  if(!champId||!uid) return {ok:false,msg:"campeão não identificado"};
+  await ensureAllDuels();
+  const dkId=favDeckId(uid,champId);
+  if(!dkId) return {ok:false,msg:"nenhum deck foi registrado nos duelos deste evento"};
+  const decks=await loadDecksOf(uid);
+  const deck=decks.find(k=>k.id===dkId);
+  if(!deck) return {ok:false,msg:"o deck usado não está público — o dono precisa marcá-lo como público"};
+  const snap=packDeck(deck);
+  await updateDoc(doc(db,"championships",champId),
+    {championDeck:snap,championDeckAt:serverTimestamp()});
+  return {ok:true,name:snap.name};
+}
+
 /* ---------- tela de eventos: em aberto x concluídos ---------- */
 let EV_STATUS="aberto";   // aberto | concluido
 let EV_KIND="todos";      // todos | liga | torneio
@@ -4304,6 +4586,16 @@ function renderEvents(){
   /* mais recente primeiro: torneio pela data, liga pela data final */
   list=list.slice().sort((a,b)=>String(b.date||b.endDate||"").localeCompare(String(a.date||a.endDate||"")));
 
+  /* uma unica fileira de acoes: ver o deck campeao e, para o admin, excluir */
+  const acts=(c,fin,ch,adm)=>{
+    const bits=[];
+    if(fin&&ch&&c.championDeck)
+      bits.push(`<button class="mini" data-act="champdeck" data-id="${c.id}">${IC.chest} Deck campeão</button>`);
+    else if(fin&&ch&&adm)
+      bits.push(`<button class="mini" data-act="savechampdeck" data-id="${c.id}">${IC.chest} Guardar o deck</button>`);
+    if(adm) bits.push(`<button class="mini danger" data-act="delchamp" data-id="${c.id}">${IC.jar} Excluir</button>`);
+    return bits.length?`<div class="ev-acts" style="flex-wrap:wrap">${bits.join("")}</div>`:"";
+  };
   const card=c=>{
     const kd=(c.kind==="torneio")?"torneio":"liga";
     const fin=c.status==="encerrado";
@@ -4328,7 +4620,7 @@ function renderEvents(){
                <div class="ev-champ-n">${esc(ch.name)}</div></div>
              <span class="cc-arrow">›</span></div>`
         : `<div class="ev-champ"><span class="ev-champ-l">encerrado sem campeão registrado</span></div>`):""}
-      ${adm?`<div class="ev-acts"><button class="mini danger" data-act="delchamp" data-id="${c.id}">${IC.jar} Excluir</button></div>`:``}
+      ${acts(c,fin,ch,adm)}
     </div>`;
   };
 
@@ -4906,6 +5198,270 @@ $("lp-reset").onclick=()=>{ LP=[8000,8000]; renderLP(); $("coin-res").textConten
   const d=activeDuel(); if(d&&canDuel(d)){ lpLocalTs=Date.now(); queueLP(); } };
 $("coin").onclick=()=>{ if(coinBusy) return; coinBusy=true; const coin=$("coin"); coin.classList.remove("flip"); void coin.offsetWidth; coin.classList.add("flip");
   const res=Math.random()<0.5?"CARA":"COROA"; $("coin-res").textContent="girando…"; setTimeout(()=>{ $("coin-res").textContent=res; coinBusy=false; },800); };
+
+/* ============================================================
+   A MESA — a liga que nao termina.
+   Aqui ninguem precisa criar evento para jogar: todo duelo
+   registrado, de rodada ou avulso, pontua na temporada em curso.
+   As temporadas moram em meta/config (so o admin escreve) e
+   guardam apenas uid + nome do campeao: a foto vem de /users na
+   hora de desenhar, para o documento nao engordar a cada sessao.
+   ============================================================ */
+const SEASON_PTS_WIN=3;
+function seasonList(){ const c=CONFIG||{}; return Array.isArray(c.seasons)?c.seasons.filter(Boolean):[]; }
+function openSeason(){ return seasonList().find(s=>!s.end)||null; }
+function closedSeasons(){
+  return seasonList().filter(s=>s.end).slice()
+    .sort((a,b)=>String(b.end).localeCompare(String(a.end)));
+}
+/* a janela da temporada e em dias inteiros, no fuso de quem olha */
+const dayStartTs=iso=>{ const p=String(iso||"").split("-");
+  return p.length===3 ? Math.floor(new Date(+p[0],+p[1]-1,+p[2],0,0,0,0).getTime()/1000) : 0; };
+const dayEndTs=iso=>{ const s=dayStartTs(iso); return s?s+86399:0; };
+function duelInSeason(d,s){
+  if(!s) return false;
+  const ts=duelAt(d); if(!ts) return false;
+  const a=s.start?dayStartTs(s.start):0;
+  const b=s.end?dayEndTs(s.end):Infinity;
+  return ts>=a && ts<=b;
+}
+/* 3 pontos por vitoria, 0 por derrota — a mesma regra da classificacao */
+function seasonTable(s){
+  const rec={};
+  const get=uid=>rec[uid]||(rec[uid]={id:uid,w:0,l:0,pts:0});
+  duelUniverse().forEach(d=>{
+    if(d.status!=="encerrado"||!d.winner||!duelInSeason(d,s)) return;
+    [d.aId,d.bId].forEach(uid=>{ if(!uid) return;
+      const o=get(uid);
+      if(d.winner===uid){ o.w++; o.pts+=SEASON_PTS_WIN; } else o.l++; });
+  });
+  return Object.values(rec)
+    .map(o=>({...o,name:nameOfUid(o.id),t:o.w+o.l,
+      pct:(o.w+o.l)?Math.round(o.w*100/(o.w+o.l)):0}))
+    .sort((a,b)=>b.pts-a.pts||b.pct-a.pct||b.w-a.w||a.name.localeCompare(b.name));
+}
+/* tudo o que a mesa ja registrou: todas as ligas, torneios e avulsos */
+function legacyTable(){
+  const rec={};
+  const get=uid=>rec[uid]||(rec[uid]={id:uid,w:0,l:0,evs:new Set()});
+  duelUniverse().forEach(d=>{
+    if(d.status!=="encerrado"||!d.winner) return;
+    [d.aId,d.bId].forEach(uid=>{ if(!uid) return;
+      const o=get(uid);
+      if(d.winner===uid) o.w++; else o.l++;
+      if(d.champId) o.evs.add(d.champId); });
+  });
+  /* quem foi coroado entra mesmo sem duelo gravado (campeao lancado a mao) */
+  CHAMPS.forEach(c=>{ if(c&&c.champion&&c.champion.uid) get(c.champion.uid); });
+  closedSeasons().forEach(s=>{ if(s.champion&&s.champion.uid) get(s.champion.uid); });
+  return Object.values(rec).map(o=>{
+    const tro=trophiesOf(o.id), t=o.w+o.l;
+    return {id:o.id,name:nameOfUid(o.id),w:o.w,l:o.l,t,
+      pct:t?Math.round(o.w*100/t):0, pts:o.w*SEASON_PTS_WIN,
+      events:o.evs.size, tro};
+  }).sort((a,b)=>b.tro.total-a.tro.total||b.w-a.w||b.pct-a.pct||a.name.localeCompare(b.name));
+}
+/* os confrontos que mais se repetiram na mesa */
+function rivalries(){
+  const m={};
+  duelUniverse().forEach(d=>{
+    if(d.status!=="encerrado"||!d.winner||!d.aId||!d.bId||d.aId===d.bId) return;
+    const pair=[d.aId,d.bId].slice().sort(), x=pair[0], y=pair[1];
+    const k=x+"|"+y, o=m[k]||(m[k]={x,y,xw:0,yw:0});
+    if(d.winner===x) o.xw++; else o.yw++;
+  });
+  return Object.values(m).map(o=>({...o,t:o.xw+o.yw}))
+    .sort((a,b)=>b.t-a.t||Math.abs(a.xw-a.yw)-Math.abs(b.xw-b.yw));
+}
+
+/* ---------- tela da Mesa ---------- */
+const mesaAvatar=uid=>avatarHTML({photo:(userOf(uid)||{}).photo},'sm');
+const mesaName=uid=>esc(nameOfUid(uid));
+const medalCell=i=>i<3?`<span class="medal ${["g","s","b"][i]}">${i+1}</span>`:(i+1);
+const youTag=id=>id===(CURRENT&&CURRENT.uid)
+  ?' <span style="font-size:11px;color:var(--muted)">(você)</span>':'';
+
+function renderMesa(){
+  ensureAllDuels();
+  const f=$("mesa-filter"); if(!f) return;
+  const tabs=[["temporada","Temporada"],["historico","Histórico"],
+              ["rivais","Rivalidades"],["campeoes","Campeões"]];
+  f.innerHTML=tabs.map(([k,l])=>
+    `<button class="dchip ${MESA_TAB===k?'active':''}" data-act="mesatab" data-k="${k}">${esc(l)}</button>`).join("");
+  $("mesa-body").innerHTML =
+      MESA_TAB==="historico" ? mesaLegacyHTML()
+    : MESA_TAB==="rivais"    ? mesaRivalsHTML()
+    : MESA_TAB==="campeoes"  ? mesaChampsHTML()
+    : mesaSeasonHTML(isAdmin());
+}
+
+function mesaSeasonHTML(adm){
+  const s=openSeason(), past=closedSeasons();
+  if(!s){
+    return `<div class="card"><h2>${IC.akhet} A mesa está fechada</h2>
+      <p class="section-note">A Mesa é a liga que não termina: todo duelo registrado — de rodada ou avulso — pontua na temporada em curso. Ninguém precisa criar um evento para jogar.</p>
+      <div class="rank-legend">Vitória vale <b>3 pontos</b>, derrota <b>0</b> — a mesma regra da classificação dos eventos. Quando você encerra a temporada, quem está em primeiro ganha um troféu no perfil.</div>
+      <div style="height:13px"></div>
+      ${adm?`<button class="btn" data-act="seasonnew">${IC.sun} Abrir temporada</button>`
+           :`<div class="section-note" style="margin:0">Só o administrador abre uma temporada.</div>`}
+      </div>${past.length?mesaPastHTML(past):""}`;
+  }
+  const rows=seasonTable(s), lead=rows[0]||null;
+  const since=s.start?fmtBR(s.start):"—";
+  let html=`<div class="card"><h2>${IC.sun} ${esc(s.name||"Temporada")}</h2>
+    <p class="section-note">Aberta desde ${esc(since)}. Todo duelo registrado conta: vitória <b>3 pontos</b>, derrota <b>0</b>.</p>
+    <div class="ch-hero-v">${lead?lead.pts:"—"}</div>
+    <div class="ch-hero-l">${lead
+      ?`pontos de <b>${esc(lead.name)}</b>, na liderança · ${rows.length} duelista${rows.length>1?'s':''} em jogo`
+      :`Nenhum duelo decidido nesta temporada ainda.`}</div>`;
+  if(rows.length){
+    html+=`<div style="height:12px"></div>`+segLegendHTML()
+      +`<table class="rank"><thead><tr><th class="pos">#</th><th>Duelista</th><th class="seg"></th>
+          <th class="wl">V</th><th class="wl">D</th><th class="pts">Pts</th></tr></thead><tbody>
+        ${rows.map((r,i)=>`<tr class="${i===0?'top1':''}">
+          <td class="pos">${medalCell(i)}</td>
+          <td class="name"><span style="display:inline-flex;align-items:center;gap:8px" data-act="profile" data-id="${esc(r.id)}">${mesaAvatar(r.id)}${mesaName(r.id)}${youTag(r.id)}</span></td>
+          <td class="seg">${segHTML(r.w,r.l)}</td>
+          <td class="wl v">${r.w}</td><td class="wl d">${r.l}</td>
+          <td class="pts">${r.pts}</td></tr>`).join("")}
+        </tbody></table>`;
+  } else {
+    html+=`<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.swords}</span>
+      Nenhum duelo decidido desde ${esc(since)}.<br>Encerre um duelo pelo contador e ele pontua aqui na hora.</div>`;
+  }
+  if(adm){
+    html+=`<div class="drawer-sep" style="margin:17px 0 13px"></div>
+      <div class="home-sec" style="margin:0 0 9px">${IC.seal}Administração</div>
+      <div id="mesa-msg"></div>
+      <div class="ev-acts" style="margin-top:0;flex-wrap:wrap">
+        <button class="mini" data-act="seasonrename">${IC.feather} Renomear</button>
+        <button class="mini" data-act="seasonstart">${IC.akhet} Início: ${esc(since)}</button>
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn" data-act="seasonclose">${IC.crown} Encerrar temporada e coroar</button>
+      <div class="ch-note">Encerrar congela a tabela e dá o troféu de temporada a quem está em primeiro. Depois você abre a temporada seguinte e tudo volta a zero — o histórico continua guardado na aba <b>Histórico</b>.</div>`;
+  }
+  html+=`</div>`;
+  return html+(past.length?mesaPastHTML(past):"");
+}
+function mesaPastHTML(past){
+  return `<div class="card"><h2>${IC.scroll} Temporadas anteriores</h2>
+    <p class="section-note">Cada temporada fechada vale um troféu no perfil de quem venceu.</p>
+    ${past.map(s=>{ const ch=s.champion||null;
+      return `<div class="ev-champ" ${ch?`data-act="profile" data-id="${esc(ch.uid)}"`:""}>
+        ${trophyHTML("temporada")}
+        ${ch?mesaAvatar(ch.uid):""}
+        <div class="ev-champ-t">
+          <div class="ev-champ-l">${esc(s.name||"Temporada")}${s.start?" · "+esc(fmtBR(s.start)):""}${s.end?" a "+esc(fmtBR(s.end)):""}</div>
+          <div class="ev-champ-n">${ch?esc(ch.name||nameOfUid(ch.uid)):"sem campeão registrado"}</div></div>
+        ${ch?'<span class="cc-arrow">›</span>':""}</div>`; }).join("")}
+    </div>`;
+}
+
+const legacyTroHTML=tro=>{
+  const bit=(k,n)=>n?`<span>${trophyHTML(k,"xs")}${n}</span>`:"";
+  return bit("liga",tro.liga)+bit("torneio",tro.torneio)+bit("temporada",tro.temporada);
+};
+function mesaLegacyHTML(){
+  const rows=legacyTable();
+  const decided=duelUniverse().filter(d=>d.status==="encerrado"&&d.winner);
+  const first=decided.reduce((m,d)=>{ const ts=duelAt(d); return (ts&&(!m||ts<m))?ts:m; },0);
+  const nDone=CHAMPS.filter(c=>c.status==="encerrado").length;
+  let html=`<div class="card"><h2>${IC.maat} Desde o começo</h2>
+    <p class="section-note">Tudo o que esta mesa registrou — ligas, torneios, temporadas e duelos avulsos somados.
+      ${allDuelsLoading?"<b style='color:var(--gold-soft)'>carregando o histórico completo…</b>":""}</p>
+    <div class="stat-grid four">
+      <div class="stat-box"><div class="sv sm">${decided.length}</div><div class="sl">Duelos</div></div>
+      <div class="stat-box"><div class="sv sm">${rows.length}</div><div class="sl">Duelistas</div></div>
+      <div class="stat-box"><div class="sv sm">${CHAMPS.length}</div><div class="sl">Eventos</div></div>
+      <div class="stat-box"><div class="sv sm">${nDone}</div><div class="sl">Concluídos</div></div>
+    </div>
+    ${first?`<div class="ch-note">Primeiro duelo registrado em ${esc(dayBR(first))}.</div>`:""}`;
+  html+=rows.length
+    ? `<div style="height:13px"></div>`+segLegendHTML()
+      +`<table class="rank"><thead><tr><th class="pos">#</th><th>Duelista</th><th class="seg"></th>
+          <th class="wl">V</th><th class="wl">D</th><th class="pct">%</th></tr></thead><tbody>
+        ${rows.map((r,i)=>`<tr class="${i===0?'top1':''}">
+          <td class="pos">${medalCell(i)}</td>
+          <td class="name"><span style="display:inline-flex;align-items:center;gap:8px" data-act="profile" data-id="${esc(r.id)}">${mesaAvatar(r.id)}${mesaName(r.id)}${youTag(r.id)}</span>
+            <div class="lg-sub">${legacyTroHTML(r.tro)}${r.events?`<span>${r.events} evento${r.events>1?'s':''}</span>`:""}</div></td>
+          <td class="seg">${segHTML(r.w,r.l)}</td>
+          <td class="wl v">${r.w}</td><td class="wl d">${r.l}</td>
+          <td class="pct">${r.t?r.pct+"%":"—"}</td></tr>`).join("")}
+        </tbody></table>
+        <div class="rank-legend">A ordem é por <b>troféus</b> primeiro — ligas, torneios e temporadas vencidas —, depois vitórias e aproveitamento. Quem ainda não levantou nada entra pelas vitórias.</div>`
+    : `<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.maat}</span>
+        Nenhum duelo registrado ainda.</div>`;
+  return html+`</div>`;
+}
+
+/* a barra da rivalidade nao usa verde/vermelho: aqui nenhum dos dois
+   lados e "o erro". Ouro para a esquerda, lapis-lazuli para a direita. */
+const rivBar=(a,b)=>{
+  const tot=a+b; if(!tot) return "";
+  const p=v=>(v/tot*100).toFixed(1)+"%";
+  return `<span class="riv-bar" role="img" aria-label="${a} a ${b}">`
+    +(a?`<i style="width:${p(a)}"></i>`:"")
+    +(b?`<u style="width:${p(b)}"></u>`:"")+`</span>`;
+};
+function mesaRivalsHTML(){
+  const rv=rivalries().filter(o=>o.t>=2).slice(0,24);
+  if(!rv.length) return `<div class="card"><h2>${IC.swords} Rivalidades da mesa</h2>
+    <p class="section-note">Um confronto entra aqui quando as duas pessoas já se enfrentaram pelo menos duas vezes.</p>
+    <div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.swords}</span>
+      Ainda não houve confronto repetido.</div></div>`;
+  return `<div class="card"><h2>${IC.swords} Rivalidades da mesa</h2>
+    <p class="section-note">Os confrontos que mais se repetiram, do mais disputado para o menos.</p>
+    <div class="riv-leg"><span><i style="background:var(--gold)"></i>quem está à esquerda</span>
+      <span><i style="background:var(--lapis)"></i>quem está à direita</span></div>
+    ${rv.map(o=>{
+      const even=o.xw===o.yw;
+      return `<div class="riv">
+        <div class="riv-top">
+          <span class="riv-who" data-act="profile" data-id="${esc(o.x)}">${mesaAvatar(o.x)}${mesaName(o.x)}</span>
+          <span class="riv-sc">${o.xw}<i>–</i>${o.yw}</span>
+          <span class="riv-who r" data-act="profile" data-id="${esc(o.y)}">${mesaAvatar(o.y)}${mesaName(o.y)}</span>
+        </div>
+        ${rivBar(o.xw,o.yw)}
+        <div class="riv-note">${o.t} duelo${o.t>1?'s':''}${even?" · empatados":""}</div>
+      </div>`; }).join("")}
+    <div class="rank-legend">Confronto <b>empatado</b> é o que mais vale a próxima rodada.</div></div>`;
+}
+
+function mesaChampsHTML(){
+  const evs=CHAMPS.filter(c=>c.status==="encerrado"&&c.champion&&c.champion.uid)
+    .slice().sort((a,b)=>String(b.date||b.endDate||"").localeCompare(String(a.date||a.endDate||"")));
+  const sea=closedSeasons().filter(s=>s.champion&&s.champion.uid);
+  if(!evs.length&&!sea.length) return `<div class="card"><h2>${IC.crown} Campeões</h2>
+    <p class="section-note">Ninguém foi coroado ainda. Encerre uma liga, um torneio ou uma temporada e o nome aparece aqui para sempre.</p></div>`;
+  /* quem levantou o que, somado */
+  const cnt={};
+  const bump=uid=>{ cnt[uid]=(cnt[uid]||0)+1; };
+  evs.forEach(c=>bump(c.champion.uid)); sea.forEach(s=>bump(s.champion.uid));
+  const top=Object.keys(cnt).map(uid=>({uid,n:cnt[uid],tro:trophiesOf(uid)}))
+    .sort((a,b)=>b.n-a.n||mesaName(a.uid).localeCompare(mesaName(b.uid)));
+  let html=`<div class="card"><h2>${IC.crown} Quem levantou troféu</h2>
+    <p class="section-note">Ligas, torneios e temporadas somados. Toque para abrir o perfil.</p>
+    <div class="troph-row">
+      ${top.map(x=>`<div class="troph" data-act="profile" data-id="${esc(x.uid)}" style="cursor:pointer">
+        ${mesaAvatar(x.uid)}
+        <div><div class="troph-n">${x.n}</div>
+          <div class="troph-l">${mesaName(x.uid).split(" ")[0]}</div>
+          <div class="lg-sub">${legacyTroHTML(x.tro)}</div></div></div>`).join("")}
+    </div></div>`;
+  const row=(label,ch,kind)=>`<div class="ev-champ" data-act="profile" data-id="${esc(ch.uid)}">
+      ${trophyHTML(kind)}${mesaAvatar(ch.uid)}
+      <div class="ev-champ-t"><div class="ev-champ-l">${label}</div>
+        <div class="ev-champ-n">${esc(ch.name||nameOfUid(ch.uid))}</div></div>
+      <span class="cc-arrow">›</span></div>`;
+  html+=`<div class="card"><h2>${IC.scroll} Coroações, da mais recente</h2>
+    ${sea.map(s=>row(esc(s.name||"Temporada")+(s.end?" · "+esc(fmtBR(s.end)):""),s.champion,"temporada")).join("")}
+    ${evs.map(c=>{ const kd=(c.kind==="torneio")?"torneio":"liga";
+      const when=kd==="torneio"?(c.date?fmtBR(c.date):""):(c.endDate?fmtBR(c.endDate):"");
+      return row(esc(c.name)+(when?" · "+esc(when):""),c.champion,kd); }).join("")}
+    </div>`;
+  return html;
+}
 
 /* ================= LISTA DE CARDS + DECKS (API YGOPRODeck) ================= */
 function mapCard(c){
