@@ -1502,7 +1502,7 @@
   <div class="screen-body">
     <div class="card">
       <h2><span class="glyph">𓊃</span> Novo duelo</h2>
-      <p class="section-note">Escolha dois duelistas. Dá para ter <b>vários duelos rolando ao mesmo tempo</b> — cada um guarda seus próprios pontos de vida.</p>
+      <p class="section-note">Escolha dois duelistas. Dá para ter <b>vários duelos rolando ao mesmo tempo</b> — cada um guarda seus próprios pontos de vida. Duelo avulso é jogo solto: <b>não pontua</b> na temporada nem nas estatísticas.</p>
       <button class="btn" id="duels-new">Criar duelo avulso</button>
     </div>
     <div class="card">
@@ -1699,6 +1699,18 @@
   </div>
 </div>
 
+<!-- ENCERRAR O DUELO COM OS PONTOS COMO ESTÃO -->
+<div id="duel-end" class="bl-modal">
+  <div class="sheet">
+    <h3><span id="de-icon"></span> Quem venceu?</h3>
+    <p class="section-note" style="margin-top:-4px">Encerra o duelo com os pontos de vida como estão — não precisa zerar ninguém.</p>
+    <div id="de-body"></div>
+    <div class="btn-row">
+      <button class="btn ghost" id="de-cancel">Voltar ao duelo</button>
+    </div>
+  </div>
+</div>
+
 <!-- ESCOLHER DUELISTAS (duelo avulso) -->
 <div id="duel-new" class="bl-modal">
   <div class="sheet">
@@ -1809,6 +1821,7 @@
       </div>
       <div class="coin-res" id="coin-res">toque no dado ou na moeda</div>
     </div>
+    <button class="btn ghost hidden" id="lp-end" style="margin-top:12px">Encerrar duelo</button>
   </div>
 </div>
 
@@ -1998,6 +2011,7 @@ let BANLISTS=[];            // listas personalizadas (globais)
 let ACTIVE_SCREEN=null;     // 'counter' | 'profile' | 'cards' | 'decks' | ...
 let MYDECKS=[], unsubDecks=null, CUR_DECK=null, deckAddTarget="main";
 let DECK_ADD=[], DECK_ADD_LOADING=false, deckAddTimer=null, cardsTimer=null, CARDS_RES=[];
+let CARDS_SHOWN=0, DECK_ADD_SHOWN=0, BL_ADD_SHOWN=0;   /* quanto da busca ja esta na tela */
 const CARD_CACHE={};
 let BL_MANAGE=false;        // admin editando a lista custom atual
 let BL_SEEN=false;          // ja alinhamos a lista em foco com a do evento?
@@ -2459,8 +2473,8 @@ function renderHome(){
       <div class="mh-head"><div>
         <div class="mh-l">${esc(sTemp.name||"Temporada")}</div>
         <div class="mh-s">${top.length
-          ?"todo duelo registrado pontua aqui"
-          :"nenhum duelo decidido ainda nesta temporada"}</div>
+          ?"as partidas de rodada pontuam aqui"
+          :"nenhuma partida de rodada decidida ainda"}</div>
       </div><span class="cc-arrow">›</span></div>
       ${top.length?`<div class="mh-rows">${top.map((r,i)=>`<div class="mh-row">
           ${medalCell(i)}${mesaAvatar(r.id)}
@@ -2470,7 +2484,7 @@ function renderHome(){
   } else if(adm){
     h+=sec(IC.obelisk,"A Mesa");
     h+=`<div class="card"><div class="empty" style="padding:16px"><span class="big">𓊽</span>
-      A Mesa é a liga que não termina: todo duelo registrado pontua,<br>sem precisar criar evento.</div>
+      A Mesa é a liga que não termina: as partidas de rodada<br>de todos os eventos pontuam numa tabela só.</div>
       <button class="btn ghost" data-nav="mesa">${IC.sun} Abrir a primeira temporada</button></div>`;
   }
 
@@ -3071,11 +3085,11 @@ async function runAddSearch(){
   try{
     const res=await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php?fname="+encodeURIComponent(term));
     const j=await res.json();
-    BL_ADD=(j.data||[]).slice(0,24).map(c=>({id:String(c.id),name:c.name,
+    BL_ADD=rankCards((j.data||[]).map(c=>({id:String(c.id),name:c.name,
       small:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url_small)||"",
-      full:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url)||""}));
+      full:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url)||""})),term);
   }catch(e){ BL_ADD=[]; }
-  finally{ BL_ADD_LOADING=false; renderAddResults(); }
+  finally{ BL_ADD_SHOWN=PAGE; BL_ADD_LOADING=false; renderAddResults(); }
 }
 function renderAddResults(){
   const box=$("bl-add-results"); if(!box) return;
@@ -3083,8 +3097,11 @@ function renderAddResults(){
   if(BL_ADD_LOADING){ box.innerHTML=`<div class="spin" style="grid-column:1/-1"></div>`; return; }
   if(BL_ADD_TERM.length<3){ box.innerHTML=`<div class="empty" style="grid-column:1/-1;padding:10px">Digite ao menos 3 letras para buscar.</div>`; return; }
   if(!BL_ADD.length){ box.innerHTML=`<div class="empty" style="grid-column:1/-1;padding:10px">Nenhuma carta encontrada.</div>`; return; }
-  box.innerHTML=BL_ADD.map(c=>`<div class="bl-card" data-act="addcard" data-id="${esc(c.id)}">
-    <img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}"><div class="bl-name">${esc(c.name)}</div></div>`).join("");
+  if(!BL_ADD_SHOWN) BL_ADD_SHOWN=PAGE;
+  const vis=BL_ADD.slice(0,BL_ADD_SHOWN), resto=BL_ADD.length-vis.length;
+  box.innerHTML=vis.map(c=>`<div class="bl-card" data-act="addcard" data-id="${esc(c.id)}">
+    <img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}"><div class="bl-name">${esc(c.name)}</div></div>`).join("")
+    +(resto?`<button class="btn ghost" data-act="morebladd" style="grid-column:1/-1;margin-top:4px">Ver mais ${Math.min(PAGE,resto)} de ${resto}</button>`:"");
 }
 async function newCustomList(){
   if(!isAdmin()) return;   /* criar lista nao depende de haver evento aberto */
@@ -3302,6 +3319,9 @@ document.addEventListener("click", async ev=>{
   }
   if(act==="card"){ openCard(b.dataset.full,b.dataset.name); return; }
   if(act==="cardinfo"||act==="deckcardinfo"){ openCardModal(b.dataset.id,b.dataset.bl||VIEW_BL); return; }
+  if(act==="morecards"){ CARDS_SHOWN+=PAGE; paintCardsGrid(); return; }
+  if(act==="moredeckadd"){ DECK_ADD_SHOWN+=PAGE; renderDeckAddResults(); return; }
+  if(act==="morebladd"){ BL_ADD_SHOWN+=PAGE; renderAddResults(); return; }
   if(act==="deckadd"){ addToDeck(b.dataset.id, deckAddTarget, b, ev); return; }
   if(act==="deckremove"){ ev.stopPropagation(); removeFromDeck(b.dataset.sec,b.dataset.id,b,ev); return; }
   if(act==="opendeck"){ openDeck(b.dataset.id); return; }
@@ -3352,6 +3372,8 @@ document.addEventListener("click", async ev=>{
   if(act==="goduel"){ flushLP(); ACTIVE_DUEL=b.dataset.id; lpLocalTs=0; openScreen("counter"); return; }
   if(act==="godquick"){ flushLP(); ACTIVE_DUEL=null; openScreen("counter"); return; }
   if(act==="godlist"){ flushLP(); openScreen("duels"); return; }
+  if(act==="endpick"){ $("duel-end").classList.remove("show");
+    endDuel(+b.dataset.side||1); return; }
   if(act==="dpopen"){ ev.stopPropagation(); openDeckPicker(b.dataset.id); return; }
   if(act==="dppick"){ if(!DP_STATE) return; const side=b.dataset.side, id=b.dataset.id;
     const list=side==="a"?DP_STATE.aDecks:DP_STATE.bDecks; const k=list.find(x=>x.id===id);
@@ -3830,6 +3852,10 @@ const SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 const ICONS={
   /* taça — classificação / torneio (a pena de Maat lia como folha) */
   rank:SVG+'<path d="M7.6 3.8h8.8v6a4.4 4.4 0 01-8.8 0z"/><path d="M7.6 5.4H5.2a2.9 2.9 0 002.9 2.9"/><path d="M16.4 5.4h2.4a2.9 2.9 0 01-2.9 2.9"/><path d="M12 14v2.6"/><path d="M9.4 16.6h5.2l1 3.6H8.4z"/></svg>',
+  /* chave de torneio: quatro duelistas, dois confrontos, um campeao.
+     O menu lateral monta o icone por ICONS[nav], entao sem esta
+     chave o item Torneio saía sem desenho nenhum. */
+  torneio:SVG+'<path d="M3 5h6M3 9h6M9 5v4M9 7h6M3 15h6M3 19h6M9 15v4M9 17h6M15 7v10M15 12h6"/></svg>',
   rounds:SVG+'<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17"/><path d="M8 3v4M16 3v4"/><path d="M8 13h3M13.5 13h2.5M8 16.5h3"/></svg>',
   players:SVG+'<circle cx="9" cy="8" r="3"/><path d="M3.5 20c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><path d="M16 6.5a3 3 0 010 5.6"/><path d="M17 14.6c2.3.6 3.9 2.6 3.9 5.4"/></svg>',
   banlist:SVG+'<path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.4"/><path d="M4.5 19.5 19.5 4.5"/></svg>',
@@ -3954,7 +3980,7 @@ function renderTabbar(){
   const tb=(nav,label,ic,core)=>`<button class="tb ${core?'core':''} ${on[nav]?'on':''}" data-nav="${nav}" aria-label="${label}"${on[nav]?' aria-current="page"':''}>
       <span class="tb-ic">${ic}</span>${core?'':`<span class="tb-l">${label}</span>`}</button>`;
   bar.innerHTML = tb("home","Início",ICONS.home)
-    + tb("torneio","Torneio",ICONS.rank)
+    + tb("torneio","Torneio",ICONS.torneio)
     + tb("counter","Duelar",ICONS.counter,true)
     + tb("duels","Duelos",ICONS.duels)
     + tb("more","Menu",ICONS.more);
@@ -4623,8 +4649,13 @@ function showDeckDialog(d,nota){
   $("dv-icon").innerHTML=IC.chest; $("dv-title").textContent=d.name||"Deck";
   const blName=(d.banlist||"tcg")==="tcg"?"TCG (oficial)":((BANLISTS.find(b=>b.id===d.banlist)||{}).name||"?");
   const sec=(label,arr)=>{
-    const map={}; sortDeckArr(arr).forEach(c=>{ if(!map[c.id]) map[c.id]={c,n:0}; map[c.id].n++; });
-    const items=Object.values(map);
+    /* Map, nao objeto: id de carta e numerico, e Object.values sobre
+       chaves numericas devolve por ORDEM DE ID, jogando fora a
+       ordenacao por tipo que sortDeckArr acabou de fazer */
+    const map=new Map();
+    sortDeckArr(arr).forEach(c=>{ const o=map.get(c.id);
+      if(o) o.n++; else map.set(c.id,{c,n:1}); });
+    const items=Array.from(map.values());
     return `<div class="deck-sec"><h3>${label} <span class="cnt">${(arr||[]).length}</span></h3>
       <div class="dk-grid">${items.length?items.map(({c,n})=>`<div class="dk-card" data-act="cardinfo" data-id="${esc(c.id)}" data-bl="${esc(d.banlist||"tcg")}">
         ${blSeal(c,d.banlist||"tcg")}
@@ -4648,7 +4679,7 @@ function eventsOf(uid){
   if(!uid) return [];
   const m=new Map();
   duelUniverse().forEach(d=>{
-    if(!d.champId||d.status!=="encerrado"||!d.winner) return;
+    if(!d.champId||d.status!=="encerrado"||!d.winner||!duelCounts(d)) return;
     if(d.aId!==uid&&d.bId!==uid) return;
     const o=m.get(d.champId)||{id:d.champId,w:0,l:0};
     if(d.winner===uid) o.w++; else o.l++;
@@ -4720,6 +4751,12 @@ $("crop-ok").onclick=async()=>{
 let LP=[8000,8000], STEP=500, coinBusy=false;
 let lpLocalTs=0, lpTimer=null, lpPending=null;
 
+/* ---------- o que CONTA ----------
+   Duelo de RODADA e partida oficial: pontua na temporada, nas
+   estatisticas, nas rivalidades e no historico. Duelo AVULSO e jogo
+   solto — serve de contador de pontos de vida, guarda os decks usados
+   e aparece na lista de duelos, mas nao entra em nenhuma conta. */
+const duelCounts=d=>!!(d&&d.roundId);
 const duelKey=(roundId,idx)=>`r_${roundId}_${idx}`;
 const activeDuel=()=>ACTIVE_DUEL?(DUELS.find(d=>d.id===ACTIVE_DUEL)||null):null;
 /* ---------- a foto do duelista ----------
@@ -4799,6 +4836,8 @@ function initCounter(){
     LP=[8000,8000]; banner.classList.add("hidden");
     setPanelPlain(1,"Jogador 1"); setPanelPlain(2,"Jogador 2");
   }
+  /* o contador rapido nao tem o que encerrar: nao ha duelo gravado */
+  const le=$("lp-end"); if(le) le.classList.toggle("hidden",!activeDuel());
   renderDuelChips(); renderLP();
 }
 /* 8000 e a referencia da barra: e com o que todo duelo comeca */
@@ -5009,6 +5048,28 @@ function renderDirectory(){
 }
 $("dir-search").addEventListener("input",()=>{ DIR_TERM=$("dir-search").value.trim(); renderDirectory(); });
 $("stats-refresh").onclick=()=>{ ensureAllDuels(true); toast("Atualizando histórico…"); };
+/* ---------- encerrar sem zerar ----------
+   Antes o unico caminho para registrar o vencedor era levar alguem a
+   zero. Partida que acaba por tempo, por desistencia ou por deck out
+   nao passa por zero, e ficava sem como gravar. */
+function openDuelEnd(){
+  const d=activeDuel();
+  if(!d){ toast("O contador rápido não registra resultado — abra um duelo para isso."); return; }
+  if(!canDuel(d)){ toast("Só quem está duelando (ou o admin) encerra este duelo."); return; }
+  $("de-icon").innerHTML=IC.crown;
+  $("de-body").innerHTML=[1,2].map(n=>{
+    const nome=n===1?d.aName:d.bName, lp=n===1?LP[0]:LP[1];
+    return `<div class="pick-row" data-act="endpick" data-side="${n}">
+      ${avatarHTML({photo:duelPhoto(d,n===1?"a":"b")},'sm')}
+      <div class="pk-name">${esc(nome)}
+        <div class="pk-sub">${lp} ponto${lp===1?"":"s"} de vida</div></div>
+      <span style="color:var(--gold);line-height:0">${IC.crown}</span></div>`;}).join("");
+  $("duel-end").classList.add("show");
+}
+$("lp-end").onclick=openDuelEnd;
+$("de-cancel").onclick=()=>$("duel-end").classList.remove("show");
+$("duel-end").addEventListener("click",e=>{ if(e.target.id==="duel-end") $("duel-end").classList.remove("show"); });
+
 function offerResult(winnerN){
   const d=activeDuel(); if(!d) return;
   const name=winnerN===1?d.aName:d.bName, photo=duelPhoto(d,winnerN===1?"a":"b");
@@ -5290,16 +5351,15 @@ function duelUniverse(){
 }
 /* varre o histórico UMA vez e guarda o resultado, em vez de varrer por jogador */
 function buildStatIdx(){
-  const idx={all:{},champ:{},avulso:{},deck:{}};
+  const idx={all:{},champ:{},deck:{}};
   const bump=(box,key,win)=>{ const o=box[key]||(box[key]={w:0,l:0}); if(win) o.w++; else o.l++; };
   for(const d of duelUniverse()){
-    if(d.status!=="encerrado"||!d.winner) continue;
+    if(d.status!=="encerrado"||!d.winner||!duelCounts(d)) continue;
     for(const side of ["a","b"]){
       const uid=side==="a"?d.aId:d.bId; if(!uid) continue;
       const win=d.winner===uid;
       bump(idx.all,uid,win);
       if(d.champId===CURRENT_CHAMP) bump(idx.champ,uid,win);
-      if(!d.roundId) bump(idx.avulso,uid,win);
       const dk=side==="a"?d.aDeck:d.bDeck;
       if(dk&&dk.id) bump(idx.deck,uid+"|"+dk.id,win);
     }
@@ -5320,7 +5380,8 @@ const dayBR=s=>{ if(!s) return ""; const d=new Date(s*1000);
 function myTimeline(uid,scope){
   if(!uid) return [];
   return duelUniverse()
-    .filter(d=>d.status==="encerrado"&&d.winner&&(d.aId===uid||d.bId===uid)&&duelInScope(d,scope))
+    .filter(d=>d.status==="encerrado"&&d.winner&&duelCounts(d)
+      &&(d.aId===uid||d.bId===uid)&&duelInScope(d,scope))
     .sort((a,b)=>duelAt(a)-duelAt(b))
     .map(d=>{ const meA=d.aId===uid;
       return {win:d.winner===uid, foe:meA?d.bId:d.aId, foeName:meA?d.bName:d.aName,
@@ -5454,13 +5515,17 @@ function wireLineChart(){
     else if(e.key==="Escape") hide();
   });
 }
-function statsOf(uid,scope){ return pack(statIdx()[scope||"all"][uid]); }
+/* escopo que nao existe mais (o balde "avulso" saiu) cai em "all"
+   em vez de estourar em undefined[uid] */
+function statsOf(uid,scope){ const ix=statIdx();
+  return pack((ix[scope]||ix.all)[uid]); }
 function deckStatsOf(uid,deckId){ return pack(statIdx().deck[uid+"|"+deckId]); }
 const statsPartial=()=>!ALL_DUELS&&DUELS.length>=400;
 function renderStats(){
   ensureAllDuels();
   /* uma unica fileira de controles, acima de tudo que ela filtra */
-  const scopes=[["all","Todos os duelos"],["champ","Deste campeonato"],["avulso","Só avulsos"]];
+  /* "so avulsos" saiu: avulso nao entra em conta nenhuma */
+  const scopes=[["all","Todos os duelos"],["champ","Deste campeonato"]];
   $("stats-filter").innerHTML=scopes.map(([k,l])=>
     `<button class="dchip ${STATS_SCOPE===k?'active':''}" data-act="statscope" data-k="${k}">${l}</button>`).join("")
     +`<button class="dchip ${STATS_TABLE?'active':''}" data-act="stattable">${IC.scroll} ${STATS_TABLE?"Ver gráficos":"Ver tabela"}</button>`;
@@ -5668,7 +5733,7 @@ function seasonTable(s){
   const rec={};
   const get=uid=>rec[uid]||(rec[uid]={id:uid,w:0,l:0,pts:0});
   duelUniverse().forEach(d=>{
-    if(d.status!=="encerrado"||!d.winner||!duelInSeason(d,s)) return;
+    if(d.status!=="encerrado"||!d.winner||!duelCounts(d)||!duelInSeason(d,s)) return;
     [d.aId,d.bId].forEach(uid=>{ if(!uid) return;
       const o=get(uid);
       if(d.winner===uid){ o.w++; o.pts+=SEASON_PTS_WIN; } else o.l++; });
@@ -5683,7 +5748,7 @@ function legacyTable(){
   const rec={};
   const get=uid=>rec[uid]||(rec[uid]={id:uid,w:0,l:0,evs:new Set()});
   duelUniverse().forEach(d=>{
-    if(d.status!=="encerrado"||!d.winner) return;
+    if(d.status!=="encerrado"||!d.winner||!duelCounts(d)) return;
     [d.aId,d.bId].forEach(uid=>{ if(!uid) return;
       const o=get(uid);
       if(d.winner===uid) o.w++; else o.l++;
@@ -5703,7 +5768,8 @@ function legacyTable(){
 function rivalries(){
   const m={};
   duelUniverse().forEach(d=>{
-    if(d.status!=="encerrado"||!d.winner||!d.aId||!d.bId||d.aId===d.bId) return;
+    if(d.status!=="encerrado"||!d.winner||!duelCounts(d)
+      ||!d.aId||!d.bId||d.aId===d.bId) return;
     const pair=[d.aId,d.bId].slice().sort(), x=pair[0], y=pair[1];
     const k=x+"|"+y, o=m[k]||(m[k]={x,y,xw:0,yw:0});
     if(d.winner===x) o.xw++; else o.yw++;
@@ -5737,7 +5803,7 @@ function mesaSeasonHTML(adm){
   const s=openSeason(), past=closedSeasons();
   if(!s){
     return `<div class="card"><h2>${IC.akhet} A mesa está fechada</h2>
-      <p class="section-note">A Mesa é a liga que não termina: todo duelo registrado — de rodada ou avulso — pontua na temporada em curso. Ninguém precisa criar um evento para jogar.</p>
+      <p class="section-note">A Mesa é a liga que não termina: toda partida de rodada pontua na temporada em curso, de qualquer liga ou torneio. Duelo avulso é jogo solto e não entra na conta.</p>
       <div class="rank-legend">Vitória vale <b>3 pontos</b>, derrota <b>0</b> — a mesma regra da classificação dos eventos. Quando você encerra a temporada, quem está em primeiro ganha um troféu no perfil.</div>
       <div style="height:13px"></div>
       ${adm?`<button class="btn" data-act="seasonnew">${IC.sun} Abrir temporada</button>`
@@ -5747,7 +5813,7 @@ function mesaSeasonHTML(adm){
   const rows=seasonTable(s), lead=rows[0]||null;
   const since=s.start?fmtBR(s.start):"—";
   let html=`<div class="card"><h2>${IC.sun} ${esc(s.name||"Temporada")}</h2>
-    <p class="section-note">Aberta desde ${esc(since)}. Todo duelo registrado conta: vitória <b>3 pontos</b>, derrota <b>0</b>.</p>
+    <p class="section-note">Aberta desde ${esc(since)}. Toda partida de rodada conta: vitória <b>3 pontos</b>, derrota <b>0</b>. Duelo avulso fica de fora.</p>
     <div class="ch-hero-v">${lead?lead.pts:"—"}</div>
     <div class="ch-hero-l">${lead
       ?`pontos de <b>${esc(lead.name)}</b>, na liderança · ${rows.length} duelista${rows.length>1?'s':''} em jogo`
@@ -5765,7 +5831,7 @@ function mesaSeasonHTML(adm){
         </tbody></table>`;
   } else {
     html+=`<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.swords}</span>
-      Nenhum duelo decidido desde ${esc(since)}.<br>Encerre um duelo pelo contador e ele pontua aqui na hora.</div>`;
+      Nenhuma partida de rodada decidida desde ${esc(since)}.<br>Encerre uma partida de rodada e ela pontua aqui na hora.</div>`;
   }
   if(adm){
     html+=`<div class="drawer-sep" style="margin:17px 0 13px"></div>
@@ -5806,7 +5872,7 @@ function mesaLegacyHTML(){
   const first=decided.reduce((m,d)=>{ const ts=duelAt(d); return (ts&&(!m||ts<m))?ts:m; },0);
   const nDone=CHAMPS.filter(c=>c.status==="encerrado").length;
   let html=`<div class="card"><h2>${IC.maat} Desde o começo</h2>
-    <p class="section-note">Tudo o que esta mesa registrou — ligas, torneios, temporadas e duelos avulsos somados.
+    <p class="section-note">Tudo o que esta mesa registrou — ligas, torneios e temporadas somados. Duelo avulso não entra.
       ${allDuelsLoading?"<b style='color:var(--gold-soft)'>carregando o histórico completo…</b>":""}</p>
     <div class="stat-grid four">
       <div class="stat-box"><div class="sv sm">${decided.length}</div><div class="sl">Duelos</div></div>
@@ -5911,10 +5977,40 @@ function mapCard(c){
   CARD_CACHE[o.id]=o; return o;
 }
 const isExtraType=t=>/Fusion|Synchro|Xyz|XYZ|Link/.test(t||"");
+/* ---------- relevancia da busca ----------
+   A API devolve TODA carta cujo nome contem o trecho, na ordem dela.
+   Cortar nas 40 primeiras deixava de fora justamente a que se
+   procurava: "blue" trazia dezenas antes do Dragao Branco. Agora o
+   resultado vem ordenado — nome exato, depois comeca com, depois
+   palavra inteira, depois contem — e a tela mostra em partes. */
+function rankCards(list,term){
+  const q=String(term||"").trim().toLowerCase();
+  if(!q) return list;
+  const safe=q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  const word=new RegExp("(^|[^a-z0-9])"+safe,"i");
+  const score=c=>{
+    const n=String(c.name||"").toLowerCase();
+    if(n===q) return 0;
+    if(n.startsWith(q)) return 1;
+    if(word.test(n)) return 2;
+    return 3;
+  };
+  return list.map(c=>{
+      const n=String(c.name||""), i=n.toLowerCase().indexOf(q);
+      return {c,s:score(c),i:(i<0?9999:i),n};
+    })
+    /* empatados no criterio, ganha quem traz o termo mais cedo no
+       nome, depois o nome mais curto: procurando "white", "The White
+       Stone" vem antes de "Blue-Eyes White Dragon" */
+    .sort((a,b)=>a.s-b.s||a.i-b.i||a.n.length-b.n.length||a.n.localeCompare(b.n))
+    .map(o=>o.c);
+}
+const PAGE=60;   /* quantas cartas por vez, para a grade nao travar */
 async function apiSearch(term){
   const res=await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php?fname="+encodeURIComponent(term));
   if(!res.ok) throw new Error("HTTP "+res.status);
-  const j=await res.json(); return (j.data||[]).slice(0,40).map(mapCard);
+  const j=await res.json();
+  return rankCards((j.data||[]).map(mapCard),term);
 }
 function openCardModal(id,blId){ const c=CARD_CACHE[id]; if(!c) return;
   $("cm-img").src=c.full||c.small; $("cm-name").textContent=c.name;
@@ -5943,10 +6039,10 @@ $("cards-bl").addEventListener("change",()=>{ VIEW_BL=$("cards-bl").value||"tcg"
   if(VIEW_BL==="tcg") loadOfficial(); paintCardsGrid(); });
 async function runCardsSearch(){
   const term=$("cards-search").value.trim(), body=$("cards-body"), count=$("cards-count");
-  if(term.length<3){ CARDS_RES=[]; body.innerHTML=`<div class="empty">Digite ao menos 3 letras para buscar uma carta.</div>`; count.textContent=""; return; }
+  if(term.length<3){ CARDS_RES=[]; CARDS_SHOWN=0; body.innerHTML=`<div class="empty">Digite ao menos 3 letras para buscar uma carta.</div>`; count.textContent=""; return; }
   body.innerHTML=`<div class="spin"></div>`; count.textContent="buscando…";
   try{ CARDS_RES=await apiSearch(term); }catch(e){ CARDS_RES=[]; count.textContent="erro ao buscar"; }
-  count.textContent=`${CARDS_RES.length} carta(s) · fonte: YGOPRODeck`;
+  CARDS_SHOWN=PAGE;
   paintCardsGrid();
 }
 /* desenhada a parte: trocar a banlist em foco redesenha so a grade,
@@ -5958,11 +6054,18 @@ function paintCardsGrid(){
   const sel=$("cards-bl");
   if(sel&&document.activeElement!==sel){ sel.innerHTML=blOptionsHTML(VIEW_BL); sel.value=VIEW_BL; }
   if(!CARDS_RES.length) return;
-  body.innerHTML=`<div class="bl-grid">${CARDS_RES.map(c=>
+  if(!CARDS_SHOWN) CARDS_SHOWN=PAGE;
+  const vis=CARDS_RES.slice(0,CARDS_SHOWN), resto=CARDS_RES.length-vis.length;
+  const cnt=$("cards-count");
+  if(cnt) cnt.textContent=(resto
+    ? `${vis.length} de ${CARDS_RES.length} cartas`
+    : `${CARDS_RES.length} carta(s)`)+" · fonte: YGOPRODeck";
+  body.innerHTML=`<div class="bl-grid">${vis.map(c=>
     `<div class="bl-card" data-act="cardinfo" data-id="${esc(c.id)}" data-bl="${esc(VIEW_BL)}">
       ${blSeal(c,VIEW_BL)}
       <img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">
-      <div class="bl-name">${esc(c.name)}</div></div>`).join("")}</div>`;
+      <div class="bl-name">${esc(c.name)}</div></div>`).join("")}</div>`
+    +(resto?`<div style="height:12px"></div><button class="btn ghost" data-act="morecards">Ver mais ${Math.min(PAGE,resto)} de ${resto}</button>`:"");
 }
 
 /* Decks */
@@ -6052,8 +6155,11 @@ function renderSection(sec){
   const deck=MYDECKS.find(d=>d.id===CUR_DECK);
   const arr=sortDeckArr((deck&&deck[sec])||[]);     /* monstros, magias, armadilhas */
   const el=$("sec-"+sec); if(!el) return;
-  const map={}; arr.forEach(c=>{ if(!map[c.id]) map[c.id]={c,n:0}; map[c.id].n++; });
-  const items=Object.values(map);
+  /* idem: Map preserva a ordem de insercao, objeto com chave
+     numerica nao */
+  const map=new Map();
+  arr.forEach(c=>{ const o=map.get(c.id); if(o) o.n++; else map.set(c.id,{c,n:1}); });
+  const items=Array.from(map.values());
   const bl=(deck&&deck.banlist)||"tcg";
   el.innerHTML=items.length? items.map(({c,n})=>{
       /* passou do que a banlist permite: ganha anel vermelho */
@@ -6120,22 +6226,25 @@ function renderDeckAddResults(){
   /* o resultado da busca ja diz se a carta cabe: nao adianta tocar
      numa carta proibida so para o app recusar depois */
   const deck=MYDECKS.find(d=>d.id===CUR_DECK), bl=(deck&&deck.banlist)||"tcg";
-  box.innerHTML=DECK_ADD.map(c=>{
+  if(!DECK_ADD_SHOWN) DECK_ADD_SHOWN=PAGE;
+  const vis=DECK_ADD.slice(0,DECK_ADD_SHOWN), resto=DECK_ADD.length-vis.length;
+  box.innerHTML=vis.map(c=>{
     const max=Math.min(3,blCopies(cardStatusIn(c,bl)));
     const have=deck?deckCopies(deck,c.id):0, cheio=have>=max;
     return `<div class="dk-card ${cheio?'over':''}" data-act="deckadd" data-id="${esc(c.id)}">
     ${blSeal(c,bl)}
     <img loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">
     <div class="rm" style="background:${cheio?'rgba(150,38,24,.92)':'rgba(30,90,40,.85)'}">${
-      cheio?(max===0?"proibida":`já tem ${have}/${max}`):"+ adicionar"}</div></div>`;}).join("");
+      cheio?(max===0?"proibida":`já tem ${have}/${max}`):"+ adicionar"}</div></div>`;}).join("")
+    +(resto?`<button class="btn ghost" data-act="moredeckadd" style="grid-column:1/-1;margin-top:4px">Ver mais ${Math.min(PAGE,resto)} de ${resto}</button>`:"");
 }
 $("deck-add-search").addEventListener("input",()=>{ clearTimeout(deckAddTimer); deckAddTimer=setTimeout(runDeckAdd,350); });
 async function runDeckAdd(){
   const term=$("deck-add-search").value.trim();
-  if(term.length<3){ DECK_ADD=[]; renderDeckAddResults(); return; }
+  if(term.length<3){ DECK_ADD=[]; DECK_ADD_SHOWN=0; renderDeckAddResults(); return; }
   DECK_ADD_LOADING=true; renderDeckAddResults();
   try{ DECK_ADD=await apiSearch(term); }catch(e){ DECK_ADD=[]; }
-  DECK_ADD_LOADING=false; renderDeckAddResults();
+  DECK_ADD_SHOWN=PAGE; DECK_ADD_LOADING=false; renderDeckAddResults();
 }
 $("seg-main").onclick=()=>{ deckAddTarget="main"; $("seg-main").classList.add("active"); $("seg-side").classList.remove("active"); };
 $("seg-side").onclick=()=>{ deckAddTarget="side"; $("seg-side").classList.add("active"); $("seg-main").classList.remove("active"); };
@@ -6159,11 +6268,14 @@ const TRAP_ORDER=["Normal","Continuous","Counter"];
 function cardOrder(c){
   const ty=String((c&&c.type)||""), ra=String((c&&c.race)||"");
   const nm=String((c&&c.name)||"");
-  if(!/Monster/i.test(ty)){
-    const trap=/Trap/i.test(ty);
-    const list=trap?TRAP_ORDER:SPELL_ORDER;
+  /* pergunta "e magia?" / "e armadilha?" em vez de "nao e monstro?":
+     carta antiga gravada sem tipo caía entre as magias aqui e era
+     contada como monstro em deckTypeCounts — os dois discordavam */
+  const isTrap=/Trap/i.test(ty), isSpell=/Spell/i.test(ty);
+  if(isSpell||isTrap){
+    const list=isTrap?TRAP_ORDER:SPELL_ORDER;
     let k=list.indexOf(ra); if(k<0) k=list.length;
-    return [trap?2:1,k,0,nm];
+    return [isTrap?2:1,k,0,nm];
   }
   const lvl=(c&&c.level!=null)?Number(c.level):0;
   /* extra deck tem ordem propria */
