@@ -1265,8 +1265,6 @@
   .hero.calm{border-color:var(--line);box-shadow:var(--shadow),var(--sheen);
     background:linear-gradient(180deg,var(--s2),var(--s1))}
   .hero.calm .hico{color:var(--gold-deep);background:rgba(233,194,104,.06)}
-  .invite-acts{display:flex;gap:9px;margin-top:12px}
-  .invite-acts .btn{padding:11px;font-size:12.5px}
   .qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:4px}
   @media(min-width:480px){.qa-grid{grid-template-columns:repeat(4,1fr)}}
   .qa{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
@@ -2365,8 +2363,6 @@ function renderSelectorHead(){
 /* ---------- HOME: o que está acontecendo agora ---------- */
 const sec=(icon,label)=>`<div class="home-sec">${icon}${label}</div>`;
 function myOpenDuels(){ return CURRENT?DUELS.filter(d=>d.status==="ativo"&&(d.aId===CURRENT.uid||d.bId===CURRENT.uid)):[]; }
-function invitesToMe(){ return CURRENT?DUELS.filter(d=>d.status==="convite"&&d.bId===CURRENT.uid):[]; }
-function invitesFromMe(){ return CURRENT?DUELS.filter(d=>d.status==="convite"&&d.aId===CURRENT.uid):[]; }
 function myNextMatch(){
   if(!CURRENT||!CURRENT_CHAMP) return null;
   const open=ROUNDS.filter(r=>!r.closed).sort((a,b)=>b.number-a.number);
@@ -2399,19 +2395,7 @@ function renderHome(){
   let h="";
 
   /* 1 — o que exige ação sua */
-  const inv=invitesToMe(), mine=myOpenDuels(), next=myNextMatch(), bye=myByeRound();
-  if(inv.length){
-    h+=sec(IC.challenge,"Você foi desafiado");
-    h+=inv.map(d=>`<div class="hero">
-      <span class="hico">${IC.challenge}</span>
-      <div class="hb"><div class="hl">Desafio</div>
-        <div class="hm">${esc(d.aName)} quer duelar</div>
-        <div class="hs">${d.champId&&CHAMPS.find(c=>c.id===d.champId)?esc((CHAMPS.find(c=>c.id===d.champId)||{}).name):"duelo avulso"}</div>
-        <div class="invite-acts">
-          <button class="btn ghost" data-act="invno" data-id="${d.id}">Recusar</button>
-          <button class="btn" data-act="invyes" data-id="${d.id}">${IC.swords} Aceitar</button>
-        </div></div></div>`).join("");
-  }
+  const mine=myOpenDuels(), next=myNextMatch(), bye=myByeRound();
   if(mine.length){
     h+=sec(IC.swords,"Seu duelo em andamento");
     h+=mine.map(d=>{
@@ -2439,14 +2423,6 @@ function renderHome(){
         <div class="hm">Você recebeu BYE</div>
         <div class="hs">o número de duelistas é ímpar, então você passa esta rodada sem adversário e <b>leva a vitória</b> (3 pontos). Na próxima você joga — ninguém repete BYE antes de todos terem tido um.</div></div></div>`;
   }
-  const out=invitesFromMe();
-  if(out.length){
-    h+=out.map(d=>`<div class="hero calm"><span class="hico">${IC.wait}</span>
-      <div class="hb"><div class="hl">Desafio enviado</div><div class="hm">${esc(d.bName)}</div>
-        <div class="hs">aguardando resposta</div>
-        <div class="invite-acts"><button class="btn ghost" data-act="invno" data-id="${d.id}">Cancelar desafio</button></div></div></div>`).join("");
-  }
-
   /* 3 — conta ainda não autorizada */
   if(authed&&!isMember()&&!adm){
     h+=`<div class="card"><div class="msg info" style="margin:0;display:flex;align-items:flex-start;gap:8px">
@@ -2779,7 +2755,7 @@ function renderPlayers(){
         ${avatarHTML(playerPhoto(p.id),'sm')}
         <span class="grow"><span class="l1" style="display:block">${esc(nm)}${me?' · você':''}</span>
         <span class="l2" style="display:block">${st.t?`${st.w}V · ${st.l}D · ${st.pct}%`:'sem duelos registrados'}</span></span></span>
-      ${!me&&CURRENT?`<button class="mini" data-act="challenge" data-id="${p.id}">${IC.challenge}</button>`:``}
+      ${!me&&CURRENT?`<button class="mini" data-act="challenge" data-id="${p.id}" title="Começar um duelo com ${esc(nm)}">${IC.swords}</button>`:``}
       ${adm?`<button class="mini danger" data-act="delplayer" data-id="${p.id}">Remover</button>`:``}
     </div>`;
   }).join("");
@@ -4311,7 +4287,7 @@ function renderProfile(){
   </div>`;
 
   if(!own && CURRENT && member){
-    html+=`<button class="btn" data-act="challenge" data-id="${uid}" style="margin-bottom:14px">${IC.challenge} Desafiar ${esc((u&&u.displayName)||"este duelista")}</button>`;
+    html+=`<button class="btn" data-act="challenge" data-id="${uid}" style="margin-bottom:14px">${IC.swords} Duelar com ${esc((u&&u.displayName)||"este duelista")}</button>`;
   }
 
   html+=`<div class="card"><h2>${IC.chest} Decks${own?"":" públicos"}</h2>`;
@@ -4925,27 +4901,27 @@ async function openMatchDuel(roundId,idx){
   ACTIVE_DUEL=id; lpLocalTs=0; LP=[data.lpA,data.lpB]; openScreen("counter");
   if(!(ex&&(ex.aDeck||ex.bDeck))) openDeckPicker(id);
 }
-async function startDuelBetween(aId,bId,champId,forceDirect){
+/* Escolher os dois ja COMECA o duelo. Nao existe mais convite para
+   o outro aceitar: a mesa e presencial e o aceite so atrasava o
+   jogo. Quem cria fica no lado esquerdo do contador. */
+async function startDuelBetween(aId,bId,champId){
   if(!CURRENT){ toast("Entre com sua conta para registrar um duelo."); return; }
   if(!aId||!bId||aId===bId){ toast("Escolha dois duelistas diferentes."); return; }
-  // se quem cria é um dos dois, vira convite e o outro aceita; senão (admin montando a mesa) já começa
-  const invite=!forceDirect&&(CURRENT.uid===aId||CURRENT.uid===bId);
-  // quem convida fica sempre no lado A, para o convite chegar em B
-  const [x,y]=(invite&&CURRENT.uid===bId)?[bId,aId]:[aId,bId];
   try{
     const ref=await addDoc(collection(db,"duels"),{champId:champId||null,roundId:null,matchIdx:null,dayId:null,
-      aId:x,bId:y,aName:nameOfUid(x),bName:nameOfUid(y),
-      aDeck:null,bDeck:null,lpA:8000,lpB:8000,status:invite?"convite":"ativo",winner:null,
+      aId,bId,aName:nameOfUid(aId),bName:nameOfUid(bId),
+      aDeck:null,bDeck:null,lpA:8000,lpB:8000,status:"ativo",winner:null,
       createdAt:serverTimestamp(),createdBy:CURRENT.uid});
     haptic(30);
-    if(invite){ toast(`Desafio enviado para ${nameOfUid(y)}`); goHome(); return; }
     ACTIVE_DUEL=ref.id; lpLocalTs=0; LP=[8000,8000]; openScreen("counter"); openDeckPicker(ref.id);
   }catch(e){ toast(fbError(e)); }
 }
+/* so serve para os convites gravados pela versao antiga: comeca o
+   duelo que ficou parado, ou apaga o registro */
 async function answerInvite(id,accept){
   const d=DUELS.find(x=>x.id===id); if(!d) return;
   try{
-    if(!accept){ await deleteDoc(doc(db,"duels",id)); haptic(20); toast("Desafio recusado"); renderHome(); return; }
+    if(!accept){ await deleteDoc(doc(db,"duels",id)); haptic(20); toast("Duelo apagado"); renderDuels(); return; }
     await updateDoc(doc(db,"duels",id),{status:"ativo",lpA:8000,lpB:8000});
     ACTIVE_DUEL=id; lpLocalTs=0; LP=[8000,8000]; haptic([25,45,25]); openScreen("counter"); openDeckPicker(id);
   }catch(e){ toast(fbError(e)); }
@@ -5085,7 +5061,7 @@ function renderDirectory(){
         ${avatarHTML({photo:p.photo},'sm')}
         <span class="grow"><span class="l1" style="display:block">${esc(p.name)}${me?' · você':''}${adm?' <span class="badge-role adm">Admin</span>':''}</span>
         <span class="l2" style="display:block">${st.t?`${st.w}V · ${st.l}D · ${st.pct}%`:'sem duelos registrados'}</span></span></span>
-      ${!me&&CURRENT&&isMember()?`<button class="mini" data-act="challenge" data-id="${p.id}">${IC.challenge}</button>`:``}
+      ${!me&&CURRENT&&isMember()?`<button class="mini" data-act="challenge" data-id="${p.id}" title="Começar um duelo com ${esc(p.name)}">${IC.swords}</button>`:``}
     </div>`;
   }).join("") : `<div class="empty" style="padding:18px">Nenhum duelista encontrado.</div>`;
 }
@@ -5185,18 +5161,20 @@ function renderDuels(){
   const live=DUELS.filter(d=>d.status==="ativo");
   const conv=DUELS.filter(d=>d.status==="convite");
   let head="";
+  /* o app nao cria mais convite, mas os que ficaram no banco
+     precisam de uma saida: comecar ou apagar */
   if(conv.length){
-    head=`<div class="section-note" style="margin:0 0 8px;color:var(--gold-soft)">${IC.challenge} Desafios aguardando resposta</div>`
+    head=`<div class="section-note" style="margin:0 0 8px;color:var(--gold-soft)">${IC.wait} Combinados antes e nunca iniciados</div>`
       +conv.map(d=>{
-        const forMe=!!(CURRENT&&d.bId===CURRENT.uid);
+        const meu=!!(CURRENT&&(d.aId===CURRENT.uid||d.bId===CURRENT.uid))||isAdmin();
         return `<div class="duel-row">
           <div class="duel-side"><div class="dn" data-act="profile" data-id="${d.aId}">${avatarHTML({photo:duelPhoto(d,"a")},'sm')}${esc(d.aName)}</div></div>
-          <div class="duel-mid"><div class="vs">desafia</div></div>
+          <div class="duel-mid"><div class="vs">VS</div></div>
           <div class="duel-side r"><div class="dn" data-act="profile" data-id="${d.bId}">${esc(d.bName)}${avatarHTML({photo:duelPhoto(d,"b")},'sm')}</div></div>
         </div>
         <div class="duel-acts">
-          ${forMe?`<button class="mini" data-act="invyes" data-id="${d.id}">${IC.swords} Aceitar</button>`:``}
-          <button class="mini danger" data-act="invno" data-id="${d.id}">${forMe?"Recusar":"Cancelar"}</button>
+          ${meu?`<button class="mini" data-act="invyes" data-id="${d.id}">${IC.swords} Começar duelo</button>`:``}
+          <button class="mini danger" data-act="invno" data-id="${d.id}">${IC.jar} Apagar</button>
         </div>`;
       }).join("")
       +`<div style="height:1px;background:var(--line);margin:6px 0 12px"></div>`;
