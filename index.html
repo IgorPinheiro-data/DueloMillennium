@@ -2497,7 +2497,7 @@ function renderHome(){
      nao entra aqui: o bloco dela acima ja e o proprio atalho. */
   h+=sec(IC.ankh,"Atalhos");
   h+=`<div class="qa-grid">
-    <button class="qa" data-nav="counter">${ICONS.counter}Duelar</button>
+    <button class="qa" data-nav="duels">${ICONS.counter}Duelar</button>
     <button class="qa" data-nav="torneio">${ICONS.rank}Torneio</button>
     ${authed?`<button class="qa" data-nav="decks">${ICONS.decks}Meus Decks</button>`
             :`<button class="qa" data-nav="cards">${ICONS.cards}Lista de Cards</button>`}
@@ -4006,16 +4006,25 @@ function renderTabbar(){
   bar.classList.remove("hidden");
   const inChamp=!!(CURRENT_CHAMP && CHAMPS.find(c=>c.id===CURRENT_CHAMP));
   const inView=VIEW==="champ"&&inChamp, scr=ACTIVE_SCREEN;
+  /* o contador se abre PELA tela de Duelos, entao ele acende o item
+     de Duelos em vez de deixar a barra sem nada aceso */
   const on={ home:!scr&&!inView, torneio:scr==="torneio",
-             counter:scr==="counter", duels:scr==="duels" };
+             duels:scr==="duels"||scr==="counter",
+             decks:scr==="decks", cards:scr==="cards" };
   /* o hero mostra só o ícone: o rótulo cabia mal e o desenho já é inequívoco.
      aria-label mantém o nome para quem usa leitor de tela. */
   const tb=(nav,label,ic,core)=>`<button class="tb ${core?'core':''} ${on[nav]?'on':''}" data-nav="${nav}" aria-label="${label}"${on[nav]?' aria-current="page"':''}>
       <span class="tb-ic">${ic}</span>${core?'':`<span class="tb-l">${label}</span>`}</button>`;
+  /* Duelos no centro: todo duelo comeca escolhendo quem joga. O
+     contador rapido continua na propria tela de Duelos, no topo.
+     Visitante nao tem deck, entao o quarto lugar vira a Lista de
+     Cards — igual aos atalhos da tela inicial. Botao que nao faz
+     nada e pior que botao que leva a outro lugar. */
   bar.innerHTML = tb("home","Início",ICONS.home)
     + tb("torneio","Torneio",ICONS.torneio)
-    + tb("counter","Duelar",ICONS.counter,true)
-    + tb("duels","Duelos",ICONS.duels)
+    + tb("duels","Duelos",ICONS.duels,true)
+    + (authed ? tb("decks","Decks",ICONS.decks)
+              : tb("cards","Cards",ICONS.cards))
     + tb("more","Menu",ICONS.more);
 }
 
@@ -4036,7 +4045,8 @@ document.addEventListener("click", ev=>{
   else if(nav==="counter"){ ACTIVE_DUEL=null; openScreen("counter"); }
   else if(nav==="stats"){ openScreen("stats"); }
   else if(nav==="cards"){ openScreen("cards"); }
-  else if(nav==="decks"){ if(CURRENT) openScreen("decks"); }
+  else if(nav==="decks"){ if(CURRENT) openScreen("decks");
+    else toast("Entre com sua conta para montar decks."); }
   else if(nav==="profile"){ if(CURRENT) openProfile(CURRENT.uid); }
   else if(nav==="switch"){ closeScreen(); leaveChamp(); }
   else if(nav==="logout"){ closeScreen(); signOut(auth); }
