@@ -2088,7 +2088,12 @@ function flashEl(el,kind){ if(!el) return; const c="fx-"+kind;
 function pulseCount(id){ const el=$(id); if(!el) return; el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse"); }
 
 const isAdmin=()=>!!(CURRENT&&CONFIG&&Array.isArray(CONFIG.adminUids)&&CONFIG.adminUids.includes(CURRENT.uid));
-const isMember=()=>!!(CURRENT&&MEMBERS.some(m=>m.id===CURRENT.uid));
+/* admin e autorizado por definicao: as regras do Firestore aceitam
+   isAdmin() em tudo que exige membro, e o doc em /members pode nunca
+   ter existido — o primeiro admin nasce so com adminUids. Sem isto um
+   admin aparecia como "conta nao autorizada" na tela inicial e ficava
+   sem o botao de desafio no diretorio de duelistas. */
+const isMember=()=>!!(CURRENT&&(MEMBERS.some(m=>m.id===CURRENT.uid)||isAdmin()));
 const champData=()=>CHAMPS.find(c=>c.id===CURRENT_CHAMP)||null;
 const isLocked=()=>{ const c=champData(); return !!(c&&c.status==="encerrado"); };
 const canEdit=()=>isAdmin()&&!isLocked();
@@ -2316,13 +2321,13 @@ $("btn-setup").onclick=async()=>{
   try{
     sessionStorage.removeItem("guest");
     const cred=await createUserWithEmailAndPassword(auth,email,pass);
-    await setDoc(configRef,{adminUids:[cred.user.uid],createdAt:serverTimestamp()});
+    await setDoc(configRef,{adminUids:[cred.user.uid],createdAt:serverTimestamp()}); /* o 1o admin tambem entra em /members, senao nasce sem registro de membro */ try{ await setDoc(doc(db,"members",cred.user.uid),{email,createdAt:serverTimestamp()},{merge:true}); }catch(_){}
     toast("Administrador criado! 𓂀");
   }catch(e){
     if(e&&e.code==="auth/email-already-in-use"){
       try{ const cred=await signInWithEmailAndPassword(auth,email,pass);
         const cur=await getDoc(configRef);
-        if(!cur.exists()){ await setDoc(configRef,{adminUids:[cred.user.uid],createdAt:serverTimestamp()}); toast("Administrador criado! 𓂀"); }
+        if(!cur.exists()){ await setDoc(configRef,{adminUids:[cred.user.uid],createdAt:serverTimestamp()}); /* o 1o admin tambem entra em /members, senao nasce sem registro de membro */ try{ await setDoc(doc(db,"members",cred.user.uid),{email,createdAt:serverTimestamp()},{merge:true}); }catch(_){} toast("Administrador criado! 𓂀"); }
       }catch(e2){ showMsg("setup-msg",fbError(e2),"err"); }
     } else showMsg("setup-msg",fbError(e),"err");
   }finally{ b.disabled=false; b.textContent="Criar administrador"; }
@@ -2941,20 +2946,32 @@ function renderAccess(){
   if(!isAdmin()){ body.innerHTML=`<div class="empty">Somente administradores.</div>`; return; }
   const admins=(CONFIG&&CONFIG.adminUids)||[];
   const memberIds=new Set(MEMBERS.map(m=>m.id));
+  /* A lista de autorizados e a UNIAO de /members com os adminUids.
+     Antes era so /members, e um admin sem esse doc ficava invisivel:
+     fora dos membros por nao ter o doc, e fora dos pendentes porque
+     ser admin o tirava de la. */
+  const authed=Array.from(new Set(MEMBERS.map(m=>m.id).concat(admins)));
   const pending=USERS.filter(u=>!memberIds.has(u.id) && !admins.includes(u.id));
   const nameOf=(id,fallback)=>{ const u=USERS.find(x=>x.id===id); return (u&&u.displayName)||fallback; };
   const photoOf=id=>{ const u=USERS.find(x=>x.id===id); return {photo:u&&u.photo}; };
+  /* o e-mail pode estar no doc de membro OU no de usuario */
+  const emailOf=id=>{ const m=MEMBERS.find(x=>x.id===id); if(m&&m.email) return m.email;
+    const u=USERS.find(x=>x.id===id); return (u&&u.email)||""; };
+  const rows=authed.map(id=>({id,adm:admins.includes(id),email:emailOf(id),
+      name:nameOf(id,emailOf(id)||id),orphan:!memberIds.has(id)}))
+    .sort((x,y)=>(y.adm-x.adm)||x.name.localeCompare(y.name));
   let html=`<div class="section-note" style="margin:0 0 8px">Membros autorizados a jogar:</div>`;
-  if(MEMBERS.length===0){ html+=`<div class="empty" style="padding:14px">Nenhum membro ainda. Crie um acesso acima.</div>`; }
-  else html+=MEMBERS.map(m=>{
-    const adm=admins.includes(m.id), me=CURRENT&&CURRENT.uid===m.id;
-    return `<div class="list-row"><span data-act="profile" data-id="${m.id}" style="display:inline-flex;align-items:center;gap:10px;flex:1;min-width:0">
-      ${avatarHTML(photoOf(m.id),'sm')}
-      <span class="grow"><span class="l1" style="display:block">${esc(nameOf(m.id,m.email||m.id))}</span>
-        <span class="l2" style="display:block">${esc(m.email||'')} · ${adm?'Administrador':'Jogador'}${me?' · você':''}</span></span></span>
-      ${m.email?`<button class="mini" data-act="resetpass" data-email="${esc(m.email)}" title="Enviar link de nova senha">${IC.unseal}</button>`:``}
-      <button class="mini ${adm?'danger':''}" data-act="togadmin" data-id="${m.id}" ${me?'disabled style="opacity:.4"':''}>${adm?'Rebaixar':'Admin'}</button>
-      <button class="mini danger" data-act="delmember" data-id="${m.id}" data-name="${esc(nameOf(m.id,m.email||m.id))}" ${me?'disabled style="opacity:.4"':''}>Remover</button></div>`;
+  if(!rows.length){ html+=`<div class="empty" style="padding:14px">Nenhum membro ainda. Crie um acesso acima.</div>`; }
+  else html+=rows.map(r=>{
+    const me=CURRENT&&CURRENT.uid===r.id;
+    return `<div class="list-row"><span data-act="profile" data-id="${r.id}" style="display:inline-flex;align-items:center;gap:10px;flex:1;min-width:0">
+      ${avatarHTML(photoOf(r.id),'sm')}
+      <span class="grow"><span class="l1" style="display:block">${esc(r.name)}</span>
+        <span class="l2" style="display:block">${esc(r.email||'sem e-mail registrado')} · ${r.adm?'Administrador':'Jogador'}${me?' · você':''}${r.orphan?' · <b style="color:#e79b8c">falta o registro de membro</b>':''}</span></span></span>
+      ${r.orphan?`<button class="mini" data-act="authorize" data-id="${r.id}" data-email="${esc(r.email)}" title="Criar o registro de membro que falta">${IC.check}</button>`:``}
+      ${r.email?`<button class="mini" data-act="resetpass" data-email="${esc(r.email)}" title="Enviar link de nova senha">${IC.unseal}</button>`:``}
+      <button class="mini ${r.adm?'danger':''}" data-act="togadmin" data-id="${r.id}" ${me?'disabled style="opacity:.4"':''}>${r.adm?'Rebaixar':'Admin'}</button>
+      <button class="mini danger" data-act="delmember" data-id="${r.id}" data-name="${esc(r.name)}" ${me?'disabled style="opacity:.4"':''}>Remover</button></div>`;
   }).join("");
   if(pending.length){
     html+=`<div style="height:1px;background:var(--line);margin:16px 0"></div>
@@ -3402,6 +3419,46 @@ document.addEventListener("click", async ev=>{
     try{ if(ACTIVE_DUEL===d.id) ACTIVE_DUEL=null; await deleteDoc(doc(db,"duels",d.id)); toast("Duelo apagado"); }
     catch(e){ toast(fbError(e)); } return; }
 
+  /* ---------- acoes globais de admin ----------
+     Contas e banlist nao pertencem a um evento. Estas acoes ficavam
+     ABAIXO do corte "sem evento aberto, nao faz nada", entao
+     Autorizar, Admin/Rebaixar e Remover nao respondiam quando
+     nenhum evento estava aberto. */
+  if(act==="togadmin"){
+    if(!isAdmin()) return;
+    const uid=b.dataset.id, admins=(CONFIG&&CONFIG.adminUids)||[];
+    try{
+      if(admins.includes(uid)) await updateDoc(configRef,{adminUids:arrayRemove(uid)});
+      else{
+        await updateDoc(configRef,{adminUids:arrayUnion(uid)});
+        /* quem e promovido tambem precisa do doc em /members: sem
+           ele, um rebaixamento futuro o deixaria sem autorizacao */
+        const em=(MEMBERS.find(m=>m.id===uid)||USERS.find(u=>u.id===uid)||{}).email||"";
+        try{ await setDoc(doc(db,"members",uid),{email:em,createdAt:serverTimestamp()},{merge:true}); }catch(_){}
+      }
+      toast("Permissão atualizada");
+    }catch(e){ toast(fbError(e)); }
+    return; }
+  if(act==="authorize"){
+    if(!isAdmin()) return;
+    try{ await setDoc(doc(db,"members",b.dataset.id),{email:b.dataset.email||"",createdAt:serverTimestamp()},{merge:true}); toast("Conta autorizada"); }catch(e){ toast(fbError(e)); }
+    return; }
+  if(act==="delmember"){
+    if(!isAdmin()) return;
+    await removeAccount(b.dataset.id, b.dataset.name||"esta conta");
+    return; }
+  if(act==="addcard"){
+    if(!isAdmin()) return;
+    const c=BL_ADD.find(x=>x.id===b.dataset.id); if(c) openAddModal(c);
+    return; }
+  if(act==="blremove"){
+    ev.stopPropagation();
+    if(!isAdmin()) return;
+    const custom=currentCustom(); if(!custom) return;
+    const cards=(custom.cards||[]).filter(x=>x.id!==b.dataset.id);
+    try{ await updateDoc(doc(db,"banlists",custom.id),{cards}); renderBanlist(); toast("Carta removida"); }catch(e){ toast(fbError(e)); }
+    return; }
+
   if(!CURRENT_CHAMP) return;
   if(act==="openday"){ CURRENT_DAY=b.dataset.id; renderCalendar(); return; }
   if(act==="delday"){
@@ -3443,30 +3500,6 @@ document.addEventListener("click", async ev=>{
     matches[idx].winner=winner;
     try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP,"rounds",rId),{matches}); }catch(e){ toast(fbError(e)); return; }
     syncDuelFromMatch(round,idx,winner);
-  }
-  if(act==="togadmin"){
-    if(!isAdmin()) return;
-    const uid=b.dataset.id, admins=(CONFIG&&CONFIG.adminUids)||[];
-    try{ if(admins.includes(uid)) await updateDoc(configRef,{adminUids:arrayRemove(uid)}); else await updateDoc(configRef,{adminUids:arrayUnion(uid)}); toast("Permissão atualizada"); }catch(e){ toast(fbError(e)); }
-  }
-  if(act==="authorize"){
-    if(!isAdmin()) return;
-    try{ await setDoc(doc(db,"members",b.dataset.id),{email:b.dataset.email||"",createdAt:serverTimestamp()},{merge:true}); toast("Conta autorizada"); }catch(e){ toast(fbError(e)); }
-  }
-  if(act==="delmember"){
-    if(!isAdmin()) return;
-    await removeAccount(b.dataset.id, b.dataset.name||"esta conta");
-  }
-  if(act==="addcard"){
-    if(!isAdmin()) return;
-    const c=BL_ADD.find(x=>x.id===b.dataset.id); if(c) openAddModal(c);
-  }
-  if(act==="blremove"){
-    ev.stopPropagation();
-    if(!isAdmin()) return;
-    const custom=currentCustom(); if(!custom) return;
-    const cards=(custom.cards||[]).filter(x=>x.id!==b.dataset.id);
-    try{ await updateDoc(doc(db,"banlists",custom.id),{cards}); renderBanlist(); toast("Carta removida"); }catch(e){ toast(fbError(e)); }
   }
 });
 
