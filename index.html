@@ -353,6 +353,37 @@
   .bl-tag.limited{background:var(--gold);color:#1a1206}
   .bl-tag.semi{background:var(--lapis);color:#fff}
 
+  /* ---------- SELO DE BANLIST ----------
+     O numero no selo e quantas copias a lista PERMITE: 1 limitada,
+     2 semi, e o circulo cortado para proibida — a convencao do
+     proprio jogo. Diz de cara o que interessa montando o deck, em
+     vez de obrigar a adicionar ate dar erro. Fica na ESQUERDA porque
+     a direita ja pertence ao contador de copias. */
+  .cs{position:absolute;top:5px;left:5px;z-index:2;
+    min-width:19px;height:19px;padding:0 4px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:800;line-height:1;
+    border:1px solid rgba(0,0,0,.5);box-shadow:0 2px 6px rgba(0,0,0,.65)}
+  .cs.forbidden{background:var(--carn);color:#fff}
+  .cs.limited{background:var(--gold);color:#1a1206}
+  .cs.semi{background:var(--lapis);color:#fff}
+  .bl-card .cs{top:6px;left:6px}
+  /* o mesmo selo correndo dentro de uma frase */
+  .cs.inline{position:static;display:inline-flex;vertical-align:-5px}
+  /* carta acima do limite: anel vermelho, para achar no meio do deck */
+  .dk-card.over{border-color:var(--carn);box-shadow:0 0 0 2px rgba(217,85,63,.45)}
+  .valid-tag.bl-limited{color:var(--gold-soft);border-color:var(--line2);
+    background:rgba(233,194,104,.1)}
+  .valid-tag.bl-semi{color:#9fc0ff;border-color:rgba(74,122,224,.4);
+    background:rgba(74,122,224,.14)}
+  .bl-pick{display:flex;align-items:center;gap:8px;margin:9px 0 0}
+  .bl-pick select{flex:1;min-width:0;padding:9px 11px !important;font-size:13px !important}
+  .bl-pick .bp-l{flex:0 0 auto;font-size:10.5px;letter-spacing:1.2px;
+    text-transform:uppercase;color:var(--muted);font-weight:700}
+  .bl-warn{font-size:11.5px;color:#f0a494;line-height:1.55;margin-top:9px;
+    border-top:1px solid var(--hair);padding-top:9px}
+  .bl-warn b{color:#fff}
+
   /* ---------- overlays: visor de carta e bottom sheets ---------- */
   .bl-modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;
     padding:24px;flex-direction:column;gap:14px;
@@ -934,6 +965,28 @@
     text-align:center;font-size:12.5px;padding:3px 2px;border-radius:0;
     text-overflow:ellipsis}
   .lp-panel .lp-name:focus{box-shadow:none;border-bottom:1px dashed var(--gold)}
+  /* ---------- O RETRATO DO DUELISTA ----------
+     A arte vem do endereco de arte recortada da YGOPRODeck, que e
+     derivado do id da carta-capa — ja vem SO o monstro, sem moldura
+     nem texto, entao nao ha recorte no chute. Sem deck escolhido cai
+     na foto do duelista; sem foto, no olho de Horus. */
+  .lp-art{position:relative;width:100%;aspect-ratio:1;margin:0 0 9px;
+    border-radius:var(--r-md);overflow:hidden;background:#0d1220;
+    border:1px solid var(--gold-deep);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.55), 0 7px 18px -11px rgba(0,0,0,.95)}
+  .lp-art img{width:100%;height:100%;object-fit:cover;display:block}
+  /* a base escurece SO quando ha nome de deck para carregar; sem
+     legenda o degrade seria so escurecer o rosto de quem joga */
+  .lp-art:has(.lp-dk)::after{content:"";position:absolute;inset:auto 0 0 0;height:42%;
+    pointer-events:none;
+    background:linear-gradient(180deg,rgba(10,14,23,0),rgba(10,14,23,.94))}
+  .lp-art .ph{position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;color:var(--gold-deep);opacity:.45}
+  .lp-art .ph svg{width:42px;height:42px}
+  .lp-dk{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:12px 6px 5px;
+    font-size:8.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;
+    color:var(--gold-soft);text-align:center;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lp-av{width:42px;height:42px;border-radius:50%;object-fit:cover;
     border:2px solid var(--gold-deep);display:block;margin:0 auto 5px;background:#0d1220;
     box-shadow:0 5px 14px -7px rgba(0,0,0,.95), 0 0 0 3px rgba(0,0,0,.45)}
@@ -1008,6 +1061,27 @@
     background:linear-gradient(180deg,var(--gold-soft),var(--gold));
     box-shadow:0 6px 16px -8px var(--gold-glow)}
   .step-custom{width:94px;text-align:center;padding:9px 10px !important;font-size:14px !important}
+  /* ---------- DADO E MOEDA ----------
+     Os dois sorteios da mesa, lado a lado e rotulados, dividindo uma
+     unica linha de resultado — duas linhas de resultado competiriam
+     pela mesma leitura. */
+  .tools{display:flex;gap:16px;align-items:flex-start;justify-content:center;margin:16px 0 0}
+  .tool{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:8px;
+    background:none;border:none;padding:0;cursor:pointer}
+  .tool-l{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.8px;
+    text-transform:uppercase;color:var(--gold-deep);font-weight:700}
+  .tool .coin{width:66px;height:66px;font-size:9.5px;margin:0}
+  .dice-face{width:66px;height:66px;border-radius:15px;display:flex;align-items:center;
+    justify-content:center;flex:0 0 auto;
+    background:linear-gradient(180deg,#242d41,#131a27);
+    border:1px solid var(--line2);
+    box-shadow:0 8px 20px -10px rgba(0,0,0,.9), var(--sheen);
+    transition:transform .12s var(--ease)}
+  .dice-face svg{width:40px;height:40px;display:block}
+  .tool:active .dice-face,.tool:active .coin{transform:scale(.93)}
+  .dice-face.rolling{animation:diceShake .36s linear infinite}
+  @keyframes diceShake{0%,100%{transform:rotate(-8deg) scale(1.04)}
+                       50%{transform:rotate(8deg) scale(1.04)}}
   .center-tools{display:flex;gap:14px;align-items:center;justify-content:center;margin:16px 0 4px}
   .coin{width:74px;height:74px;border-radius:50%;border:3px solid var(--gold-deep);cursor:pointer;
     background:radial-gradient(circle at 38% 32%,var(--gold-soft),var(--gold-deep) 78%);color:#3a2a08;
@@ -1016,7 +1090,8 @@
     box-shadow:0 10px 26px -10px var(--gold-glow), inset 0 2px 4px rgba(255,255,255,.4)}
   .coin.flip{animation:flip .8s ease-in-out}
   @keyframes flip{0%{transform:rotateY(0)}100%{transform:rotateY(1800deg)}}
-  .coin-res{font-family:'Cinzel',serif;color:var(--gold-soft);min-width:72px;font-size:15px}
+  .coin-res{font-family:'Cinzel',serif;color:var(--gold-soft);min-width:72px;font-size:15px;
+    text-align:center;margin-top:13px}
   /* ---------- detalhe de carta / construtor de deck ---------- */
   .card-detail{max-width:92vw;text-align:left}
   .cd-meta{color:var(--muted);font-size:12.5px;margin:7px 0}
@@ -1317,23 +1392,6 @@
     <div class="head-actions" id="sel-actions"></div>
   </header>
   <div id="home-body"></div>
-  <div class="card admin-only" id="new-champ-card">
-    <h2><span class="glyph">𓊃</span> Novo evento</h2>
-    <div id="champ-msg"></div>
-    <div class="seg" id="new-champ-kind">
-      <button data-kind="liga" class="active">Liga</button>
-      <button data-kind="torneio">Torneio do dia</button>
-    </div>
-    <p class="section-note" id="new-champ-note"></p>
-    <label class="fld">Nome</label>
-    <input id="new-champ" type="text" placeholder="Ex: Copa Millennium 2026">
-    <div id="new-champ-date-wrap" class="hidden">
-      <label class="fld">Data do torneio</label>
-      <input id="new-champ-date" type="date" class="search">
-    </div>
-    <div style="height:12px"></div>
-    <button class="btn" id="btn-add-champ">Criar evento</button>
-  </div>
   <div class="foot">𓋹 Que comece o duelo 𓋹</div>
 </div>
 
@@ -1348,6 +1406,9 @@
     </div>
     <div class="head-actions" id="head-actions"></div>
   </header>
+
+  <!-- as seções do evento, à vista: antes só o menu lateral levava a elas -->
+  <div id="champ-tabs" class="duel-chips"></div>
 
   <section id="tab-rank" class="tabpane">
     <div id="champ-info"></div>
@@ -1415,32 +1476,6 @@
     </div>
   </section>
 
-  <section id="tab-banlist" class="tabpane hidden">
-    <div class="card">
-      <h2><span class="glyph">𓁹</span> <span id="bl-title">Banlist</span></h2>
-      <p class="section-note" id="bl-sub">Toque numa carta para ampliar.</p>
-
-      <div class="admin-only" id="bl-admin-bar">
-        <label class="fld">Lista usada neste campeonato</label>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <select id="bl-choose" class="search" style="flex:1;min-width:150px"></select>
-          <button class="mini" id="bl-new"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Nova lista</button>
-        </div>
-        <div id="bl-custom-actions" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>
-        <div id="bl-manage" class="hidden">
-          <label class="fld">Adicionar carta (busca em todas as cartas)</label>
-          <input class="search" id="bl-add-search" type="text" placeholder="𓂀 Nome da carta para adicionar…">
-          <div id="bl-add-results" class="bl-grid" style="margin-top:10px"></div>
-        </div>
-        <div style="height:12px;border-bottom:1px solid var(--line);margin-bottom:10px"></div>
-      </div>
-
-      <input class="search bl-search" id="bl-search" type="text" placeholder="𓂀 Filtrar por nome…">
-      <div id="bl-count" class="bl-count"></div>
-      <div id="banlist-body"></div>
-    </div>
-  </section>
-
   <div class="foot">𓋹 Duelo Millennium · Campeonato de pontos corridos · Yu-Gi-Oh 𓋹</div>
 </div>
 
@@ -1481,6 +1516,9 @@
       <div id="duels-hist"></div>
       <div class="admin-only" id="duels-sync-wrap" style="margin-top:12px;border-top:1px solid var(--line);padding-top:12px">
         <button class="btn ghost" id="duels-sync">Importar duelos antigos das rodadas</button>
+        <div style="height:9px"></div>
+        <button class="btn ghost" id="duels-photos">Limpar fotos antigas</button>
+        <div class="section-note" style="margin:8px 0 0">Duelos e eventos gravados antes desta versão guardam uma cópia da foto dos duelistas. Limpar deixa o app mais leve — as fotos continuam no perfil de cada um.</div>
       </div>
     </div>
   </div>
@@ -1527,6 +1565,59 @@
       <button class="btn" id="btn-ttl-save">Salvar títulos</button>
       <div style="height:10px"></div>
       <button class="btn ghost" id="btn-ttl-reset">Voltar aos títulos padrão</button>
+    </div>
+  </div>
+</div>
+
+<!-- TELA TORNEIO (o que antes era a tela inicial: eventos, rodadas, classificação) -->
+<div id="screen-torneio" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Torneio</h1></div>
+  <div class="screen-body">
+    <div id="torneio-body"></div>
+    <div class="card admin-only" id="new-champ-card">
+      <h2><span class="glyph">𓊃</span> Novo evento</h2>
+      <div id="champ-msg"></div>
+      <div class="seg" id="new-champ-kind">
+        <button data-kind="liga" class="active">Liga</button>
+        <button data-kind="torneio">Torneio do dia</button>
+      </div>
+      <p class="section-note" id="new-champ-note"></p>
+      <label class="fld">Nome</label>
+      <input id="new-champ" type="text" placeholder="Ex: Copa Millennium 2026">
+      <div id="new-champ-date-wrap" class="hidden">
+        <label class="fld">Data do torneio</label>
+        <input id="new-champ-date" type="date" class="search">
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn" id="btn-add-champ">Criar evento</button>
+    </div>
+  </div>
+</div>
+
+<!-- TELA BANLIST (global: a coleção de listas nunca foi de um evento só) -->
+<div id="screen-banlist" class="screen">
+  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Banlist</h1>
+    <button class="icon-btn admin-only" id="bl-new">+ Nova lista</button></div>
+  <div class="screen-body">
+    <div class="card">
+      <h2><span class="glyph">𓁹</span> <span id="bl-title">Banlist</span></h2>
+      <p class="section-note" id="bl-sub">Toque numa carta para ampliar.</p>
+      <div class="bl-pick" style="margin:0 0 11px"><span class="bp-l">Ver</span>
+        <select id="bl-choose" class="search"></select></div>
+      <div id="bl-inforce"></div>
+      <div class="admin-only" id="bl-admin-bar">
+        <div id="bl-custom-actions" style="display:flex;gap:8px;margin-top:2px;flex-wrap:wrap"></div>
+        <div id="bl-manage" class="hidden">
+          <label class="fld">Adicionar carta (busca em todas as cartas)</label>
+          <input class="search" id="bl-add-search" type="text" placeholder="𓂀 Nome da carta para adicionar…">
+          <div id="bl-add-results" class="bl-grid" style="margin-top:10px"></div>
+        </div>
+        <div style="height:12px;border-bottom:1px solid var(--line);margin-bottom:10px"></div>
+      </div>
+
+      <input class="search bl-search" id="bl-search" type="text" placeholder="𓂀 Filtrar por nome…">
+      <div id="bl-count" class="bl-count"></div>
+      <div id="banlist-body"></div>
     </div>
   </div>
 </div>
@@ -1669,11 +1760,6 @@
 </div>
 
 <!-- TELA HISTÓRICO -->
-<div id="screen-history" class="screen">
-  <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Meu histórico</h1></div>
-  <div class="screen-body"><div id="history-body"></div></div>
-</div>
-
 <!-- TELA CONTADOR DE DUELO -->
 <div id="screen-counter" class="screen">
   <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Arena de Duelo</h1>
@@ -1683,7 +1769,7 @@
     <div id="duel-banner" class="hidden"></div>
     <div class="lp-wrap">
       <div class="lp-panel p1">
-        <img class="lp-av hidden" id="lp1-av" alt="">
+        <div class="lp-art" id="lp1-art"></div>
         <input class="lp-name" id="lp1-name" value="Jogador 1">
         <div class="lp-read"><div class="lp-num" id="lp1-num">8000</div></div>
         <div class="lp-bar" id="lp1-bar-box"><i id="lp1-bar"></i></div>
@@ -1695,7 +1781,7 @@
       </div>
       <div class="lp-spine"><span class="lp-vs">VS</span></div>
       <div class="lp-panel p2">
-        <img class="lp-av hidden" id="lp2-av" alt="">
+        <div class="lp-art" id="lp2-art"></div>
         <input class="lp-name" id="lp2-name" value="Jogador 2">
         <div class="lp-read"><div class="lp-num" id="lp2-num">8000</div></div>
         <div class="lp-bar" id="lp2-bar-box"><i id="lp2-bar"></i></div>
@@ -1715,10 +1801,13 @@
         <button class="step-chip" data-step="1000">1000</button>
         <input class="search step-custom" id="lp-step-custom" type="number" inputmode="numeric" placeholder="outro">
       </div>
-      <div class="center-tools">
-        <div class="coin" id="coin">CARA<br>ou<br>COROA</div>
-        <div class="coin-res" id="coin-res">toque na moeda</div>
+      <div class="tools">
+        <button class="tool" id="dice" aria-label="rolar um dado de seis faces">
+          <span class="dice-face" id="dice-face"></span><span class="tool-l">Dado</span></button>
+        <button class="tool" id="coin" aria-label="tirar cara ou coroa">
+          <span class="coin" id="coin-face">CARA<br>ou<br>COROA</span><span class="tool-l">Moeda</span></button>
       </div>
+      <div class="coin-res" id="coin-res">toque no dado ou na moeda</div>
     </div>
   </div>
 </div>
@@ -1727,6 +1816,8 @@
 <div id="screen-cards" class="screen">
   <div class="screen-head"><button class="icon-btn" data-close-screen>‹ Voltar</button><h1>Lista de Cards</h1></div>
   <div class="screen-body">
+    <div class="bl-pick" style="margin:0 0 10px"><span class="bp-l">Banlist</span>
+      <select id="cards-bl" class="search"></select></div>
     <input class="search" id="cards-search" type="text" placeholder="𓂀 Buscar carta pelo nome…">
     <div id="cards-count" class="bl-count"></div>
     <div id="cards-body"></div>
@@ -1758,9 +1849,11 @@
           <button class="dk-cover" id="deck-cover" aria-label="Escolher a carta de capa do deck"></button>
           <div class="dk-top-b">
             <input class="lp-name" id="deck-name" style="width:100%;font-size:18px;border-bottom:1px dashed var(--line2)">
-            <div id="deck-bl-line" class="section-note" style="margin:8px 0 0"></div>
+            <div class="bl-pick"><span class="bp-l">Banlist</span>
+              <select id="deck-bl" class="search"></select></div>
           </div>
         </div>
+        <div id="deck-bl-line" class="section-note" style="margin:11px 0 0"></div>
         <div id="deck-types" class="dk-types"></div>
         <div id="deck-validity" style="margin-bottom:10px"></div>
         <div class="btn-row" style="margin-bottom:4px">
@@ -1791,6 +1884,7 @@
     <img id="cm-img" src="" alt="" style="max-width:62vw;max-height:44vh;border-radius:10px;display:block;margin:0 auto">
     <div id="cm-name" style="font-family:'Cinzel',serif;color:var(--gold-soft);text-align:center;margin-top:10px;font-size:16px"></div>
     <div id="cm-meta" class="cd-meta" style="text-align:center"></div>
+    <div style="text-align:center;margin:9px 0 2px"><span id="cm-bl" class="valid-tag"></span></div>
     <div id="cm-desc" class="cd-desc"></div>
   </div>
   <div class="close" id="cm-close">Toque aqui para fechar</div>
@@ -1857,7 +1951,7 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword,
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc,
          collection, onSnapshot, addDoc, serverTimestamp,
-         query, orderBy, where, limit, arrayUnion, arrayRemove }
+         query, orderBy, where, limit, arrayUnion, arrayRemove, deleteField }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
@@ -1906,6 +2000,7 @@ let MYDECKS=[], unsubDecks=null, CUR_DECK=null, deckAddTarget="main";
 let DECK_ADD=[], DECK_ADD_LOADING=false, deckAddTimer=null, cardsTimer=null, CARDS_RES=[];
 const CARD_CACHE={};
 let BL_MANAGE=false;        // admin editando a lista custom atual
+let BL_SEEN=false;          // ja alinhamos a lista em foco com a do evento?
 let BL_ADD=[], BL_ADD_LOADING=false, BL_ADD_TERM="", BL_PENDING=null, addTimer=null;
 let DUELS=[];               // duelos (ativos + histórico)
 let ACTIVE_DUEL=null;       // id do duelo aberto no contador (null = contador rápido)
@@ -1925,6 +2020,7 @@ let ALL_DUELS=null, allDuelsLoading=false;         // histórico completo (estat
 let STAT_IDX=null, duelSig="", DUEL_EPOCH=0;
 let DIR_TERM="";
 let MESA_TAB="temporada";   // temporada | historico | rivais | campeoes
+let VIEW_BL="tcg";          // a banlist em foco na Lista de Cards
 
 /* ---------- confirmar / digitar no tema do app ---------- */
 let askResolve=null;
@@ -2013,12 +2109,16 @@ onSnapshot(collection(db,"members"), snap=>{ MEMBERS=snap.docs.map(d=>({id:d.id,
   if(ACTIVE_SCREEN==="access") renderAccess();
   if(!$("app").classList.contains("hidden")&&ACTIVE_TAB==="players") renderPlayers();
   if(!$("select-screen").classList.contains("hidden")) renderHome();
+  if(ACTIVE_SCREEN==="torneio") renderTorneio();
   if(ACTIVE_SCREEN==="dir") renderDirectory();
 }, err=>console.error(err));
 
 onSnapshot(query(collection(db,"banlists"),orderBy("createdAt","asc")), snap=>{
   BANLISTS=snap.docs.map(d=>({id:d.id,...d.data()}));
-  if(ACTIVE_TAB==="banlist" && !$("app").classList.contains("hidden")) renderBanlist();
+  if(ACTIVE_SCREEN==="banlist") renderBanlist();
+  /* mexeu numa lista: os selos de quem a usa mudam junto */
+  if(ACTIVE_SCREEN==="cards") paintCardsGrid();
+  if(ACTIVE_SCREEN==="decks") renderDecks();
 }, err=>console.error(err));
 
 onSnapshot(query(collection(db,"duels"),orderBy("createdAt","desc"),limit(400)), snap=>{
@@ -2035,6 +2135,7 @@ onSnapshot(query(collection(db,"duels"),orderBy("createdAt","desc"),limit(400)),
   if(ACTIVE_SCREEN==="mesa") renderMesa();
   if(ACTIVE_SCREEN==="profile") renderProfile();
   if(!$("select-screen").classList.contains("hidden")) renderHome();
+  if(ACTIVE_SCREEN==="torneio") renderTorneio();
   /* reporte muda classificacao, rodada e home: redesenha a aba aberta */
   if(!$("app").classList.contains("hidden")) renderTab();
 }, err=>console.error(err));
@@ -2067,7 +2168,24 @@ function subscribeChamp(id){
   unsubDays=onSnapshot(query(collection(db,"championships",id,"days"),orderBy("date","asc")),
     snap=>{ DAYS=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, err=>console.error(err));
 }
-function selectChamp(id){ CURRENT_CHAMP=id; sessionStorage.setItem("champ",id); subscribeChamp(id); setView("champ"); ACTIVE_TAB="rank"; switchTab("rank"); route(); renderAll(); }
+function selectChamp(id,tab){
+  CURRENT_CHAMP=id; sessionStorage.setItem("champ",id); subscribeChamp(id);
+  setView("champ"); ACTIVE_TAB=tab||"rank"; switchTab(ACTIVE_TAB); route(); renderAll();
+}
+/* as seções do evento como uma fileira de chips, no lugar de obrigar
+   a abrir o menu lateral para trocar de seção */
+function renderChampTabs(){
+  const box=$("champ-tabs"); if(!box) return;
+  const chip=(nav,label,ic,on)=>
+    `<button class="dchip ${on?'active':''}" data-nav="${nav}">${ic}${label}</button>`;
+  box.innerHTML=
+     chip("rank","Classificação",ICONS.rank,ACTIVE_TAB==="rank")
+    +chip("rounds","Calendário",ICONS.rounds,ACTIVE_TAB==="rounds")
+    +chip("players","Jogadores",ICONS.players,ACTIVE_TAB==="players")
+    +`<span class="ev-sep"></span>`
+    +chip("banlist","Banlist",ICONS.banlist,false)
+    +(isAdmin()?chip("access","Acessos",ICONS.access,false):"");
+}
 function leaveChamp(){
   if(unsubPlayers){unsubPlayers();unsubPlayers=null;} if(unsubRounds){unsubRounds();unsubRounds=null;} if(unsubDays){unsubDays();unsubDays=null;}
   subscribedChamp=null; CURRENT_CHAMP=null; PLAYERS=[]; ROUNDS=[]; DAYS=[]; CURRENT_DAY=null;
@@ -2141,6 +2259,7 @@ function applyRoleUI(){
   }
   /* perdeu o cargo de admin com a tela aberta: ela se fecha sozinha */
   if(!adm && ACTIVE_SCREEN==="access") closeScreen();
+  renderChampTabs();
 }
 
 /* ---------- seções do campeonato (navegação pelo menu lateral) ---------- */
@@ -2150,6 +2269,7 @@ function switchTab(name){
   const pane=$("tab-"+name); if(pane) pane.classList.remove("hidden");
   if(name==="players"||name==="rank"||name==="rounds") ensureAllDuels();
   renderTab();
+  renderChampTabs();
   renderTabbar();
 }
 
@@ -2200,10 +2320,10 @@ function renderTab(){
   if(ACTIVE_TAB==="rank") renderRank();
   else if(ACTIVE_TAB==="rounds") renderCalendar();
   else if(ACTIVE_TAB==="players") renderPlayers();
-  else if(ACTIVE_TAB==="banlist") renderBanlist();
 }
 function renderAll(){
   if(!$("select-screen").classList.contains("hidden")){ renderSelectorHead(); renderHome(); }
+  if(ACTIVE_SCREEN==="torneio") renderTorneio();
   if($("app").classList.contains("hidden")) return;
   applyRoleUI(); renderChampInfo(); renderChampionBanner(); renderTab();
 }
@@ -2308,101 +2428,12 @@ function renderHome(){
         <div class="invite-acts"><button class="btn ghost" data-act="invno" data-id="${d.id}">Cancelar desafio</button></div></div></div>`).join("");
   }
 
-  /* 2 — avisos do admin */
-  if(adm&&CURRENT_CHAMP){
-    let agreed=0, disputed=0, undec=0;
-    ROUNDS.filter(r=>!r.closed).forEach(r=>(r.matches||[]).forEach((m,i)=>{
-      if(m.winner) return;
-      const st=matchState(r,i);
-      if(st==="acordo"||st==="legado") agreed++;
-      else if(st==="disputa") disputed++; else undec++;
-    }));
-    if(agreed||disputed||undec){
-      h+=sec(IC.seal,"Administração");
-      if(disputed) h+=`<div class="hero" data-act="gotorounds"><span class="hico">${IC.alert}</span>
-        <div class="hb"><div class="hl">Disputa</div>
-          <div class="hm">${disputed} partida${disputed===1?'':'s'} com reportes diferentes</div>
-          <div class="hs">os dois duelistas apontaram vencedores distintos — você decide</div></div>
-        <span class="cc-arrow">›</span></div>`;
-      if(agreed) h+=`<div class="hero" data-act="gotorounds"><span class="hico">${IC.feather}</span>
-        <div class="hb"><div class="hl">Gravar na rodada</div>
-          <div class="hm">${agreed} resultado${agreed===1?'':'s'} com acordo dos dois</div>
-          <div class="hs">já pontua na classificação — encerrar a rodada grava tudo de uma vez</div></div>
-        <span class="cc-arrow">›</span></div>`;
-      if(undec) h+=`<div class="hero calm" data-act="gotorounds"><span class="hico">${IC.sun}</span>
-        <div class="hb"><div class="hl">Rodada em aberto</div>
-          <div class="hm">${undec} partida${undec===1?'':'s'} sem reporte</div>
-          <div class="hs">toque para abrir as rodadas</div></div>
-        <span class="cc-arrow">›</span></div>`;
-    }
-  }
-
   /* 3 — conta ainda não autorizada */
   if(authed&&!isMember()&&!adm){
     h+=`<div class="card"><div class="msg info" style="margin:0;display:flex;align-items:flex-start;gap:8px">
       <span style="flex:0 0 auto">${IC.wait}</span>
       <span>Sua conta ainda <b>não foi autorizada</b> pelo administrador. Você pode acompanhar tudo como visitante, mas ainda não entra em torneios nem duela.</span></div></div>`;
   }
-
-  /* 4 — sua posição no campeonato atual */
-  if(CURRENT&&CURRENT_CHAMP&&PLAYERS.some(p=>p.id===CURRENT.uid)){
-    const rows=computeStandings(); const pos=rows.findIndex(r=>r.id===CURRENT.uid)+1;
-    const me=rows[pos-1]; const st=statsOf(CURRENT.uid,"all");
-    if(me){
-      h+=sec(IC.maat,"Você no campeonato");
-      h+=`<div class="me-line" data-act="gotorank">
-        <div class="mcol"><div class="mv">${pos}º</div><div class="ms">posição</div></div>
-        <div class="mcol"><div class="mv">${me.pts}</div><div class="ms">pontos</div></div>
-        <div class="mcol"><div class="mv">${st.t?st.pct+"%":"—"}</div><div class="ms">aproveit.</div></div>
-      </div>`;
-    }
-  }
-
-  /* 5 — duelos ao vivo dos outros */
-  const others=DUELS.filter(d=>d.status==="ativo"&&!(CURRENT&&(d.aId===CURRENT.uid||d.bId===CURRENT.uid)));
-  if(others.length){
-    h+=sec(IC.eye,"Acontecendo agora");
-    h+=`<div class="card" style="padding:6px 14px">${others.slice(0,6).map(d=>
-      `<div class="mini-live" data-act="goduel" data-id="${d.id}">
-        <span class="live-dot"></span>
-        <span class="ml-n">${esc(d.aName)} × ${esc(d.bName)}</span>
-        <span class="ml-lp" data-live="${d.id}">${d.lpA??8000} · ${d.lpB??8000}</span></div>`).join("")}</div>`;
-  }
-
-  /* 6 — eventos: torneios do dia primeiro, ligas depois */
-  const champCard=c=>{
-    const st=c.status==="encerrado"?"encerrado":"ativo";
-    const kd=(c.kind==="torneio")?"torneio":"liga";
-    const nP=c.id===CURRENT_CHAMP?PLAYERS.length:null;
-    const when=kd==="torneio"?(c.date?fmtBR(c.date):"sem data")
-                             :(c.endDate?"até "+fmtBR(c.endDate):"pontos corridos");
-    return `<div class="champ-card" data-act="openchamp" data-id="${c.id}">
-      <svg class="cc-eye"><use href="#wdjat"/></svg>
-      <div class="cc-body"><div class="cc-name">${esc(c.name)}</div>
-        <div class="cc-meta"><span class="kind-pill ${kd}">${kd==="torneio"?"Torneio":"Liga"}</span>
-          <span class="status-pill ${st}">${st==="encerrado"?"Encerrado":"Em andamento"}</span>
-          <span>${esc(when)}</span>${nP!==null?`<span>· ${nP} duelista${nP===1?'':'s'}</span>`:''}</div></div>
-      ${adm?`<button class="mini danger" data-act="delchamp" data-id="${c.id}">Excluir</button>`:``}
-      <span class="cc-arrow">›</span></div>`;
-  };
-  /* a home mostra só o que está EM ABERTO; o resto mora na tela de Eventos */
-  const abertos=CHAMPS.filter(c=>c.status!=="encerrado");
-  const fechados=CHAMPS.filter(c=>c.status==="encerrado");
-  if(!abertos.length){
-    h+=sec(IC.crown,"Eventos");
-    h+=`<div class="card"><div class="empty" style="padding:16px"><span class="big">𓉔</span>${
-      CHAMPS.length
-        ? `Nenhum evento em aberto no momento.${adm?'<br>Crie uma liga ou um torneio do dia abaixo.':''}`
-        : `Nenhum evento ainda.<br>${adm?'Crie uma liga ou um torneio do dia abaixo.':'Aguarde o administrador criar um.'}`
-    }</div></div>`;
-  } else {
-    const torn=abertos.filter(c=>c.kind==="torneio"), ligas=abertos.filter(c=>c.kind!=="torneio");
-    if(torn.length){ h+=sec(IC.swords,"Torneios do dia");
-      h+=torn.slice().sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))).map(champCard).join(""); }
-    if(ligas.length){ h+=sec(IC.crown,"Ligas"); h+=ligas.map(champCard).join(""); }
-  }
-  if(fechados.length)
-    h+=`<button class="btn ghost" data-nav="events" style="margin-bottom:12px">${IC.crown} Ver ${fechados.length} evento${fechados.length===1?'':'s'} encerrado${fechados.length===1?'':'s'}</button>`;
 
   /* 7 — O Faraó da Mesa: quem venceu a última temporada reina na atual */
   const farao=reigningPharaoh();
@@ -2443,14 +2474,122 @@ function renderHome(){
       <button class="btn ghost" data-nav="mesa">${IC.sun} Abrir a primeira temporada</button></div>`;
   }
 
-  /* 9 — atalhos */
+  /* atalhos — os quatro lugares que se usa fora de um duelo. A Mesa
+     nao entra aqui: o bloco dela acima ja e o proprio atalho. */
   h+=sec(IC.ankh,"Atalhos");
   h+=`<div class="qa-grid">
-    <button class="qa" data-nav="duels">${ICONS.duels}Duelos</button>
-    <button class="qa" data-nav="stats">${ICONS.stats}Estatísticas</button>
-    ${authed?`<button class="qa" data-nav="decks">${ICONS.decks}Meus Decks</button>`:`<button class="qa" data-nav="cards">${ICONS.cards}Cards</button>`}
-    <button class="qa" data-nav="dir">${ICONS.dir}Duelistas</button>
+    <button class="qa" data-nav="counter">${ICONS.counter}Duelar</button>
+    <button class="qa" data-nav="torneio">${ICONS.rank}Torneio</button>
+    ${authed?`<button class="qa" data-nav="decks">${ICONS.decks}Meus Decks</button>`
+            :`<button class="qa" data-nav="cards">${ICONS.cards}Lista de Cards</button>`}
+    <button class="qa" data-nav="banlist">${ICONS.banlist}Banlist</button>
   </div>`;
+
+  /* 5 — duelos ao vivo dos outros */
+  const others=DUELS.filter(d=>d.status==="ativo"&&!(CURRENT&&(d.aId===CURRENT.uid||d.bId===CURRENT.uid)));
+  if(others.length){
+    h+=sec(IC.eye,"Acontecendo agora");
+    h+=`<div class="card" style="padding:6px 14px">${others.slice(0,6).map(d=>
+      `<div class="mini-live" data-act="goduel" data-id="${d.id}">
+        <span class="live-dot"></span>
+        <span class="ml-n">${esc(d.aName)} × ${esc(d.bName)}</span>
+        <span class="ml-lp" data-live="${d.id}">${d.lpA??8000} · ${d.lpB??8000}</span></div>`).join("")}</div>`;
+  }
+
+  body.innerHTML=h;
+}
+function renderTorneio(){
+  const body=$("torneio-body"); if(!body) return;
+  const authed=!!CURRENT, adm=isAdmin();
+  /* applyRoleUI so roda dentro do evento; aqui o cartao de criar
+     evento precisa se esconder sozinho */
+  els("#screen-torneio .admin-only").forEach(n=>n.classList.toggle("hidden",!adm));
+  let h="";
+
+  /* 2 — avisos do admin */
+  if(adm&&CURRENT_CHAMP){
+    let agreed=0, disputed=0, undec=0;
+    ROUNDS.filter(r=>!r.closed).forEach(r=>(r.matches||[]).forEach((m,i)=>{
+      if(m.winner) return;
+      const st=matchState(r,i);
+      if(st==="acordo"||st==="legado") agreed++;
+      else if(st==="disputa") disputed++; else undec++;
+    }));
+    if(agreed||disputed||undec){
+      h+=sec(IC.seal,"Administração");
+      if(disputed) h+=`<div class="hero" data-act="gotorounds"><span class="hico">${IC.alert}</span>
+        <div class="hb"><div class="hl">Disputa</div>
+          <div class="hm">${disputed} partida${disputed===1?'':'s'} com reportes diferentes</div>
+          <div class="hs">os dois duelistas apontaram vencedores distintos — você decide</div></div>
+        <span class="cc-arrow">›</span></div>`;
+      if(agreed) h+=`<div class="hero" data-act="gotorounds"><span class="hico">${IC.feather}</span>
+        <div class="hb"><div class="hl">Gravar na rodada</div>
+          <div class="hm">${agreed} resultado${agreed===1?'':'s'} com acordo dos dois</div>
+          <div class="hs">já pontua na classificação — encerrar a rodada grava tudo de uma vez</div></div>
+        <span class="cc-arrow">›</span></div>`;
+      if(undec) h+=`<div class="hero calm" data-act="gotorounds"><span class="hico">${IC.sun}</span>
+        <div class="hb"><div class="hl">Rodada em aberto</div>
+          <div class="hm">${undec} partida${undec===1?'':'s'} sem reporte</div>
+          <div class="hs">toque para abrir as rodadas</div></div>
+        <span class="cc-arrow">›</span></div>`;
+    }
+  }
+
+  /* 4 — sua posição no campeonato atual */
+  if(CURRENT&&CURRENT_CHAMP&&PLAYERS.some(p=>p.id===CURRENT.uid)){
+    const rows=computeStandings(); const pos=rows.findIndex(r=>r.id===CURRENT.uid)+1;
+    const me=rows[pos-1]; const st=statsOf(CURRENT.uid,"all");
+    if(me){
+      h+=sec(IC.maat,"Você no campeonato");
+      h+=`<div class="me-line" data-act="gotorank">
+        <div class="mcol"><div class="mv">${pos}º</div><div class="ms">posição</div></div>
+        <div class="mcol"><div class="mv">${me.pts}</div><div class="ms">pontos</div></div>
+        <div class="mcol"><div class="mv">${st.t?st.pct+"%":"—"}</div><div class="ms">aproveit.</div></div>
+      </div>`;
+    }
+  }
+
+  /* 6 — eventos: torneios do dia primeiro, ligas depois */
+  const champCard=c=>{
+    const st=c.status==="encerrado"?"encerrado":"ativo";
+    const kd=(c.kind==="torneio")?"torneio":"liga";
+    const nP=c.id===CURRENT_CHAMP?PLAYERS.length:null;
+    const when=kd==="torneio"?(c.date?fmtBR(c.date):"sem data")
+                             :(c.endDate?"até "+fmtBR(c.endDate):"pontos corridos");
+    return `<div class="champ-card" data-act="openchamp" data-id="${c.id}">
+      <svg class="cc-eye"><use href="#wdjat"/></svg>
+      <div class="cc-body"><div class="cc-name">${esc(c.name)}</div>
+        <div class="cc-meta"><span class="kind-pill ${kd}">${kd==="torneio"?"Torneio":"Liga"}</span>
+          <span class="status-pill ${st}">${st==="encerrado"?"Encerrado":"Em andamento"}</span>
+          <span>${esc(when)}</span>${nP!==null?`<span>· ${nP} duelista${nP===1?'':'s'}</span>`:''}</div></div>
+      ${adm?`<button class="mini danger" data-act="delchamp" data-id="${c.id}">Excluir</button>`:``}
+      <span class="cc-arrow">›</span></div>`
+      /* evento em aberto: atalho direto para cada seção, em vez de
+         entrar e depois caçar no menu lateral */
+      +(st==="ativo"?`<div class="ev-acts" style="margin:-5px 0 13px;flex-wrap:wrap">
+        <button class="mini" data-act="openchamp" data-id="${c.id}" data-tab="rank">${ICONS.rank} Classificação</button>
+        <button class="mini" data-act="openchamp" data-id="${c.id}" data-tab="rounds">${ICONS.rounds} Calendário</button>
+        <button class="mini" data-act="openchamp" data-id="${c.id}" data-tab="players">${ICONS.players} Jogadores</button>
+      </div>`:"");
+  };
+  /* a home mostra só o que está EM ABERTO; o resto mora na tela de Eventos */
+  const abertos=CHAMPS.filter(c=>c.status!=="encerrado");
+  const fechados=CHAMPS.filter(c=>c.status==="encerrado");
+  if(!abertos.length){
+    h+=sec(IC.crown,"Eventos");
+    h+=`<div class="card"><div class="empty" style="padding:16px"><span class="big">𓉔</span>${
+      CHAMPS.length
+        ? `Nenhum evento em aberto no momento.${adm?'<br>Crie uma liga ou um torneio do dia abaixo.':''}`
+        : `Nenhum evento ainda.<br>${adm?'Crie uma liga ou um torneio do dia abaixo.':'Aguarde o administrador criar um.'}`
+    }</div></div>`;
+  } else {
+    const torn=abertos.filter(c=>c.kind==="torneio"), ligas=abertos.filter(c=>c.kind!=="torneio");
+    if(torn.length){ h+=sec(IC.swords,"Torneios do dia");
+      h+=torn.slice().sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))).map(champCard).join(""); }
+    if(ligas.length){ h+=sec(IC.crown,"Ligas"); h+=ligas.map(champCard).join(""); }
+  }
+  if(fechados.length)
+    h+=`<button class="btn ghost" data-nav="events" style="margin-bottom:12px">${IC.crown} Ver ${fechados.length} evento${fechados.length===1?'':'s'} encerrado${fechados.length===1?'':'s'}</button>`;
 
   body.innerHTML=h;
 }
@@ -2495,9 +2634,11 @@ $("btn-add-champ").onclick=async()=>{
 /* ============================================================
    CAMPEÕES E TROFÉUS
    Quando o admin encerra, o campeão é GRAVADO no documento do evento
-   (champion:{uid,name,photo}). Assim o troféu no perfil e a foto na
-   lista de eventos não dependem de recalcular a classificação toda
-   hora — e não mudam sozinhos se alguém mexer num resultado antigo.
+   (champion:{uid,name}). Assim o troféu no perfil e o nome na lista
+   de eventos não dependem de recalcular a classificação toda hora —
+   e não mudam sozinhos se alguém mexer num resultado antigo.
+   A FOTO não entra aqui: ela é base64, e a lista de eventos é lida
+   inteira a cada abertura do app. Vem de /users na hora de desenhar.
    As imagens dos troféus ficam em meta/config, para o admin trocar.
    ============================================================ */
 const TROPHY_LIGA_PADRAO="https://i.postimg.cc/g08Yh2Sq/Trofeu-Dourado-do-Olho-Sagrado.png";
@@ -2541,6 +2682,11 @@ function trophyHTML(kind,cls){
   return u ? `<img class="trophy ${cls||''}" src="${esc(u)}" alt="" loading="lazy">`
            : `<span class="trophy ${cls||''}">${IC.crown}</span>`;
 }
+/* a foto do campeão vem de /users na hora de desenhar; ch.photo só é
+   lido como reserva, para os eventos coroados antes desta mudança —
+   e para o caso de a conta ter sido removida depois */
+const champPhoto=ch=>{ if(!ch) return null;
+  const u=userOf(ch.uid); return (u&&u.photo)||ch.photo||null; };
 /* quantas ligas e quantos torneios este duelista venceu */
 function trophiesOf(uid){
   let liga=0, torneio=0, temporada=0;
@@ -2821,7 +2967,9 @@ function champBanlistMode(){
   if(m!=="tcg" && !BANLISTS.find(b=>b.id===m)) return "tcg"; // lista removida → cai na oficial
   return m;
 }
-function currentCustom(){ const m=champBanlistMode(); return m==="tcg"?null:(BANLISTS.find(b=>b.id===m)||null); }
+/* a tela mostra a lista que VOCE escolheu ver (VIEW_BL), nao a do
+   evento: e a mesma escolha que comanda os selos nas cartas */
+function currentCustom(){ return VIEW_BL==="tcg"?null:(BANLISTS.find(b=>b.id===VIEW_BL)||null); }
 
 async function loadOfficial(){
   if(OFFICIAL||OFFICIAL_LOADING) return;
@@ -2834,7 +2982,10 @@ async function loadOfficial(){
       small:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url_small)||"",
       full:(c.card_images&&c.card_images[0]&&c.card_images[0].image_url)||""})).filter(c=>c.status);
   }catch(e){ console.error(e); OFFICIAL_ERR=true; }
-  finally{ OFFICIAL_LOADING=false; renderBanlist(); }
+  finally{ OFFICIAL_LOADING=false; renderBanlist();
+    /* com a lista em maos os selos mudam: redesenha quem esta a vista */
+    if(ACTIVE_SCREEN==="decks") renderDecks();
+    if(ACTIVE_SCREEN==="cards") paintCardsGrid(); }
 }
 function loadBanlist(){ renderBanlist(); }
 
@@ -2842,16 +2993,29 @@ $("bl-search").addEventListener("input", ()=>renderBanlist());
 
 function renderBlAdminBar(mode,custom){
   const sel=$("bl-choose");
-  sel.innerHTML=[`<option value="tcg">TCG (oficial)</option>`]
-    .concat(BANLISTS.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`)).join("");
-  sel.value=mode;
-  sel.onchange=async()=>{ const v=sel.value; BL_MANAGE=false;
-    try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:v}); if(v==="tcg") loadOfficial(); renderBanlist(); }catch(e){ toast(fbError(e)); } };
+  if(sel&&document.activeElement!==sel){ sel.innerHTML=blOptionsHTML(mode); sel.value=mode; }
+  if(sel) sel.onchange=()=>{ VIEW_BL=sel.value||"tcg"; BL_MANAGE=false;
+    if(VIEW_BL==="tcg") loadOfficial(); renderBanlist(); };
+  /* "em vigor" e coisa do EVENTO; ver a lista e coisa de qualquer um */
+  const inf=$("bl-inforce");
+  if(inf){
+    const ev=champData(), evBl=ev?champBanlistMode():null;
+    if(!ev) inf.innerHTML="";
+    else if(evBl===mode)
+      inf.innerHTML=`<div class="msg ok" style="margin:0 0 11px">${IC.check} Esta é a lista em vigor em <b>${esc(ev.name)}</b>.</div>`;
+    else inf.innerHTML=`<div class="msg info" style="margin:0 0 11px">Em <b>${esc(ev.name)}</b> vale <b>${esc(blName(evBl))}</b>.`
+      +(isAdmin()?` <a id="bl-use" style="cursor:pointer;text-decoration:underline">Usar esta no evento</a>`:``)+`</div>`;
+    const use=$("bl-use");
+    if(use) use.onclick=async()=>{
+      try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:mode});
+        haptic(20); toast("Em vigor no evento: "+blName(mode)); }
+      catch(e){ toast(fbError(e)); } };
+  }
   const act=$("bl-custom-actions");
   if(mode!=="tcg" && custom){
-    act.innerHTML=`<button class="mini" id="bl-manage-toggle">${BL_MANAGE?IC.check+" Concluir edição":"Gerenciar cartas"}</button>
+    act.innerHTML=`<button class="mini" id="bl-manage-toggle">${BL_MANAGE?IC.check+" Concluir edição":IC.reed+" Gerenciar cartas"}</button>
       <button class="mini" id="bl-rename">Renomear</button>
-      <button class="mini danger" id="bl-del">Excluir lista</button>`;
+      <button class="mini danger" id="bl-del">${IC.jar} Excluir lista</button>`;
     $("bl-manage-toggle").onclick=()=>{ BL_MANAGE=!BL_MANAGE; renderBanlist(); };
     $("bl-rename").onclick=renameCustom; $("bl-del").onclick=deleteCustom;
   } else { act.innerHTML=""; BL_MANAGE=false; }
@@ -2860,11 +3024,16 @@ function renderBlAdminBar(mode,custom){
 }
 function renderBanlist(){
   const body=$("banlist-body"), count=$("bl-count"); if(!body) return;
-  const adm=isAdmin(), mode=champBanlistMode(), custom=currentCustom();
+  /* a lista apagada por outro admin volta sozinha para a oficial */
+  if(VIEW_BL!=="tcg" && !BANLISTS.some(b=>b.id===VIEW_BL)) VIEW_BL="tcg";
+  const adm=isAdmin(), mode=VIEW_BL, custom=currentCustom();
+  /* applyRoleUI so roda dentro do evento; aberta pela tela inicial,
+     esta tela precisa esconder os controles de admin por conta propria */
+  els("#screen-banlist .admin-only").forEach(n=>n.classList.toggle("hidden",!adm));
   renderBlAdminBar(mode,custom);
   $("bl-title").textContent = mode==="tcg" ? "Banlist TCG (oficial)" : ("Banlist: "+(custom?custom.name:"—"));
   $("bl-sub").textContent = mode==="tcg" ? "Lista oficial (fonte: YGOPRODeck). Toque numa carta para ampliar."
-                                         : "Lista personalizada deste campeonato. Toque numa carta para ampliar.";
+                                         : "Lista personalizada da casa. Toque numa carta para ampliar.";
   let cards=[];
   if(mode==="tcg"){
     if(!OFFICIAL && !OFFICIAL_LOADING && !OFFICIAL_ERR){ loadOfficial(); }
@@ -2910,7 +3079,7 @@ async function runAddSearch(){
 }
 function renderAddResults(){
   const box=$("bl-add-results"); if(!box) return;
-  if(!(champBanlistMode()!=="tcg" && BL_MANAGE)){ box.innerHTML=""; return; }
+  if(!(VIEW_BL!=="tcg" && BL_MANAGE)){ box.innerHTML=""; return; }
   if(BL_ADD_LOADING){ box.innerHTML=`<div class="spin" style="grid-column:1/-1"></div>`; return; }
   if(BL_ADD_TERM.length<3){ box.innerHTML=`<div class="empty" style="grid-column:1/-1;padding:10px">Digite ao menos 3 letras para buscar.</div>`; return; }
   if(!BL_ADD.length){ box.innerHTML=`<div class="empty" style="grid-column:1/-1;padding:10px">Nenhuma carta encontrada.</div>`; return; }
@@ -2918,20 +3087,32 @@ function renderAddResults(){
     <img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}"><div class="bl-name">${esc(c.name)}</div></div>`).join("");
 }
 async function newCustomList(){
-  if(!isAdmin()||!CURRENT_CHAMP) return;
+  if(!isAdmin()) return;   /* criar lista nao depende de haver evento aberto */
   const name=await askText("Como vai se chamar a nova banlist personalizada?","Formato da Casa",{title:"Nova banlist",ok:"Criar"});
   if(!name||!name.trim()) return;
-  try{ const ref=await addDoc(collection(db,"banlists"),{name:name.trim(),cards:[],createdAt:serverTimestamp(),createdBy:CURRENT.uid});
-    await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:ref.id}); BL_MANAGE=true; renderBanlist(); toast("Lista criada — adicione cartas"); }
+  try{ const ref=await addDoc(collection(db,"banlists"),
+      {name:name.trim(),cards:[],createdAt:serverTimestamp(),createdBy:CURRENT.uid});
+    VIEW_BL=ref.id; BL_MANAGE=true; renderBanlist();
+    toast("Lista criada — adicione cartas"); }
   catch(e){ toast(fbError(e)); }
 }
 async function renameCustom(){ const custom=currentCustom(); if(!custom) return;
   const nn=await askText("Novo nome da lista:",custom.name,{title:"Renomear lista"}); if(!nn) return;
   try{ await updateDoc(doc(db,"banlists",custom.id),{name:nn.trim()}); toast("Renomeada"); }catch(e){ toast(fbError(e)); } }
 async function deleteCustom(){ const custom=currentCustom(); if(!custom) return;
-  if(!await ask(`Excluir a lista <b>${esc(custom.name)}</b>?\n\nEste campeonato volta para a TCG oficial.`,{title:"Excluir lista",ok:"Excluir",danger:true})) return;
-  try{ await updateDoc(doc(db,"championships",CURRENT_CHAMP),{banlist:"tcg"});
-    await deleteDoc(doc(db,"banlists",custom.id)); BL_MANAGE=false; loadOfficial(); renderBanlist(); toast("Lista excluída"); }catch(e){ toast(fbError(e)); } }
+  /* quem usava a lista precisa voltar para a oficial, senao fica
+     apontando para uma lista que nao existe mais */
+  const usam=CHAMPS.filter(c=>c.banlist===custom.id);
+  if(!await ask(`Excluir a lista <b>${esc(custom.name)}</b>?`
+    +(usam.length?`\n\n${usam.length} evento(s) usam esta lista e voltam para a TCG oficial: `
+      +usam.map(c=>esc(c.name)).join(", "):"")
+    +`\n\nOs decks montados nela também passam a ser conferidos pela TCG.`,
+    {title:"Excluir lista",ok:"Excluir",danger:true})) return;
+  try{
+    for(const c of usam){ try{ await updateDoc(doc(db,"championships",c.id),{banlist:"tcg"}); }catch(_){} }
+    await deleteDoc(doc(db,"banlists",custom.id));
+    VIEW_BL="tcg"; BL_MANAGE=false; loadOfficial(); renderBanlist(); toast("Lista excluída"); }
+  catch(e){ toast(fbError(e)); } }
 
 function openCard(full,name){ if(!full) return; $("bl-modal-img").src=full; $("bl-modal-cap").textContent=name; $("bl-modal").classList.add("show"); }
 $("bl-modal").onclick=()=>{ $("bl-modal").classList.remove("show"); $("bl-modal-img").src=""; };
@@ -3017,7 +3198,11 @@ document.addEventListener("click", async ev=>{
   const b=ev.target.closest("[data-act]"); if(!b) return;
   const act=b.dataset.act;
 
-  if(act==="openchamp"){ selectChamp(b.dataset.id); return; }
+  if(act==="openchamp"){
+    /* vindo da tela Torneio ou do perfil, a sobreposição tem de sair
+       da frente — senão ela fica por cima do evento recém-aberto */
+    ev.stopPropagation(); closeScreen();
+    selectChamp(b.dataset.id, b.dataset.tab||null); return; }
 
   /* ---------- A Mesa: temporadas ---------- */
   if(act==="mesatab"){ MESA_TAB=b.dataset.k; haptic(10); renderMesa(); return; }
@@ -3116,7 +3301,7 @@ document.addEventListener("click", async ev=>{
     return;
   }
   if(act==="card"){ openCard(b.dataset.full,b.dataset.name); return; }
-  if(act==="cardinfo"||act==="deckcardinfo"){ openCardModal(b.dataset.id); return; }
+  if(act==="cardinfo"||act==="deckcardinfo"){ openCardModal(b.dataset.id,b.dataset.bl||VIEW_BL); return; }
   if(act==="deckadd"){ addToDeck(b.dataset.id, deckAddTarget, b, ev); return; }
   if(act==="deckremove"){ ev.stopPropagation(); removeFromDeck(b.dataset.sec,b.dataset.id,b,ev); return; }
   if(act==="opendeck"){ openDeck(b.dataset.id); return; }
@@ -3170,7 +3355,10 @@ document.addEventListener("click", async ev=>{
   if(act==="dpopen"){ ev.stopPropagation(); openDeckPicker(b.dataset.id); return; }
   if(act==="dppick"){ if(!DP_STATE) return; const side=b.dataset.side, id=b.dataset.id;
     const list=side==="a"?DP_STATE.aDecks:DP_STATE.bDecks; const k=list.find(x=>x.id===id);
-    DP_STATE[side]=k?{id:k.id,name:k.name||"Deck"}:null; haptic(12); renderDeckPicker(); return; }
+    /* art = o id da CARTA-capa, que vira a arte do painel no contador */
+    const cv=k?deckCover(k):null;
+    DP_STATE[side]=k?{id:k.id,name:k.name||"Deck",art:(cv&&cv.id)||null}:null;
+    haptic(12); renderDeckPicker(); return; }
   if(act==="dnpick"){ if(!DN_STATE) return; DN_STATE[b.dataset.side]=b.dataset.id; haptic(12); renderDuelNew(); return; }
   if(act==="histscope"){ HIST_SCOPE=b.dataset.k; renderDuels(); return; }
   if(act==="evstatus"){ EV_STATUS=b.dataset.k; renderEvents(); return; }
@@ -3364,7 +3552,6 @@ async function reportMatch(roundId,idx,winnerUid){
   const mine=(prev===winnerUid)?null:winnerUid;      /* tocar de novo desfaz */
   const up={champId:CURRENT_CHAMP,roundId,matchIdx:idx,dayId:round.dayId||null,
     aId:m.a,bId:m.b,aName:playerName(m.a),bName:playerName(m.b),
-    aPhoto:playerPhoto(m.a).photo||null,bPhoto:playerPhoto(m.b).photo||null,
     lpA:(ex&&ex.lpA)??8000,lpB:(ex&&ex.lpB)??8000,
     status:(ex&&ex.status)||"reportado",
     createdAt:(ex&&ex.createdAt)||serverTimestamp(),
@@ -3579,7 +3766,7 @@ $("btn-finish-champ").onclick=async()=>{
   try{
     /* grava quem venceu junto com o fechamento: e o que alimenta o trofeu */
     await updateDoc(doc(db,"championships",CURRENT_CHAMP),{status:"encerrado",
-      champion: win?{uid:win.id,name:win.name,photo:playerPhoto(win.id).photo||null}:null,
+      champion: win?{uid:win.id,name:win.name}:null,
       championAt: serverTimestamp()});
     /* guarda o deck que mais venceu junto com a coroa; se nao der, o admin
        tem um botao na tela de Eventos para tentar de novo */
@@ -3729,18 +3916,19 @@ function renderDrawer(){
   let nav=item('home','Início');
   if(inView){
     nav+=`<div class="drawer-sep"></div>`;
-    nav+=item('rank','Classificação')+item('rounds','Calendário')+item('players','Jogadores')+item('banlist','Banlist');
+    nav+=item('rank','Classificação')+item('rounds','Calendário')+item('players','Jogadores');
   }
   nav+=`<div class="drawer-sep"></div>`;
+  nav+=item('torneio','Torneio');
   nav+=item('events','Eventos');
   nav+=item('mesa','A Mesa');
+  nav+=item('banlist','Banlist');
   nav+=item('duels','Duelos');
   nav+=item('counter','Contador de Duelo');
   nav+=item('stats','Estatísticas');
   nav+=item('dir','Duelistas');
   nav+=item('cards','Lista de Cards');
   if(authed) nav+=item('decks','Meus Decks');
-  if(authed) nav+=item('history','Meu histórico');
   if(authed) nav+=item('profile','Perfil');
   if(adm) nav+=item('titles','Títulos e troféus');
   /* contas sao globais: o menu mostra Acessos com ou sem evento aberto */
@@ -3759,14 +3947,14 @@ function renderTabbar(){
   bar.classList.remove("hidden");
   const inChamp=!!(CURRENT_CHAMP && CHAMPS.find(c=>c.id===CURRENT_CHAMP));
   const inView=VIEW==="champ"&&inChamp, scr=ACTIVE_SCREEN;
-  const on={ home:!scr&&!inView, rank:!scr&&inView,
+  const on={ home:!scr&&!inView, torneio:scr==="torneio",
              counter:scr==="counter", duels:scr==="duels" };
   /* o hero mostra só o ícone: o rótulo cabia mal e o desenho já é inequívoco.
      aria-label mantém o nome para quem usa leitor de tela. */
   const tb=(nav,label,ic,core)=>`<button class="tb ${core?'core':''} ${on[nav]?'on':''}" data-nav="${nav}" aria-label="${label}"${on[nav]?' aria-current="page"':''}>
       <span class="tb-ic">${ic}</span>${core?'':`<span class="tb-l">${label}</span>`}</button>`;
   bar.innerHTML = tb("home","Início",ICONS.home)
-    + tb("rank","Torneio",ICONS.rank)
+    + tb("torneio","Torneio",ICONS.rank)
     + tb("counter","Duelar",ICONS.counter,true)
     + tb("duels","Duelos",ICONS.duels)
     + tb("more","Menu",ICONS.more);
@@ -3776,19 +3964,20 @@ document.addEventListener("click", ev=>{
   const it=ev.target.closest("[data-nav]"); if(!it) return;
   const nav=it.dataset.nav; closeDrawer();
   if(nav==="home"){ goHome(); }
-  else if(["rank","rounds","players","banlist"].includes(nav)){
+  else if(["rank","rounds","players"].includes(nav)){
     closeScreen(); if(CURRENT_CHAMP){ setView("champ"); route(); switchTab(nav); } else toast("Escolha um campeonato primeiro."); }
   else if(nav==="dir"){ openScreen("dir"); }
   else if(nav==="events"){ openScreen("events"); }
   else if(nav==="mesa"){ openScreen("mesa"); }
   else if(nav==="titles"){ if(isAdmin()) openScreen("titles"); }
   else if(nav==="access"){ if(isAdmin()) openScreen("access"); }
+  else if(nav==="banlist"){ openScreen("banlist"); }
+  else if(nav==="torneio"){ openScreen("torneio"); }
   else if(nav==="duels"){ openScreen("duels"); }
   else if(nav==="counter"){ ACTIVE_DUEL=null; openScreen("counter"); }
   else if(nav==="stats"){ openScreen("stats"); }
   else if(nav==="cards"){ openScreen("cards"); }
   else if(nav==="decks"){ if(CURRENT) openScreen("decks"); }
-  else if(nav==="history"){ if(CURRENT) openScreen("history"); }
   else if(nav==="profile"){ if(CURRENT) openProfile(CURRENT.uid); }
   else if(nav==="switch"){ closeScreen(); leaveChamp(); }
   else if(nav==="logout"){ closeScreen(); signOut(auth); }
@@ -3799,8 +3988,11 @@ document.addEventListener("click", ev=>{
 
 /* screens overlay */
 function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.classList.remove("show")); const s=$("screen-"+name); if(s){ s.classList.add("show"); s.scrollTop=0; }
-  if(name==="profile") renderProfile(); if(name==="counter") initCounter(); if(name==="history") renderHistory();
+  if(name==="profile") renderProfile(); if(name==="counter") initCounter();
   if(name==="cards"){ if(!CARDS_RES.length) $("cards-body").innerHTML=`<div class="empty">Digite ao menos 3 letras para buscar uma carta.</div>`; }
+  /* os selos de banlist dependem da lista oficial; baixa uma vez */
+  if(name==="decks"||name==="cards") loadOfficial();
+  if(name==="cards") paintCardsGrid();   /* o seletor, mesmo sem busca feita */
   if(name==="decks") renderDecks();
   if(name==="duels") renderDuels();
   if(name==="stats") renderStats();
@@ -3809,6 +4001,12 @@ function openScreen(name){ ACTIVE_SCREEN=name; els(".screen").forEach(s=>s.class
   if(name==="mesa") renderMesa();
   if(name==="titles"){ TITLE_EDIT=null; renderTitles(); }
   if(name==="access") renderAccess();
+  if(name==="torneio") renderTorneio();
+  if(name==="banlist"){
+    /* dentro de um evento, abre ja mostrando a lista que vale nele */
+    if(CURRENT_CHAMP&&!BL_SEEN){ VIEW_BL=champBanlistMode(); BL_SEEN=true; }
+    loadOfficial(); renderBanlist();
+  }
   els("#screen-duels .admin-only").forEach(n=>n.classList.toggle("hidden",!isAdmin()));
   renderTabbar();
 }
@@ -4016,6 +4214,21 @@ function renderProfile(){
           <div class="l2">${e.round?'rodada de evento':'duelo avulso'} · ${dayBR(e.at)}</div></div></div>`).join("")}
     </div>`:""}
   </div>`;
+
+  /* ---------- 3b. eventos disputados ---------- */
+  const evs=eventsOf(uid);
+  if(evs.length){
+    html+=`<div class="card"><h2>${IC.scroll} Eventos disputados</h2>
+      <p class="section-note">Ligas e torneios ${own?"que você entrou":"que este duelista entrou"} — o placar sai dos duelos registrados.</p>
+      ${evs.map(e=>`<div class="list-row" data-act="openchamp" data-id="${esc(e.champ.id)}" style="cursor:pointer">
+        ${e.campeao?trophyHTML(e.champ.kind==="torneio"?"torneio":"liga")
+          :`<span class="kind-pill ${e.champ.kind==="torneio"?"torneio":"liga"}">${e.champ.kind==="torneio"?"Torneio":"Liga"}</span>`}
+        <div class="grow"><div class="l1">${esc(e.champ.name)}${e.campeao?" · campeão":""}</div>
+          <div class="l2">${e.t?`${e.w}V · ${e.l}D · ${e.pct}%`
+            :(e.champ.status==="encerrado"?"sem duelos registrados":"ainda sem duelo decidido")}</div></div>
+        <span class="cc-arrow">›</span></div>`).join("")}
+    </div>`;
+  }
 
   /* ---------- 4. titulos ---------- */
   const titles=titlesOf(uid,PROFILE_DECKS.length);
@@ -4413,7 +4626,8 @@ function showDeckDialog(d,nota){
     const map={}; sortDeckArr(arr).forEach(c=>{ if(!map[c.id]) map[c.id]={c,n:0}; map[c.id].n++; });
     const items=Object.values(map);
     return `<div class="deck-sec"><h3>${label} <span class="cnt">${(arr||[]).length}</span></h3>
-      <div class="dk-grid">${items.length?items.map(({c,n})=>`<div class="dk-card" data-act="cardinfo" data-id="${esc(c.id)}">
+      <div class="dk-grid">${items.length?items.map(({c,n})=>`<div class="dk-card" data-act="cardinfo" data-id="${esc(c.id)}" data-bl="${esc(d.banlist||"tcg")}">
+        ${blSeal(c,d.banlist||"tcg")}
         <img loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">${n>1?`<span class="qty">x${n}</span>`:''}</div>`).join("")
         :`<div class="section-note" style="grid-column:1/-1;margin:0">vazio</div>`}</div></div>`;
   };
@@ -4425,39 +4639,31 @@ function showDeckDialog(d,nota){
 $("dv-close").onclick=()=>$("deck-view").classList.remove("show");
 
 /* ---------- histórico do jogador ---------- */
-async function getDocsOnce(colRef){ try{ const s=await getDocs(colRef); return s.docs.map(d=>({id:d.id,...d.data()})); }catch(e){ return []; } }
-async function renderHistory(){
-  const body=$("history-body"); if(!body) return;
-  if(!CURRENT){ body.innerHTML=`<div class="empty">Entre para ver seu histórico.</div>`; return; }
-  const prof=myProfile(); const enr=(prof&&prof.enrollments)||[];
-  if(!enr.length){ body.innerHTML=`<div class="empty"><span class="big" style="color:var(--gold-deep)">${IC.scroll}</span>Você ainda não entrou em nenhum torneio.<br>Entre em um campeonato pela aba <b>Jogadores</b>.</div>`; return; }
-  body.innerHTML=`<div class="spin"></div>`;
-  const cards=[];
-  const loaded=await Promise.all(enr.map(cid=>Promise.all([
-    getDocsOnce(collection(db,"championships",cid,"players")),
-    getDocsOnce(collection(db,"championships",cid,"rounds"))])));
-  enr.forEach((cid,ci)=>{
-    const champ=CHAMPS.find(c=>c.id===cid);
-    const [players,rounds]=loaded[ci];
-    const s={}; players.forEach(p=>s[p.id]={id:p.id,wins:0,played:0});
-    rounds.forEach(r=>(r.matches||[]).forEach(m=>{ if(m.winner&&s[m.winner]) s[m.winner].wins++; if(m.winner){ if(s[m.a])s[m.a].played++; if(s[m.b])s[m.b].played++; } }));
-    const ranked=Object.values(s).sort((a,b)=>b.wins-a.wins||b.played-a.played);
-    const mine=s[CURRENT.uid];
-    const rank=mine?ranked.findIndex(x=>x.id===CURRENT.uid)+1:null;
-    cards.push({name:champ?champ.name:"(campeonato removido)", status:champ?champ.status:null, exists:!!champ, wins:mine?mine.wins:0, played:mine?mine.played:0, rank, total:ranked.length});
+/* ---------- eventos disputados ----------
+   Antes isto era uma tela so, que fazia DUAS leituras no banco por
+   evento inscrito para montar a lista. Tudo de que ela precisa ja
+   esta na memoria: CHAMPS e os duelos. Sem leitura nova, e serve
+   para o perfil de qualquer duelista, nao so o seu. */
+function eventsOf(uid){
+  if(!uid) return [];
+  const m=new Map();
+  duelUniverse().forEach(d=>{
+    if(!d.champId||d.status!=="encerrado"||!d.winner) return;
+    if(d.aId!==uid&&d.bId!==uid) return;
+    const o=m.get(d.champId)||{id:d.champId,w:0,l:0};
+    if(d.winner===uid) o.w++; else o.l++;
+    m.set(d.champId,o);
   });
-  body.innerHTML=cards.map(c=>{
-    const champLine = c.exists
-      ? `${c.wins} vitória${c.wins===1?'':'s'} · ${c.played} jogo${c.played===1?'':'s'}${c.rank?` · <b style="color:var(--gold-soft)">${c.rank}º</b> de ${c.total}`:''}`
-      : "este campeonato não existe mais";
-    return `<div class="card" style="padding:14px 16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
-        <div style="font-family:'Cinzel',serif;color:var(--gold-soft);font-size:16px">${esc(c.name)}</div>
-        ${c.exists?`<span class="status-pill ${c.status==='encerrado'?'encerrado':'ativo'}">${c.status==='encerrado'?'Encerrado':'Em andamento'}</span>`:''}
-      </div>
-      <div style="font-size:13px;color:var(--muted);margin-top:6px">${champLine}${c.exists&&c.status==='encerrado'&&c.rank===1?` <span style="color:var(--gold)">${IC.crown}</span> Campeão!`:''}</div>
-    </div>`;
-  }).join("");
+  /* inscrito mas ainda sem duelo decidido tambem conta como disputado */
+  const u=userOf(uid);
+  ((u&&u.enrollments)||[]).forEach(cid=>{ if(!m.has(cid)) m.set(cid,{id:cid,w:0,l:0}); });
+  return Array.from(m.values()).map(o=>{
+    const c=CHAMPS.find(x=>x.id===o.id)||null, tot=o.w+o.l;
+    return {...o,champ:c,t:tot,pct:tot?Math.round(o.w*100/tot):0,
+      campeao:!!(c&&c.champion&&c.champion.uid===uid)};
+  }).filter(o=>o.champ)   /* evento apagado some da lista */
+    .sort((a,b)=>String(b.champ.date||b.champ.endDate||"")
+      .localeCompare(String(a.champ.date||a.champ.endDate||"")));
 }
 
 /* ---------- recorte de imagem (foto redonda e capa) ---------- */
@@ -4516,6 +4722,17 @@ let lpLocalTs=0, lpTimer=null, lpPending=null;
 
 const duelKey=(roundId,idx)=>`r_${roundId}_${idx}`;
 const activeDuel=()=>ACTIVE_DUEL?(DUELS.find(d=>d.id===ACTIVE_DUEL)||null):null;
+/* ---------- a foto do duelista ----------
+   O documento do duelo NAO guarda mais a foto: ela e base64 e cada
+   duelo carregava duas, repetidas em centenas de documentos que o
+   app le de uma vez. Agora vem de /users na hora de desenhar.
+   d.aPhoto/d.bPhoto ainda sao lidos como reserva, para os duelos
+   gravados antes desta mudanca. */
+function duelPhoto(d,side){
+  if(!d) return null;
+  const u=userOf(side==="a"?d.aId:d.bId);
+  return (u&&u.photo)||(side==="a"?d.aPhoto:d.bPhoto)||null;
+}
 const duelOf=(roundId,idx)=>DUELS.find(d=>d.id===duelKey(roundId,idx))||null;
 function canDuel(d){ if(!d) return true; if(isAdmin()) return true;
   return !!(CURRENT&&(CURRENT.uid===d.aId||CURRENT.uid===d.bId||CURRENT.uid===d.createdBy)); }
@@ -4535,8 +4752,27 @@ function syncCounterFromDuel(){
   renderDuelChips();
 }
 
-function setPanel(n,name,photo){ const av=$("lp"+n+"-av"), nm=$("lp"+n+"-name"); if(av){ av.src=photo||AV_PH; av.classList.remove("hidden"); } if(nm){ nm.value=name; nm.readOnly=true; } }
-function setPanelPlain(n,name){ const av=$("lp"+n+"-av"), nm=$("lp"+n+"-name"); if(av) av.classList.add("hidden"); if(nm){ nm.value=name; nm.readOnly=false; } }
+/* a arte recortada da YGOPRODeck sai do id da carta-capa; guardamos
+   so esse id no duelo (uns 8 bytes), nunca a imagem */
+const cardArtURL=id=>id?("https://images.ygoprodeck.com/images/cards_cropped/"+encodeURIComponent(id)+".jpg"):"";
+const EYE_PH=`<span class="ph"><svg viewBox="0 0 100 70"><use href="#wdjat"/></svg></span>`;
+function panelArtHTML(deck,photo){
+  const art=cardArtURL(deck&&deck.art);
+  if(art) return `<img src="${esc(art)}" alt="" loading="lazy">`
+    +`<span class="lp-dk">${esc((deck&&deck.name)||"Deck")}</span>`;
+  if(photo) return `<img src="${esc(photo)}" alt="">`;
+  return EYE_PH;
+}
+function setPanel(n,name,photo,deck){
+  const ar=$("lp"+n+"-art"), nm=$("lp"+n+"-name");
+  if(ar) ar.innerHTML=panelArtHTML(deck,photo);
+  if(nm){ nm.value=name; nm.readOnly=true; }
+}
+function setPanelPlain(n,name){
+  const ar=$("lp"+n+"-art"), nm=$("lp"+n+"-name");
+  if(ar) ar.innerHTML=EYE_PH;
+  if(nm){ nm.value=name; nm.readOnly=false; }
+}
 function renderDuelChips(){
   const box=$("duel-chips"); if(!box) return;
   const live=DUELS.filter(d=>d.status==="ativo");
@@ -4557,7 +4793,8 @@ function initCounter(){
     banner.innerHTML=`${IC.swords} ${d.roundId?"Duelo da rodada":"Duelo avulso"}
       <div class="db-sub"><b>${esc(d.aName)}</b> vs <b>${esc(d.bName)}</b>${deckLine}
       <br><a data-act="dpopen" data-id="${d.id}">escolher decks</a> · <a data-act="godquick">contador rápido</a></div>`;
-    setPanel(1,d.aName,d.aPhoto); setPanel(2,d.bName,d.bPhoto);
+    setPanel(1,d.aName,duelPhoto(d,"a"),d.aDeck);
+    setPanel(2,d.bName,duelPhoto(d,"b"),d.bDeck);
   } else {
     LP=[8000,8000]; banner.classList.add("hidden");
     setPanelPlain(1,"Jogador 1"); setPanelPlain(2,"Jogador 2");
@@ -4598,7 +4835,6 @@ async function openMatchDuel(roundId,idx){
   if(ex&&ex.status==="encerrado"&&!await ask("Este duelo já foi encerrado.\nReabrir e zerar os pontos de vida?",{title:"Reabrir duelo",ok:"Reabrir"})) return;
   const data={champId:CURRENT_CHAMP,roundId,matchIdx:idx,dayId:round.dayId||null,
     aId:m.a,bId:m.b,aName:playerName(m.a),bName:playerName(m.b),
-    aPhoto:playerPhoto(m.a).photo||null,bPhoto:playerPhoto(m.b).photo||null,
     aDeck:(ex&&ex.aDeck)||null,bDeck:(ex&&ex.bDeck)||null,
     lpA:resuming?(ex.lpA??8000):8000, lpB:resuming?(ex.lpB??8000):8000,
     status:"ativo",winner:null,
@@ -4610,15 +4846,13 @@ async function openMatchDuel(roundId,idx){
 async function startDuelBetween(aId,bId,champId,forceDirect){
   if(!CURRENT){ toast("Entre com sua conta para registrar um duelo."); return; }
   if(!aId||!bId||aId===bId){ toast("Escolha dois duelistas diferentes."); return; }
-  const pa=playerPhoto(aId), pb=playerPhoto(bId);
   // se quem cria é um dos dois, vira convite e o outro aceita; senão (admin montando a mesa) já começa
   const invite=!forceDirect&&(CURRENT.uid===aId||CURRENT.uid===bId);
   // quem convida fica sempre no lado A, para o convite chegar em B
   const [x,y]=(invite&&CURRENT.uid===bId)?[bId,aId]:[aId,bId];
-  const px=x===aId?pa:pb, py=y===bId?pb:pa;
   try{
     const ref=await addDoc(collection(db,"duels"),{champId:champId||null,roundId:null,matchIdx:null,dayId:null,
-      aId:x,bId:y,aName:nameOfUid(x),bName:nameOfUid(y),aPhoto:px.photo||null,bPhoto:py.photo||null,
+      aId:x,bId:y,aName:nameOfUid(x),bName:nameOfUid(y),
       aDeck:null,bDeck:null,lpA:8000,lpB:8000,status:invite?"convite":"ativo",winner:null,
       createdAt:serverTimestamp(),createdBy:CURRENT.uid});
     haptic(30);
@@ -4739,7 +4973,7 @@ function renderEvents(){
       ${fin?(ch
         ? `<div class="ev-champ" data-act="profile" data-id="${esc(ch.uid)}">
              ${trophyHTML(kd)}
-             <img class="avatar sm" src="${esc(ch.photo||AV_PH)}" alt="">
+             <img class="avatar sm" src="${esc(champPhoto(ch)||AV_PH)}" alt="">
              <div class="ev-champ-t"><div class="ev-champ-l">Campeão</div>
                <div class="ev-champ-n">${esc(ch.name)}</div></div>
              <span class="cc-arrow">›</span></div>`
@@ -4777,7 +5011,7 @@ $("dir-search").addEventListener("input",()=>{ DIR_TERM=$("dir-search").value.tr
 $("stats-refresh").onclick=()=>{ ensureAllDuels(true); toast("Atualizando histórico…"); };
 function offerResult(winnerN){
   const d=activeDuel(); if(!d) return;
-  const name=winnerN===1?d.aName:d.bName, photo=winnerN===1?d.aPhoto:d.bPhoto;
+  const name=winnerN===1?d.aName:d.bName, photo=duelPhoto(d,winnerN===1?"a":"b");
   $("dr-av").src=photo||AV_PH; $("dr-name").textContent=name; $("dr-modal").dataset.side=String(winnerN);
   $("dr-modal").classList.add("show");
 }
@@ -4828,11 +5062,11 @@ function duelRowHTML(d,opts){
                 :`<div class="lp">${d.lpA??8000}</div><div class="vs">VS</div><div class="lp">${d.lpB??8000}</div>`;
   return `<div class="duel-row">
       <div class="duel-side ${aw?'w':(done?'l':'')}">
-        <div class="dn" data-act="profile" data-id="${d.aId}">${avatarHTML({photo:d.aPhoto},'sm')}${esc(d.aName)}</div>
+        <div class="dn" data-act="profile" data-id="${d.aId}">${avatarHTML({photo:duelPhoto(d,"a")},'sm')}${esc(d.aName)}</div>
         <div class="dd">${d.aDeck?esc(d.aDeck.name):'sem deck'}</div></div>
       <div class="duel-mid">${mid}</div>
       <div class="duel-side r ${bw?'w':(done?'l':'')}">
-        <div class="dn" data-act="profile" data-id="${d.bId}">${esc(d.bName)}${avatarHTML({photo:d.bPhoto},'sm')}</div>
+        <div class="dn" data-act="profile" data-id="${d.bId}">${esc(d.bName)}${avatarHTML({photo:duelPhoto(d,"b")},'sm')}</div>
         <div class="dd">${d.bDeck?esc(d.bDeck.name):'sem deck'}</div></div>
     </div>
     <div class="duel-acts">
@@ -4852,9 +5086,9 @@ function renderDuels(){
       +conv.map(d=>{
         const forMe=!!(CURRENT&&d.bId===CURRENT.uid);
         return `<div class="duel-row">
-          <div class="duel-side"><div class="dn" data-act="profile" data-id="${d.aId}">${avatarHTML({photo:d.aPhoto},'sm')}${esc(d.aName)}</div></div>
+          <div class="duel-side"><div class="dn" data-act="profile" data-id="${d.aId}">${avatarHTML({photo:duelPhoto(d,"a")},'sm')}${esc(d.aName)}</div></div>
           <div class="duel-mid"><div class="vs">desafia</div></div>
-          <div class="duel-side r"><div class="dn" data-act="profile" data-id="${d.bId}">${esc(d.bName)}${avatarHTML({photo:d.bPhoto},'sm')}</div></div>
+          <div class="duel-side r"><div class="dn" data-act="profile" data-id="${d.bId}">${esc(d.bName)}${avatarHTML({photo:duelPhoto(d,"b")},'sm')}</div></div>
         </div>
         <div class="duel-acts">
           ${forMe?`<button class="mini" data-act="invyes" data-id="${d.id}">${IC.swords} Aceitar</button>`:``}
@@ -4880,6 +5114,45 @@ function renderDuels(){
 $("duels-quick").onclick=()=>{ ACTIVE_DUEL=null; openScreen("counter"); };
 $("duels-new").onclick=()=>openDuelNew();
 $("duels-sync").onclick=syncOldDuels;
+$("duels-photos").onclick=stripOldPhotos;
+
+/* apaga as copias de foto gravadas antes desta versao: nos duelos
+   (duas por duelo) e nos eventos encerrados (uma por coroacao).
+   Uma escrita por documento, de uma vez so; depois nada volta a
+   guardar foto. */
+async function stripOldPhotos(){
+  if(!isAdmin()){ toast("Só o administrador faz esta limpeza."); return; }
+  await ensureAllDuels();
+  const duelos=duelUniverse().filter(d=>d.aPhoto||d.bPhoto);
+  const eventos=CHAMPS.filter(c=>c.champion&&c.champion.photo);
+  if(!duelos.length&&!eventos.length){ toast("Nada a limpar. 𓂀"); return; }
+  const bytes=duelos.reduce((s,d)=>s+((d.aPhoto||"").length+(d.bPhoto||"").length),0)
+             +eventos.reduce((s,c)=>s+((c.champion.photo||"").length),0);
+  const kb=Math.round(bytes/1024);
+  const partes=[];
+  if(duelos.length) partes.push(`<b>${duelos.length}</b> duelo(s)`);
+  if(eventos.length) partes.push(`<b>${eventos.length}</b> evento(s) encerrado(s)`);
+  if(!await ask(`${partes.join(" e ")} guardam uma cópia da foto dos duelistas, somando cerca de <b>${kb} KB</b> que o app baixa toda vez que abre.\n\nAs fotos continuam no perfil de cada um — o app passa a buscá-las de lá.`,
+    {icon:IC.jar,title:"Limpar fotos antigas",ok:"Limpar"})) return;
+  const b=$("duels-photos"); b.disabled=true;
+  const total=duelos.length+eventos.length; let n=0;
+  try{
+    for(const d of duelos){
+      await updateDoc(doc(db,"duels",d.id),{aPhoto:deleteField(),bPhoto:deleteField()});
+      b.textContent=`Limpando… ${++n}/${total}`;
+    }
+    for(const c of eventos){
+      /* champion e um mapa: reescrever sem a foto apaga so ela,
+         mantendo quem venceu e o nome gravado no dia */
+      await updateDoc(doc(db,"championships",c.id),
+        {champion:{uid:c.champion.uid,name:c.champion.name||""}});
+      b.textContent=`Limpando… ${++n}/${total}`;
+    }
+    ALL_DUELS=null; STAT_IDX=null; ensureAllDuels(true);
+    haptic(25); toast(`${n} registro(s) limpos · ~${kb} KB a menos`);
+  }catch(e){ toast(fbError(e)); }
+  finally{ b.disabled=false; b.textContent="Limpar fotos antigas"; }
+}
 
 /* espelha o resultado marcado na rodada para o histórico de duelos */
 async function syncDuelFromMatch(round,idx,winner){
@@ -4889,7 +5162,6 @@ async function syncDuelFromMatch(round,idx,winner){
     if(!winner){ if(ex) await deleteDoc(doc(db,"duels",id)); return; }
     await setDoc(doc(db,"duels",id),{champId:CURRENT_CHAMP,roundId:round.id,matchIdx:idx,dayId:round.dayId||null,
       aId:m.a,bId:m.b,aName:playerName(m.a),bName:playerName(m.b),
-      aPhoto:playerPhoto(m.a).photo||null,bPhoto:playerPhoto(m.b).photo||null,
       aDeck:(ex&&ex.aDeck)||null,bDeck:(ex&&ex.bDeck)||null,
       lpA:(ex&&ex.lpA)??0,lpB:(ex&&ex.lpB)??0,
       status:"encerrado",winner,
@@ -4913,7 +5185,6 @@ async function syncOldDuels(){
         if(ex&&ex.status==="encerrado"&&ex.winner===m.winner) continue;
         await setDoc(doc(db,"duels",id),{champId:CURRENT_CHAMP,roundId:r.id,matchIdx:i,dayId:r.dayId||null,
           aId:m.a,bId:m.b,aName:playerName(m.a),bName:playerName(m.b),
-          aPhoto:playerPhoto(m.a).photo||null,bPhoto:playerPhoto(m.b).photo||null,
           lpA:(ex&&ex.lpA)??0,lpB:(ex&&ex.lpB)??0,status:"encerrado",winner:m.winner,
           createdAt:(ex&&ex.createdAt)||serverTimestamp(),endedAt:serverTimestamp(),
           createdBy:(ex&&ex.createdBy)||CURRENT.uid},{merge:true});
@@ -5009,6 +5280,7 @@ async function ensureAllDuels(force){
     if(ACTIVE_SCREEN==="profile") renderProfile();
     if(ACTIVE_TAB==="players"&&!$("app").classList.contains("hidden")) renderPlayers();
     if(!$("select-screen").classList.contains("hidden")) renderHome();
+  if(ACTIVE_SCREEN==="torneio") renderTorneio();
   }
 }
 function duelUniverse(){
@@ -5320,8 +5592,46 @@ document.addEventListener("click", ev=>{
 $("lp-step-custom").addEventListener("input",()=>{ const v=parseInt($("lp-step-custom").value,10); if(v>0){ STEP=v; els(".step-chip").forEach(c=>c.classList.remove("active")); } });
 $("lp-reset").onclick=()=>{ LP=[8000,8000]; renderLP(); $("coin-res").textContent="toque na moeda"; haptic(20);
   const d=activeDuel(); if(d&&canDuel(d)){ lpLocalTs=Date.now(); queueLP(); } };
-$("coin").onclick=()=>{ if(coinBusy) return; coinBusy=true; const coin=$("coin"); coin.classList.remove("flip"); void coin.offsetWidth; coin.classList.add("flip");
-  const res=Math.random()<0.5?"CARA":"COROA"; $("coin-res").textContent="girando…"; setTimeout(()=>{ $("coin-res").textContent=res; coinBusy=false; },800); };
+$("coin").onclick=()=>{ if(coinBusy||diceBusy) return; coinBusy=true;
+  const coin=$("coin-face"); coin.classList.remove("flip"); void coin.offsetWidth; coin.classList.add("flip");
+  const res=Math.random()<0.5?"CARA":"COROA"; haptic(16);
+  $("coin-res").textContent="girando…";
+  setTimeout(()=>{ $("coin-res").textContent=res; haptic([20,40,20]); coinBusy=false; },800); };
+
+/* ---------- DADO DE SEIS FACES ----------
+   Desenhado em SVG e nao com os caracteres ⚀-⚅: esses dependem da
+   fonte do aparelho e somem em muitos Android. */
+const DICE_PIPS={1:[[1,1]],2:[[0,0],[2,2]],3:[[0,0],[1,1],[2,2]],
+  4:[[0,0],[2,0],[0,2],[2,2]],5:[[0,0],[2,0],[1,1],[0,2],[2,2]],
+  6:[[0,0],[2,0],[0,1],[2,1],[0,2],[2,2]]};
+function diceSVG(n){
+  const pips=DICE_PIPS[n]||DICE_PIPS[1], at=i=>9+i*7;
+  return `<svg viewBox="0 0 32 32" role="img" aria-label="dado mostrando ${n}">
+    <rect x="2.6" y="2.6" width="26.8" height="26.8" rx="6"
+      fill="#f4ece0" stroke="#b8873a" stroke-width="1.5"/>
+    ${pips.map(([c,r])=>`<circle cx="${at(c)}" cy="${at(r)}" r="2.4" fill="#1a1206"/>`).join("")}
+  </svg>`;
+}
+const d6=()=>1+Math.floor(Math.random()*6);
+let diceBusy=false, DICE_LAST=0;
+function paintDice(n){ const f=$("dice-face"); if(f) f.innerHTML=diceSVG(n); }
+$("dice").onclick=()=>{
+  if(diceBusy||coinBusy) return; diceBusy=true;
+  const face=$("dice-face"); face.classList.add("rolling"); haptic(16);
+  $("coin-res").textContent="rolando…";
+  let voltas=0;
+  const gira=setInterval(()=>{
+    paintDice(d6());
+    if(++voltas>=11){
+      clearInterval(gira);
+      const n=d6(); DICE_LAST=n; paintDice(n);
+      face.classList.remove("rolling");
+      $("coin-res").textContent="dado: "+n;
+      haptic([20,40,20]); diceBusy=false;
+    }
+  },70);
+};
+paintDice(6);
 
 /* ============================================================
    A MESA — a liga que nao termina.
@@ -5606,13 +5916,21 @@ async function apiSearch(term){
   if(!res.ok) throw new Error("HTTP "+res.status);
   const j=await res.json(); return (j.data||[]).slice(0,40).map(mapCard);
 }
-function openCardModal(id){ const c=CARD_CACHE[id]; if(!c) return;
+function openCardModal(id,blId){ const c=CARD_CACHE[id]; if(!c) return;
   $("cm-img").src=c.full||c.small; $("cm-name").textContent=c.name;
   const bits=[c.type]; if(c.race) bits.push(c.race); if(c.attribute) bits.push(c.attribute);
   if(c.level!=null) bits.push("Nível/Rank "+c.level);
   if(c.atk!=null) bits.push("ATK "+c.atk+(c.def!=null?" / DEF "+c.def:""));
-  if(c.banTcg) bits.push("Banlist TCG: "+c.banTcg);
   $("cm-meta").textContent=bits.filter(Boolean).join(" · ");
+  /* a situacao na banlist do CONTEXTO de onde a carta foi aberta:
+     dentro de um deck e a banlist dele, na Lista de Cards e a escolhida */
+  const bl=blId||VIEW_BL, st=cardStatusIn(c,bl), box=$("cm-bl");
+  if(box){
+    box.className="valid-tag "+(st?(st==="Forbidden"?"bad":"bl-"+blCls(st)):"ok");
+    box.innerHTML=st
+      ? `${blSeal(c,bl,"inline")} ${esc(blWord(st))} em ${esc(blName(bl))}`
+      : `${IC.check} liberada em ${esc(blName(bl))} — até 3 cópias`;
+  }
   $("cm-desc").textContent=c.desc||"";
   $("card-modal").classList.add("show");
 }
@@ -5621,24 +5939,84 @@ $("card-modal").addEventListener("click",e=>{ if(e.target.id==="card-modal") $("
 
 /* Lista de Cards */
 $("cards-search").addEventListener("input",()=>{ clearTimeout(cardsTimer); cardsTimer=setTimeout(runCardsSearch,350); });
+$("cards-bl").addEventListener("change",()=>{ VIEW_BL=$("cards-bl").value||"tcg";
+  if(VIEW_BL==="tcg") loadOfficial(); paintCardsGrid(); });
 async function runCardsSearch(){
   const term=$("cards-search").value.trim(), body=$("cards-body"), count=$("cards-count");
   if(term.length<3){ CARDS_RES=[]; body.innerHTML=`<div class="empty">Digite ao menos 3 letras para buscar uma carta.</div>`; count.textContent=""; return; }
   body.innerHTML=`<div class="spin"></div>`; count.textContent="buscando…";
   try{ CARDS_RES=await apiSearch(term); }catch(e){ CARDS_RES=[]; count.textContent="erro ao buscar"; }
   count.textContent=`${CARDS_RES.length} carta(s) · fonte: YGOPRODeck`;
-  body.innerHTML=CARDS_RES.length
-    ? `<div class="bl-grid">${CARDS_RES.map(c=>`<div class="bl-card" data-act="cardinfo" data-id="${esc(c.id)}"><img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}"><div class="bl-name">${esc(c.name)}</div></div>`).join("")}</div>`
-    : `<div class="empty">Nenhuma carta encontrada.</div>`;
+  paintCardsGrid();
+}
+/* desenhada a parte: trocar a banlist em foco redesenha so a grade,
+   sem refazer a busca na API */
+function paintCardsGrid(){
+  const body=$("cards-body"); if(!body) return;
+  /* a lista em foco pode ter sido apagada por outro admin */
+  if(VIEW_BL!=="tcg" && !BANLISTS.some(b=>b.id===VIEW_BL)) VIEW_BL="tcg";
+  const sel=$("cards-bl");
+  if(sel&&document.activeElement!==sel){ sel.innerHTML=blOptionsHTML(VIEW_BL); sel.value=VIEW_BL; }
+  if(!CARDS_RES.length) return;
+  body.innerHTML=`<div class="bl-grid">${CARDS_RES.map(c=>
+    `<div class="bl-card" data-act="cardinfo" data-id="${esc(c.id)}" data-bl="${esc(VIEW_BL)}">
+      ${blSeal(c,VIEW_BL)}
+      <img class="bl-thumb" loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">
+      <div class="bl-name">${esc(c.name)}</div></div>`).join("")}</div>`;
 }
 
 /* Decks */
-function deckBanlistLimit(deck, card){
-  const mode=deck.banlist||"tcg";
-  const lim=s=>s==="Forbidden"?0:s==="Limited"?1:s==="Semi-Limited"?2:3;
-  if(mode==="tcg") return lim(card.banTcg);
-  const custom=BANLISTS.find(b=>b.id===mode); if(!custom) return 3;
-  const found=(custom.cards||[]).find(x=>x.id===card.id); return found?lim(found.status):3;
+/* ============================================================
+   STATUS DE BANLIST POR CARTA
+   Antes so existia o LIMITE — um numero usado para barrar a adicao,
+   invisivel ate a carta ser recusada. Agora o status e calculado e
+   DESENHADO em toda miniatura de carta.
+   A lista oficial e consultada por NOME, porque e assim que a API
+   devolve o ban_tcg; o banTcg gravado dentro do deck e so a reserva
+   para enquanto a lista oficial nao baixou. Com a lista em maos, um
+   deck antigo passa a mostrar o status de HOJE, nao o do dia em que
+   a carta foi adicionada.
+   ============================================================ */
+const BL_COPIES={"Forbidden":0,"Limited":1,"Semi-Limited":2};
+const blCopies=st=>{ const n=BL_COPIES[st]; return n===undefined?3:n; };
+const blWord=st=>st==="Forbidden"?"proibida"
+              :st==="Limited"?"limitada a 1 cópia"
+              :st==="Semi-Limited"?"semi-limitada a 2 cópias":"";
+const blName=id=>(!id||id==="tcg")?"TCG (oficial)"
+              :((BANLISTS.find(b=>b.id===id)||{}).name||"lista removida");
+function cardStatusIn(card,blId){
+  if(!card) return "";
+  const mode=blId||"tcg";
+  if(mode==="tcg"){
+    if(OFFICIAL){ const f=OFFICIAL.find(o=>o.name===card.name); return f?f.status:""; }
+    return card.banTcg||"";
+  }
+  const b=BANLISTS.find(x=>x.id===mode); if(!b) return "";
+  const f=(b.cards||[]).find(x=>String(x.id)===String(card.id));
+  return (f&&f.status)||"";
+}
+/* o selo que vai na miniatura */
+function blSeal(card,blId,extra){
+  const st=cardStatusIn(card,blId); if(!st) return "";
+  const w=blWord(st);
+  return `<span class="cs ${blCls(st)}${extra?" "+extra:""}" title="${esc(w)}" aria-label="${esc(w)}">${st==="Forbidden"?"⊘":blCopies(st)}</span>`;
+}
+/* quantas copias cabem: UMA fonte so, para o selo e o bloqueio
+   nunca discordarem entre si */
+function deckBanlistLimit(deck,card){
+  return blCopies(cardStatusIn(card,(deck&&deck.banlist)||"tcg"));
+}
+/* cartas que passaram do limite da banlist escolhida */
+function deckViolations(deck){
+  if(!deck) return [];
+  const uniq=new Map();
+  ["main","extra","side"].forEach(s=>(deck[s]||[]).forEach(c=>{
+    if(!c||!c.id) return;
+    const o=uniq.get(c.id); if(o) o.n++; else uniq.set(c.id,{c,n:1}); }));
+  const bad=[];
+  uniq.forEach(({c,n})=>{ const max=Math.min(3,deckBanlistLimit(deck,c));
+    if(n>max) bad.push({id:c.id,name:c.name||"carta",n,max}); });
+  return bad.sort((a,b)=>a.max-b.max||String(a.name).localeCompare(String(b.name)));
 }
 function deckCopies(deck,cardId){ let n=0; for(const s of ['main','extra','side']) n+=((deck[s]||[]).filter(c=>c.id===cardId)).length; return n; }
 function openDeck(id){ CUR_DECK=id; renderDecks();
@@ -5676,10 +6054,15 @@ function renderSection(sec){
   const el=$("sec-"+sec); if(!el) return;
   const map={}; arr.forEach(c=>{ if(!map[c.id]) map[c.id]={c,n:0}; map[c.id].n++; });
   const items=Object.values(map);
-  el.innerHTML=items.length? items.map(({c,n})=>`<div class="dk-card" data-act="deckcardinfo" data-id="${esc(c.id)}">
+  const bl=(deck&&deck.banlist)||"tcg";
+  el.innerHTML=items.length? items.map(({c,n})=>{
+      /* passou do que a banlist permite: ganha anel vermelho */
+      const over=n>Math.min(3,deckBanlistLimit(deck,c));
+      return `<div class="dk-card ${over?'over':''}" data-act="deckcardinfo" data-id="${esc(c.id)}" data-bl="${esc(bl)}">
+      ${blSeal(c,bl)}
       <img loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">
       ${n>1?`<span class="qty">x${n}</span>`:''}
-      <div class="rm" data-act="deckremove" data-sec="${sec}" data-id="${esc(c.id)}">− remover</div></div>`).join("")
+      <div class="rm" data-act="deckremove" data-sec="${sec}" data-id="${esc(c.id)}">− remover</div></div>`;}).join("")
     : `<div class="section-note" style="grid-column:1/-1;margin:0">vazio</div>`;
   if(DECK_FX&&DECK_FX.sec===sec){
     const card=Array.from(el.querySelectorAll(".dk-card")).find(n=>n.dataset.id===String(DECK_FX.id));
@@ -5695,8 +6078,15 @@ function renderBuilder(){
   if(cvEl) cvEl.innerHTML=(cv?`<img src="${esc(cv.small)}" alt="${esc(cv.name)}">`
                              :`<span class="ph">${IC.chest}</span>`)
     +`<span class="edge">capa</span>`;
-  const mode=deck.banlist||"tcg"; const blName=mode==="tcg"?"TCG (oficial)":((BANLISTS.find(b=>b.id===mode)||{}).name||"?");
-  $("deck-bl-line").innerHTML=`Banlist obrigatória: <b style="color:var(--gold-soft)">${esc(blName)}</b> — cartas proibidas/limitadas são bloqueadas ao adicionar.`;
+  const mode=deck.banlist||"tcg";
+  const blSel=$("deck-bl");
+  if(blSel&&document.activeElement!==blSel){ blSel.innerHTML=blOptionsHTML(mode); blSel.value=mode; }
+  const vio=deckViolations(deck);
+  $("deck-bl-line").innerHTML=`Em <b style="color:var(--gold-soft)">${esc(blName(mode))}</b>, o selo na carta diz quantas cópias cabem: `
+    +`<span class="cs forbidden inline">⊘</span> nenhuma · <span class="cs limited inline">1</span> uma · `
+    +`<span class="cs semi inline">2</span> duas. Sem selo, até três.`
+    +(vio.length?`<div class="bl-warn">${IC.alert} <b>${vio.length} carta${vio.length>1?'s':''} acima do limite</b>: `
+      +vio.map(v=>`${esc(v.name)} <b>${v.n}/${v.max}</b>`).join(" · ")+`</div>`:"");
   const m=(deck.main||[]).length,e=(deck.extra||[]).length,si=(deck.side||[]).length;
   const setC=(id,txt,ok)=>{ const el=$(id); if(el){ el.textContent=txt; el.className="cnt "+(ok?'ok':'bad'); } };
   setC("cnt-main",`${m}/40–60`, m>=40&&m<=60); setC("cnt-extra",`${e}/15`, e<=15); setC("cnt-side",`${si}/15`, si<=15);
@@ -5707,8 +6097,15 @@ function renderBuilder(){
     <span class="dk-t trp">Armadilhas <b>${tc.trp}</b></span>
     <span class="dk-t">Extra <b>${e}</b></span><span class="dk-t">Side <b>${si}</b></span>`;
   renderSection('main'); renderSection('extra'); renderSection('side');
-  const legal=m>=40&&m<=60&&e<=15&&si<=15;
-  $("deck-validity").innerHTML=`<span class="valid-tag ${legal?'ok':'bad'}">${legal?IC.check+' Deck válido':IC.ban+' Ajuste o tamanho (Principal 40–60, Extra e Side até 15)'}</span>`;
+  /* a validade passa a reprovar tambem o que fura a banlist */
+  const probs=[];
+  if(!(m>=40&&m<=60)) probs.push("Principal 40–60");
+  if(e>15) probs.push("Extra até 15");
+  if(si>15) probs.push("Side até 15");
+  if(vio.length) probs.push(`${vio.length} carta${vio.length>1?'s':''} fora da banlist`);
+  const legal=!probs.length;
+  $("deck-validity").innerHTML=`<span class="valid-tag ${legal?'ok':'bad'}">${
+    legal?IC.check+' Deck válido':IC.ban+' '+esc(probs.join(" · "))}</span>`;
   const vis=$("btn-deck-vis");
   if(vis) vis.innerHTML=(deck.public===false?IC.seal+" Privado":IC.eye+" Público");
   const ex=$("btn-deck-export"), im=$("btn-deck-import");
@@ -5720,9 +6117,17 @@ function renderDeckAddResults(){
   const box=$("deck-add-results"); if(!box) return;
   if(DECK_ADD_LOADING){ box.innerHTML=`<div class="spin" style="grid-column:1/-1"></div>`; return; }
   if(!DECK_ADD.length){ box.innerHTML=`<div class="section-note" style="grid-column:1/-1;margin:0">Busque uma carta para adicionar (3+ letras).</div>`; return; }
-  box.innerHTML=DECK_ADD.map(c=>`<div class="dk-card" data-act="deckadd" data-id="${esc(c.id)}">
+  /* o resultado da busca ja diz se a carta cabe: nao adianta tocar
+     numa carta proibida so para o app recusar depois */
+  const deck=MYDECKS.find(d=>d.id===CUR_DECK), bl=(deck&&deck.banlist)||"tcg";
+  box.innerHTML=DECK_ADD.map(c=>{
+    const max=Math.min(3,blCopies(cardStatusIn(c,bl)));
+    const have=deck?deckCopies(deck,c.id):0, cheio=have>=max;
+    return `<div class="dk-card ${cheio?'over':''}" data-act="deckadd" data-id="${esc(c.id)}">
+    ${blSeal(c,bl)}
     <img loading="lazy" src="${esc(c.small)}" alt="${esc(c.name)}">
-    <div class="rm" style="background:rgba(30,90,40,.85)">+ adicionar</div></div>`).join("");
+    <div class="rm" style="background:${cheio?'rgba(150,38,24,.92)':'rgba(30,90,40,.85)'}">${
+      cheio?(max===0?"proibida":`já tem ${have}/${max}`):"+ adicionar"}</div></div>`;}).join("");
 }
 $("deck-add-search").addEventListener("input",()=>{ clearTimeout(deckAddTimer); deckAddTimer=setTimeout(runDeckAdd,350); });
 async function runDeckAdd(){
@@ -6047,6 +6452,14 @@ document.addEventListener("click",ev=>{
   else if(a==="diodl"){ const d=MYDECKS.find(x=>x.id===DIO_TARGET); downloadText(((d&&d.name)||"deck").replace(/[^\w\-]+/g,"_")+".ydk",$("dio-text").value); }
   else if(a==="diofile") $("dio-file").click();
   else if(a==="dioimport") runDeckImport();
+});
+$("deck-bl").addEventListener("change",async()=>{
+  if(!CUR_DECK) return;
+  const v=$("deck-bl").value||"tcg";
+  try{ await updateDoc(doc(db,"decks",CUR_DECK),{banlist:v});
+    if(v==="tcg") loadOfficial();
+    haptic(16); toast("Banlist do deck: "+blName(v)); }
+  catch(e){ toast(fbError(e)); }
 });
 $("deck-name").addEventListener("change",async()=>{ if(!CUR_DECK) return; const nm=$("deck-name").value.trim()||"Deck";
   try{ await updateDoc(doc(db,"decks",CUR_DECK),{name:nm}); }catch(e){} });
